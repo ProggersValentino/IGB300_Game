@@ -8,7 +8,7 @@ AEnemyManager::AEnemyManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	playerPosQueue.SetNum(10); // Set default position buffer to 10
 }
 
 // Called when the game starts or when spawned
@@ -17,13 +17,15 @@ void AEnemyManager::BeginPlay()
 	Super::BeginPlay();
 	RegisterSpawns();
 
+	player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
+
 }
 
 // Called every frame
 void AEnemyManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UpdatePlayerPosition();
 }
 
 void AEnemyManager::RegisterSpawns()
@@ -38,5 +40,12 @@ void AEnemyManager::RegisterSpawns()
 		spawnLocations.Add(i, Cast<ASpawnLocation>(spawnLocationActors[i])->RegisterSpawnLocation(i));
 
 	}
+}
+
+void AEnemyManager::UpdatePlayerPosition() {
+	for (int32 i = playerPosQueue.Num() - 1; i > 0; --i) {
+		playerPosQueue.Swap(i, i - 1);
+	}
+	playerPosQueue[0] = player->GetActorLocation();
 }
 

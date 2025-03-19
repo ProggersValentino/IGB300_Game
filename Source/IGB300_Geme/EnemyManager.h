@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawnLocation.h"
 #include "CoreMinimal.h"
@@ -16,12 +17,18 @@ class IGB300_GEME_API AEnemyManager : public AActor
 public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
+
 	TMap<int32, FVector> spawnLocations;
+	AActor* player;
+
+	UPROPERTY(VisibleAnywhere, Category = "Members")
+		TArray<FVector> playerPosQueue;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void RegisterSpawns();
+	virtual void UpdatePlayerPosition();
 
 public:
 	// Called every frame
