@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemyManager.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
@@ -43,13 +44,16 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
+	FVector targetMovePos;
 
+	AEnemyManager* enemyManager;
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Attack();
+	virtual void Move();
 
 public:	
 	// Called every frame

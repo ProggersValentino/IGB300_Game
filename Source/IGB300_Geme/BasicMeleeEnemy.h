@@ -13,5 +13,9 @@ UCLASS()
 class IGB300_GEME_API ABasicMeleeEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
+
+	void Move() override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	
 };

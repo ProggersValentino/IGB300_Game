@@ -49,3 +49,7 @@ void AEnemyManager::UpdatePlayerPosition() {
 	playerPosQueue[0] = player->GetActorLocation();
 }
 
+FVector& AEnemyManager::ReturnPlayerPos(int32 delay) {
+	return playerPosQueue[delay];
+}
+

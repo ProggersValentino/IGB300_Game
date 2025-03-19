@@ -33,5 +33,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	FVector& ReturnPlayerPos(int32 delay);
 
 };

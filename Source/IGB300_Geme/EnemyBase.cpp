@@ -15,6 +15,7 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+	enemyManager = Cast<AEnemyManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass()));
 	
 }
 
@@ -26,9 +27,15 @@ void AEnemyBase::Tick(float DeltaTime)
 }
 
 void AEnemyBase::Attack() {
+
 }
 
 void AEnemyBase::Die() {
+
+}
+
+void AEnemyBase::Move() {
+
 }
 
 bool AEnemyBase::CanDoFinisher() {
