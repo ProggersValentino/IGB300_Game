@@ -6,6 +6,7 @@ void ABasicRangedEnemy::Move() {
 }
 
 void ABasicRangedEnemy::Tick(float DeltaTime){
+  AEnemyBase::Tick(DeltaTime);
   Move();
 }
 void ABasicRangedEnemy::BeginPlay() {
