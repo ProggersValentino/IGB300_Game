@@ -15,8 +15,9 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	enemyManager = Cast<AEnemyManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass()));
-	
+	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
+	if (enemyManAct)
+		enemyManager = Cast<AEnemyManager>(enemyManAct);
 }
 
 // Called every frame

@@ -14,4 +14,11 @@ class IGB300_GEME_API ABasicRangedEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
 	
+public:
+
+protected:
+	virtual void Move() override;
+	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	
 };

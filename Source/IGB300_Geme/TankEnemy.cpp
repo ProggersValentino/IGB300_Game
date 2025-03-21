@@ -12,6 +12,8 @@ void ATankEnemy::BeginPlay() {
 }
 
 void ATankEnemy::Tick(float DeltaTime) {
-	targetMovePos = enemyManager->ReturnPlayerPos(9);
+	AEnemyBase::Tick(DeltaTime);
+	if (enemyManager)
+		targetMovePos = enemyManager->ReturnPlayerPos(9);
 	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, DeltaTime * speed));
 }

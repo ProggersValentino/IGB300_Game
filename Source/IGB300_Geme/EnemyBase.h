@@ -44,6 +44,7 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Members")
 	FVector targetMovePos;
 
 	AEnemyManager* enemyManager;
