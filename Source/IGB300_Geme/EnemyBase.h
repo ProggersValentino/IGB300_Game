@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EnemyManager.h"
+#include "IPlayer.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
