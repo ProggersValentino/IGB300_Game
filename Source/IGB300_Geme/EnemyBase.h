@@ -62,6 +62,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void Die();
 	virtual bool CanDoFinisher();
-
+	
 
 };
