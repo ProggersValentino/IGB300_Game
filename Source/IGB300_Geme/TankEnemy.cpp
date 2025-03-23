@@ -11,13 +11,6 @@ void ATankEnemy::Attack_Implementation() {
 
 }
 
-void ATankEnemy::Die_Implementation() {
-
-}
-
-void ATankEnemy::Damage_Implementation(float amount) {
-
-}
 
 void ATankEnemy::BeginPlay() {
 	AEnemyBase::BeginPlay();

@@ -20,8 +20,6 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	void Move_Implementation() override;
 	void Attack_Implementation() override;
-	void Die_Implementation() override;
-	void Damage_Implementation(float amount) override;
 	virtual void BeginPlay() override;
 	
 	

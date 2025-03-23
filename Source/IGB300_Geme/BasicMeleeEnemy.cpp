@@ -9,12 +9,6 @@ void ABasicMeleeEnemy::Move_Implementation() {
 void ABasicMeleeEnemy::Attack_Implementation() {
 
 }
-void ABasicMeleeEnemy::Die_Implementation() {
-
-}
-void ABasicMeleeEnemy::Damage_Implementation(float amount) {
-
-}
 
 void ABasicMeleeEnemy::BeginPlay() {
 	AEnemyBase::BeginPlay();

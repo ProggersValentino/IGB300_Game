@@ -16,8 +16,6 @@ class IGB300_GEME_API ATankEnemy : public AEnemyBase
 	
 	void Move_Implementation() override;
 	void Attack_Implementation() override;
-	void Die_Implementation() override;
-	void Damage_Implementation(float amount) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 };

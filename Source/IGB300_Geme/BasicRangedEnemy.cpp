@@ -9,14 +9,6 @@ void ABasicRangedEnemy::Attack_Implementation() {
 
 }
 
-void ABasicRangedEnemy::Die_Implementation() {
-
-}
-
-void ABasicRangedEnemy::Damage_Implementation(float amount) {
-
-}
-
 void ABasicRangedEnemy::Tick(float DeltaTime){
   AEnemyBase::Tick(DeltaTime);
   Move_Implementation();

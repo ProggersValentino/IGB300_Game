@@ -38,9 +38,12 @@ void AEnemyBase::Attack_Implementation(){
 	
 }
 void AEnemyBase::Die_Implementation(){
-	
+	Destroy();
 }
 void AEnemyBase::Damage_Implementation(float amount){
-	
+	health -= amount;
+	if (health < 0){
+		Die_Implementation();
+	}
 }
 
