@@ -1,13 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BasicRangedEnemy.h"
 
-void ABasicRangedEnemy::Move() {
+void ABasicRangedEnemy::Move_Implementation() {
 	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, 0.1f * speed));
+}
+
+void ABasicRangedEnemy::Attack_Implementation() {
+
+}
+
+void ABasicRangedEnemy::Die_Implementation() {
+
+}
+
+void ABasicRangedEnemy::Damage_Implementation(float amount) {
+
 }
 
 void ABasicRangedEnemy::Tick(float DeltaTime){
   AEnemyBase::Tick(DeltaTime);
-  Move();
+  Move_Implementation();
 }
 void ABasicRangedEnemy::BeginPlay() {
   AEnemyBase::BeginPlay();

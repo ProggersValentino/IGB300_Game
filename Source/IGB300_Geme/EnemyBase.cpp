@@ -27,19 +27,20 @@ void AEnemyBase::Tick(float DeltaTime)
 
 }
 
-void AEnemyBase::Attack() {
-
-}
-
-void AEnemyBase::Die() {
-
-}
-
-void AEnemyBase::Move() {
-
-}
-
 bool AEnemyBase::CanDoFinisher() {
 	return false;
+}
+
+void AEnemyBase::Move_Implementation(){
+	
+}
+void AEnemyBase::Attack_Implementation(){
+	
+}
+void AEnemyBase::Die_Implementation(){
+	
+}
+void AEnemyBase::Damage_Implementation(float amount){
+	
 }
 

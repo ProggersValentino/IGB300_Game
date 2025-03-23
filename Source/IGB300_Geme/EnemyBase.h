@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "IEnemy.h"
 #include "CoreMinimal.h"
 #include "EnemyManager.h"
 #include "GameFramework/Actor.h"
@@ -16,7 +17,7 @@ enum class EEnemyType : uint8
 };
 
 UCLASS()
-class IGB300_GEME_API AEnemyBase : public AActor
+class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy
 {
 	GENERATED_BODY()
 	
@@ -53,14 +54,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void Attack();
-	virtual void Move();
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Die();
+	virtual void Die_Implementation();
+	virtual void Attack_Implementation();
+	virtual void Move_Implementation();
+	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
-
-
 };

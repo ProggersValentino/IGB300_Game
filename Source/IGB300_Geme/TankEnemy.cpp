@@ -3,7 +3,19 @@
 
 #include "TankEnemy.h"
 
-void ATankEnemy::Move() {
+void ATankEnemy::Move_Implementation() {
+
+}
+
+void ATankEnemy::Attack_Implementation() {
+
+}
+
+void ATankEnemy::Die_Implementation() {
+
+}
+
+void ATankEnemy::Damage_Implementation(float amount) {
 
 }
 
