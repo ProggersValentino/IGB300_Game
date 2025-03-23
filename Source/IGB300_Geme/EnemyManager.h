@@ -16,6 +16,9 @@ class IGB300_GEME_API AEnemyManager : public AActor
 {
 	GENERATED_BODY()
 
+protected:
+	int32 enemyUidToAssign;
+
 public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
@@ -41,5 +44,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	FVector& ReturnPlayerPos(int32 delay);
+	int32 RegisterEnemy(AEnemyBase*);
+	void DeregisterEnemy(int32 uid);
 
 };

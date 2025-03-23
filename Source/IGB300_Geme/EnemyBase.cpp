@@ -18,6 +18,7 @@ void AEnemyBase::BeginPlay()
 	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (enemyManAct)
 		enemyManager = Cast<AEnemyManager>(enemyManAct);
+	UID = enemyManager->RegisterEnemy(this);
 }
 
 // Called every frame
@@ -38,6 +39,7 @@ void AEnemyBase::Attack_Implementation(){
 	
 }
 void AEnemyBase::Die_Implementation(){
+	enemyManager->DeregisterEnemy(UID);
 	Destroy();
 }
 void AEnemyBase::Damage_Implementation(float amount){

@@ -9,6 +9,7 @@ AEnemyManager::AEnemyManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	playerPosQueue.SetNum(10); // Set default position buffer to 10
+	enemyUidToAssign = 0;
 }
 
 // Called when the game starts or when spawned
@@ -51,5 +52,15 @@ void AEnemyManager::UpdatePlayerPosition() {
 
 FVector& AEnemyManager::ReturnPlayerPos(int32 delay) {
 	return playerPosQueue[delay];
+}
+
+// Register enemy into map and return uid to enemy that called it
+int32 AEnemyManager::RegisterEnemy(AEnemyBase* enemy){
+	enemies.Add(enemyUidToAssign++, enemy);
+	return enemyUidToAssign - 1;
+}
+
+void AEnemyManager::DeregisterEnemy(int32 uid){
+	enemies.Remove(uid);
 }
 

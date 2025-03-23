@@ -25,6 +25,7 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyBase();
 
+	UPROPERTY(VisibleAnywhere, Category = "Members")
 	int32 UID;
 
 	UPROPERTY(EditAnywhere, Category = "Members")
