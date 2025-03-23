@@ -17,8 +17,10 @@ class IGB300_GEME_API ABasicRangedEnemy : public AEnemyBase
 public:
 
 protected:
-	virtual void Move() override;
 	virtual void Tick(float DeltaTime) override;
+	void Move_Implementation() override;
+	void Attack_Implementation() override;
 	virtual void BeginPlay() override;
+	
 	
 };

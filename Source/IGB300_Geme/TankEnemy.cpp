@@ -2,10 +2,16 @@
 
 
 #include "TankEnemy.h"
+#include "EnemyManager.h"
 
-void ATankEnemy::Move() {
+void ATankEnemy::Move_Implementation() {
 
 }
+
+void ATankEnemy::Attack_Implementation() {
+
+}
+
 
 void ATankEnemy::BeginPlay() {
 	AEnemyBase::BeginPlay();

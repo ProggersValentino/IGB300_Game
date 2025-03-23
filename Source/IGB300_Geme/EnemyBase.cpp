@@ -2,6 +2,7 @@
 
 
 #include "EnemyBase.h"
+#include "EnemyManager.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -18,6 +19,7 @@ void AEnemyBase::BeginPlay()
 	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (enemyManAct)
 		enemyManager = Cast<AEnemyManager>(enemyManAct);
+	UID = enemyManager->RegisterEnemy(this);
 }
 
 // Called every frame
@@ -27,19 +29,24 @@ void AEnemyBase::Tick(float DeltaTime)
 
 }
 
-void AEnemyBase::Attack() {
-
-}
-
-void AEnemyBase::Die() {
-
-}
-
-void AEnemyBase::Move() {
-
-}
-
 bool AEnemyBase::CanDoFinisher() {
 	return false;
+}
+
+void AEnemyBase::Move_Implementation(){
+	
+}
+void AEnemyBase::Attack_Implementation(){
+	
+}
+void AEnemyBase::Die_Implementation(){
+	enemyManager->DeregisterEnemy(UID);
+	Destroy();
+}
+void AEnemyBase::Damage_Implementation(float amount){
+	health -= amount;
+	if (health < 0){
+		Die_Implementation();
+	}
 }
 

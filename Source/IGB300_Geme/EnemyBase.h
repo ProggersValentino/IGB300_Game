@@ -2,21 +2,16 @@
 
 #pragma once
 
+#include "IEnemy.h"
+#include "EnemyType.h"
 #include "CoreMinimal.h"
-#include "EnemyManager.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
-UENUM(BluePrintType)
-enum class EEnemyType : uint8
-{
-	ET_Basic	UMETA(DisplayName = "Basic"),
-	ET_Ranged	UMETA(DisplayName = "Ranged"),
-	ET_Tank		UMETA(DisplayName = "Tank")
-};
+class AEnemyManager;
 
 UCLASS()
-class IGB300_GEME_API AEnemyBase : public AActor
+class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy
 {
 	GENERATED_BODY()
 	
@@ -24,6 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyBase();
 
+	UPROPERTY(VisibleAnywhere, Category = "Members")
 	int32 UID;
 
 	UPROPERTY(EditAnywhere, Category = "Members")
@@ -53,14 +49,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void Attack();
-	virtual void Move();
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Die();
+	virtual void Die_Implementation();
+	virtual void Attack_Implementation();
+	virtual void Move_Implementation();
+	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
-
-
 };
