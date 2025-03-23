@@ -2,6 +2,8 @@
 
 
 #include "EnemyManager.h"
+#include "EnemyBase.h"
+
 
 // Sets default values
 AEnemyManager::AEnemyManager()
@@ -62,5 +64,31 @@ int32 AEnemyManager::RegisterEnemy(AEnemyBase* enemy){
 
 void AEnemyManager::DeregisterEnemy(int32 uid){
 	enemies.Remove(uid);
+}
+
+void AEnemyManager::Spawn(int32 spawnIndex) {
+	if (spawnLocations.Num() > 0) {
+		// Set Spawn Location
+		FVector loc(0.0f, 0.0f, 0.0f);
+		FRotator rot(0.0f, 0.0f, 0.0f);
+
+		int32 i = *waves[spawnIndex].amounts.Find(EEnemyType::ET_Basic);
+		while (i > 0) {
+			GetWorld()->SpawnActor<AActor>(bpEnemyMelee, loc, rot);
+			i--;
+		}
+
+		i = *waves[spawnIndex].amounts.Find(EEnemyType::ET_Tank);
+		while (i > 0) {
+			GetWorld()->SpawnActor<AActor>(bpEnemyTank, loc, rot);
+			i--;
+		}
+
+		i = *waves[spawnIndex].amounts.Find(EEnemyType::ET_Ranged);
+		while (i > 0) {
+			GetWorld()->SpawnActor<AActor>(bpEnemyRanged, loc, rot);
+			i--;
+		}
+	}
 }
 

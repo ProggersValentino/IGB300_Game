@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "EnemyType.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawnLocation.h"
 #include "CoreMinimal.h"
@@ -10,6 +11,14 @@
 #include "EnemyManager.generated.h"
 
 class AEnemyBase;
+
+USTRUCT(BlueprintType)
+	struct FEnemyWave {
+		GENERATED_BODY()
+
+		UPROPERTY(EditAnywhere)
+		TMap<EEnemyType, int32> amounts;
+	};
 
 UCLASS()
 class IGB300_GEME_API AEnemyManager : public AActor
@@ -23,7 +32,10 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
 
-	UPROPERTY(VisibleAnywhere, Category = "Members")
+	UPROPERTY(EditAnywhere, Category = "Members")
+		TArray<FEnemyWave> waves;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Members")
 		TMap<int32, FVector> spawnLocations;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Members")
@@ -34,11 +46,22 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Members")
 		TArray<FVector> playerPosQueue;
 
+	UPROPERTY(EditAnywhere, Category = "Enemy Blueprint References")
+	TSubclassOf<AEnemyBase> bpEnemyMelee;
+	UPROPERTY(EditAnywhere, Category = "Enemy Blueprint References")
+	TSubclassOf<AEnemyBase> bpEnemyRanged;
+	UPROPERTY(EditAnywhere, Category = "Enemy Blueprint References")
+	TSubclassOf<AEnemyBase> bpEnemyTank;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void RegisterSpawns();
 	virtual void UpdatePlayerPosition();
+
+
+	UFUNCTION(BlueprintCallable)
+	void Spawn(int32 waveIndex);
 
 public:
 	// Called every frame

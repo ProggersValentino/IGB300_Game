@@ -2,6 +2,7 @@
 
 
 #include "TankEnemy.h"
+#include "EnemyManager.h"
 
 void ATankEnemy::Move_Implementation() {
 

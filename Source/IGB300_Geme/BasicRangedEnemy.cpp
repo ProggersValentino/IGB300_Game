@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BasicRangedEnemy.h"
+#include "EnemyManager.h"
 
 void ABasicRangedEnemy::Move_Implementation() {
 	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, 0.1f * speed));

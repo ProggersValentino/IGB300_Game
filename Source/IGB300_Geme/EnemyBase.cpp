@@ -2,6 +2,7 @@
 
 
 #include "EnemyBase.h"
+#include "EnemyManager.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()

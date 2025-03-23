@@ -2,6 +2,7 @@
 
 
 #include "BasicMeleeEnemy.h"
+#include "EnemyManager.h"
 
 void ABasicMeleeEnemy::Move_Implementation() {
 

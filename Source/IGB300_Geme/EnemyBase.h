@@ -3,18 +3,12 @@
 #pragma once
 
 #include "IEnemy.h"
+#include "EnemyType.h"
 #include "CoreMinimal.h"
-#include "EnemyManager.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
-UENUM(BluePrintType)
-enum class EEnemyType : uint8
-{
-	ET_Basic	UMETA(DisplayName = "Basic"),
-	ET_Ranged	UMETA(DisplayName = "Ranged"),
-	ET_Tank		UMETA(DisplayName = "Tank")
-};
+class AEnemyManager;
 
 UCLASS()
 class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy
