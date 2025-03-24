@@ -38,3 +38,16 @@ bool AWeaponBase::DamageObject_Implementation(const AActor* enemy, float damage)
 	return false; 
 }
 
+UAnimMontage* AWeaponBase::RetrieveAnimation_Implementation(EWeaponAnimation selectedAnim)
+{
+	if (WeaponAnimations.Contains(selectedAnim)) return WeaponAnimations.FindChecked(selectedAnim);
+
+	if (GEngine) GEngine -> AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Can't Find Animation"));
+	return nullptr;
+}
+
+bool AWeaponBase::BlockIncomingDamage_Implementation()
+{
+	return IIWeapon::BlockIncomingDamage_Implementation();
+}
+

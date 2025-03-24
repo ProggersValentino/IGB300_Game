@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EWeaponAnimation.h"
 #include "IWeapon.h"
 #include "SWeaponData.h"
 #include "GameFramework/Actor.h"
@@ -31,9 +32,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FDataTableRowHandle DataSource;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	TMap<EWeaponAnimation, UAnimMontage*> WeaponAnimations;
+	
 	//to implement an Interface in UE you need "NameOfMethod_Implementation()"
 	virtual FSWeaponData AddWeapon_Implementation() override;
 
 	virtual bool DamageObject_Implementation(const AActor* enemy, float damage);
-	
+
+	virtual UAnimMontage* RetrieveAnimation_Implementation(EWeaponAnimation selectedAnim) override;
+
+	virtual bool BlockIncomingDamage_Implementation() override;
 };

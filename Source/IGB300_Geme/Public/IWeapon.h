@@ -3,9 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EWeaponAnimation.h"
 #include "SWeaponData.h"
-#include "IGB300_Geme/EnemyBase.h"
-#include "IGB300_Geme/IEnemy.h"
 #include "UObject/Interface.h"
 #include "IWeapon.generated.h"
 
@@ -31,4 +30,10 @@ public:
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "IWeapon")
 	bool DamageObject(AActor* enemy, float damage);
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "IWeapon")
+	bool BlockIncomingDamage();
+	
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "IWeapon")
+	UAnimMontage* RetrieveAnimation(EWeaponAnimation selectedAnim);
 };
