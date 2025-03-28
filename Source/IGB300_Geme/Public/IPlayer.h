@@ -36,5 +36,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void Block();
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	bool ApplyDmg(float dmg);
 	
 };
