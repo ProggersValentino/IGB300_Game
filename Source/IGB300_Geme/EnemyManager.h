@@ -38,8 +38,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Members")
 		TMap<int32, FVector> spawnLocations;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Members")
-		TMap<int32, AEnemyBase*> enemies;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Members")
+		TArray<AEnemyBase*> enemies;
 
 	AActor* player;
 
@@ -68,6 +68,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	FVector& ReturnPlayerPos(int32 delay);
 	int32 RegisterEnemy(AEnemyBase*);
-	void DeregisterEnemy(int32 uid);
+	void DeregisterEnemy(AEnemyBase*);
 
 };

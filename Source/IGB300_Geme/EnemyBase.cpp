@@ -54,7 +54,7 @@ void AEnemyBase::Attack_Implementation(){
 	
 }
 void AEnemyBase::Die_Implementation(){
-	enemyManager->DeregisterEnemy(UID);
+	enemyManager->DeregisterEnemy(this);
 	Destroy();
 }
 void AEnemyBase::Damage_Implementation(float amount){
