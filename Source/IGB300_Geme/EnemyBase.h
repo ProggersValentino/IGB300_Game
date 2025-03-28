@@ -4,6 +4,7 @@
 
 #include "IEnemy.h"
 #include "EnemyType.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
@@ -40,7 +41,7 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Members")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
 
 	AEnemyManager* enemyManager;
