@@ -5,8 +5,9 @@
 #include "EnemyManager.h"
 
 void ABasicMeleeEnemy::Move_Implementation() {
-
+	AEnemyBase::Move_Implementation();
 }
+
 void ABasicMeleeEnemy::Attack_Implementation() {
 
 }
@@ -17,8 +18,5 @@ void ABasicMeleeEnemy::BeginPlay() {
 
 void ABasicMeleeEnemy::Tick(float DeltaTime) {
 	AEnemyBase::Tick(DeltaTime);
-	if (enemyManager)
-		targetMovePos = enemyManager->ReturnPlayerPos(0);
-	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, DeltaTime * speed));
 }
 

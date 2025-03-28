@@ -9,7 +9,7 @@ AEnemyBase::AEnemyBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +26,7 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	Move_Implementation();
 }
 
 bool AEnemyBase::CanDoFinisher() {
@@ -34,13 +34,27 @@ bool AEnemyBase::CanDoFinisher() {
 }
 
 void AEnemyBase::Move_Implementation(){
-	
+	// Distance between target move position and position after moving max speed to desired location
+	FVector n = targetMovePos - GetActorLocation();
+	UKismetMathLibrary::Vector_Normalize(n);
+	FVector bestPossiblePos = n * FVector(speed, speed, 0.0f) + GetActorLocation();
+	float a = UKismetMathLibrary::Vector_Distance(bestPossiblePos, targetMovePos);
+
+	// Distance between current location and target position
+	float b = UKismetMathLibrary::Vector_Distance(targetMovePos, GetActorLocation());
+
+	if (a > b) {
+		SetActorLocation(targetMovePos);
+	}
+	else {
+		SetActorLocation(bestPossiblePos);
+	}
 }
 void AEnemyBase::Attack_Implementation(){
 	
 }
 void AEnemyBase::Die_Implementation(){
-	enemyManager->DeregisterEnemy(UID);
+	enemyManager->DeregisterEnemy(this);
 	Destroy();
 }
 void AEnemyBase::Damage_Implementation(float amount){

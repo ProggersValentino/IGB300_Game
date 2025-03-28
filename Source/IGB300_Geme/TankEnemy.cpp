@@ -5,7 +5,7 @@
 #include "EnemyManager.h"
 
 void ATankEnemy::Move_Implementation() {
-
+	AEnemyBase::Move_Implementation();
 }
 
 void ATankEnemy::Attack_Implementation() {
@@ -19,7 +19,4 @@ void ATankEnemy::BeginPlay() {
 
 void ATankEnemy::Tick(float DeltaTime) {
 	AEnemyBase::Tick(DeltaTime);
-	if (enemyManager)
-		targetMovePos = enemyManager->ReturnPlayerPos(9);
-	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, DeltaTime * speed));
 }

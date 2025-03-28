@@ -3,7 +3,7 @@
 #include "EnemyManager.h"
 
 void ABasicRangedEnemy::Move_Implementation() {
-	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, 0.1f * speed));
+	AEnemyBase::Move_Implementation();
 }
 
 void ABasicRangedEnemy::Attack_Implementation() {
@@ -12,7 +12,6 @@ void ABasicRangedEnemy::Attack_Implementation() {
 
 void ABasicRangedEnemy::Tick(float DeltaTime){
   AEnemyBase::Tick(DeltaTime);
-  Move_Implementation();
 }
 void ABasicRangedEnemy::BeginPlay() {
   AEnemyBase::BeginPlay();

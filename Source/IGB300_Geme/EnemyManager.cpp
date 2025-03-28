@@ -58,12 +58,12 @@ FVector& AEnemyManager::ReturnPlayerPos(int32 delay) {
 
 // Register enemy into map and return uid to enemy that called it
 int32 AEnemyManager::RegisterEnemy(AEnemyBase* enemy){
-	enemies.Add(enemyUidToAssign++, enemy);
-	return enemyUidToAssign - 1;
+	enemies.Add(enemy);
+	return enemyUidToAssign++;
 }
 
-void AEnemyManager::DeregisterEnemy(int32 uid){
-	enemies.Remove(uid);
+void AEnemyManager::DeregisterEnemy(AEnemyBase* enemy){
+	enemies.Remove(enemy);
 }
 
 void AEnemyManager::Spawn(int32 spawnIndex) {
