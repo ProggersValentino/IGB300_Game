@@ -1,0 +1,116 @@
+[
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/BasicMeleeEnemy.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicMeleeEnemy.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicMeleeEnemy.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/BasicRangedEnemy.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicRangedEnemy.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicRangedEnemy.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/EnemyBase.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyBase.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyBase.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/EnemyManager.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyManager.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyManager.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/EnemyType.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyType.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyType.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/IEnemy.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IEnemy.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IEnemy.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/IGB300_Geme.init.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IGB300_Geme.init.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IGB300_Geme.init.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/IPlayer.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IPlayer.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IPlayer.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/SpawnLocation.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SpawnLocation.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SpawnLocation.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/TankEnemy.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/TankEnemy.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/TankEnemy.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/BasicMeleeEnemy.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicMeleeEnemy.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicMeleeEnemy.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/BasicRangedEnemy.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicRangedEnemy.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicRangedEnemy.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/EnemyBase.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyBase.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyBase.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/EnemyManager.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyManager.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyManager.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/IEnemy.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IEnemy.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IEnemy.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/IGB300_Geme.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IGB300_Geme.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IGB300_Geme.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/Private/IPlayer.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IPlayer.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IPlayer.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/SpawnLocation.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SpawnLocation.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SpawnLocation.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Game/Source/IGB300_Geme/TankEnemy.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/TankEnemy.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Game/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/TankEnemy.cpp.obj"
+	}
+]
