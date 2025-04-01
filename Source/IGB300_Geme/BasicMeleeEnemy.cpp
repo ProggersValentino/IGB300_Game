@@ -3,6 +3,7 @@
 
 #include "BasicMeleeEnemy.h"
 #include "EnemyManager.h"
+#include "IGB300_Geme/EnemyType.h"
 
 void ABasicMeleeEnemy::Move_Implementation() {
 	AEnemyBase::Move_Implementation();
@@ -20,3 +21,6 @@ void ABasicMeleeEnemy::Tick(float DeltaTime) {
 	AEnemyBase::Tick(DeltaTime);
 }
 
+EEnemyType ABasicMeleeEnemy::IsOfType(){
+	return EEnemyType::ET_Basic;
+}

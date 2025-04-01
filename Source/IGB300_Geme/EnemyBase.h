@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Members")
 	float speed;
 
-	UPROPERTY(EditAnywhere, Category = "Members")
+	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Members")
 	float damage;
 
 	UPROPERTY(EditAnywhere, Category = "Members")
@@ -59,4 +59,6 @@ public:
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
+	UFUNCTION(BlueprintCallable)
+	virtual EEnemyType IsOfType();
 };
