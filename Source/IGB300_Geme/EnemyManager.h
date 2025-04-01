@@ -32,7 +32,7 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
 
-	UPROPERTY(EditAnywhere, Category = "Members")
+	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Members")
 		TArray<FEnemyWave> waves;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Members")
@@ -69,5 +69,7 @@ public:
 	FVector& ReturnPlayerPos(int32 delay);
 	int32 RegisterEnemy(AEnemyBase*);
 	void DeregisterEnemy(AEnemyBase*);
+	UFUNCTION(BlueprintPure)
+	FVector TargetEnemyPositionCalculator(FVector playerPos, FVector enemyPos, FVector ArenaPos, float zoneR, float arenaR) const;
 
 };

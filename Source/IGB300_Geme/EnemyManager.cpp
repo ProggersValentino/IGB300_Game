@@ -3,6 +3,9 @@
 
 #include "EnemyManager.h"
 #include "EnemyBase.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Math/MathFwd.h"
+#include "Math/UnrealMathUtility.h"
 
 
 // Sets default values
@@ -100,3 +103,85 @@ void AEnemyManager::Spawn(int32 spawnIndex) {
 	}
 }
 
+
+
+	FVector AEnemyManager::TargetEnemyPositionCalculator(FVector playerPos, FVector enemyPos, FVector ArenaPos, float zoneR, float arenaR) const{
+		FVector ret = FVector(0.0f, 0.0f, 0.0f);
+
+		// Assume ideal point is inside the arena (edge case is dealt with later)
+		ret.X = playerPos.X +
+		        (enemyPos.X-playerPos.X) *
+		        zoneR /
+						UKismetMathLibrary::Sqrt(
+						  UKismetMathLibrary::Square(enemyPos.X-playerPos.X) +
+						  UKismetMathLibrary::Square(enemyPos.Y-playerPos.Y));
+	
+		ret.Y = playerPos.Y +
+		        (enemyPos.Y-playerPos.Y) *
+						zoneR /
+						UKismetMathLibrary::Sqrt(
+							UKismetMathLibrary::Square(enemyPos.X-playerPos.X)+
+							UKismetMathLibrary::Square(enemyPos.Y-playerPos.Y));
+
+		// Check if ideal position is inside the arena
+		float distToArenaCentre = UKismetMathLibrary::Square(ret.X - ArenaPos.X) +
+		                          UKismetMathLibrary::Square(ret.Y - ArenaPos.Y);
+
+		// Early return if ideal position is in arena
+		if (distToArenaCentre < UKismetMathLibrary::Square(arenaR)){
+			return ret;
+		}
+
+		// Get the quadratic sqrt
+		float q = playerPos.Y *
+		          UKismetMathLibrary::Sqrt(
+		        		( 2 * UKismetMathLibrary::Square(arenaR) * UKismetMathLibrary::Square(playerPos.X) +
+		        		2 * UKismetMathLibrary::Square(arenaR) * UKismetMathLibrary::Square(playerPos.Y) +
+		        		2 * UKismetMathLibrary::Square(arenaR) * UKismetMathLibrary::Square(zoneR) +
+		        		2 * UKismetMathLibrary::Square(zoneR) * UKismetMathLibrary::Square(playerPos.X) +
+		        		2 * UKismetMathLibrary::Square(zoneR) * UKismetMathLibrary::Square(playerPos.Y) 
+		        		) -
+		        		(FMath::Pow(playerPos.X, 4) +
+		        		2 * UKismetMathLibrary::Square(playerPos.X) * UKismetMathLibrary::Square(playerPos.Y) +
+								FMath::Pow(playerPos.X, 4) +
+		        		FMath::Pow(zoneR, 4) +
+								FMath::Pow(arenaR, 4)
+		        	  )
+		        );
+	
+	// Get a->x where the quad is positive
+	float a = (q +
+	          FMath::Pow(playerPos.X, 3) +
+	          playerPos.X * UKismetMathLibrary::Square(arenaR) +
+	          playerPos.X * UKismetMathLibrary::Square(playerPos.Y) -
+	          playerPos.X * UKismetMathLibrary::Square(zoneR)
+	        )/ (2 * UKismetMathLibrary::Square(playerPos.Y) * UKismetMathLibrary::Square(playerPos.X));
+
+	// Get b->x where quad is negative
+	float b = (-q +
+	          FMath::Pow(playerPos.X, 3) +
+	          playerPos.X * UKismetMathLibrary::Square(arenaR) +
+	          playerPos.X * UKismetMathLibrary::Square(playerPos.Y) -
+	          playerPos.X * UKismetMathLibrary::Square(zoneR)
+	        )/ (2 * UKismetMathLibrary::Square(playerPos.Y) * UKismetMathLibrary::Square(playerPos.X));
+
+	// Four Returns one for each quadrant
+	if (playerPos.X * playerPos.Y > 0){
+		if (playerPos.X > 0){
+			ret.X = b;
+			ret.Y = UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(b));
+		} else { 
+			ret.X = b;
+			ret.Y = -UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(b));
+		}
+	} else {
+		if (playerPos.X > 0) {
+			ret.Y = a;
+			ret.Y = -UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(a));
+		}	else {
+			ret.Y = a;
+			ret.Y = UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(a));
+		}
+	}
+		return ret;
+	}
