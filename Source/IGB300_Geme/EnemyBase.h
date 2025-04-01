@@ -59,4 +59,6 @@ public:
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
+	UFUNCTION(BlueprintCallable)
+	virtual EEnemyType IsOfType();
 };

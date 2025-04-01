@@ -3,6 +3,8 @@
 
 #include "EnemyBase.h"
 #include "EnemyManager.h"
+#include "EnemyType.h"
+#include "IGB300_Geme/EnemyType.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -62,5 +64,9 @@ void AEnemyBase::Damage_Implementation(float amount){
 	if (health < 0){
 		Die_Implementation();
 	}
+}
+
+EEnemyType AEnemyBase::IsOfType() {
+	return EEnemyType::ET_Basic;
 }
 
