@@ -80,3 +80,6 @@ Plugins/BlueprintAssist/NodeSizeCache
 # Except the Plugins folder and its contents
 !Plugins/
 !Plugins/**
+
+# Jack Additions
+.cache/
