@@ -59,8 +59,6 @@ void AEnemyBase::GetExecuted_Implementation(UAnimMontage* animation)
 	{
 		instance->Montage_Play(animation); //play montage
 	}
-	
-
 }
 
 void AEnemyBase::Move_Implementation(){
@@ -107,11 +105,12 @@ EEnemyType AEnemyBase::IsOfType() {
 void AEnemyBase::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload)
 {
 	UAnimInstance* instance = FindComponentByClass<USkeletalMeshComponent>()->GetAnimInstance();
-	
+
+	//if the notify state that ended is call "Executed" do this
 	if (NotifyName == "Executed")
 	{
-		Damage_Implementation(200);
-		instance->OnPlayMontageNotifyEnd.RemoveAll(this);
+		Damage_Implementation(200); //damages enemy
+		instance->OnPlayMontageNotifyEnd.RemoveAll(this); //cleanup once done
 	}
 }
 
