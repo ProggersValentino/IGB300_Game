@@ -6,13 +6,14 @@
 #include "EnemyType.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "CoreMinimal.h"
+#include "IFinishable.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
 class AEnemyManager;
 
 UCLASS()
-class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy
+class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy, public IIFinishable
 {
 	GENERATED_BODY()
 	
@@ -41,6 +42,9 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
+	bool canMove;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
 
@@ -59,6 +63,11 @@ public:
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
+	virtual bool CanFinish_Implementation();
+	virtual void GetExecuted_Implementation(UAnimMontage* animation) override;
 	UFUNCTION(BlueprintCallable)
 	virtual EEnemyType IsOfType();
+
+	UFUNCTION()
+	void OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload);
 };

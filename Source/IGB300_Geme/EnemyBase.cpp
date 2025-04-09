@@ -35,7 +35,38 @@ bool AEnemyBase::CanDoFinisher() {
 	return false;
 }
 
+bool AEnemyBase::CanFinish_Implementation()
+{
+	return health < 10; //if health is critical then return true - 10 is just temp number
+}
+
+void AEnemyBase::GetExecuted_Implementation(UAnimMontage* animation)
+{
+	USkeletalMeshComponent* mesh = FindComponentByClass<USkeletalMeshComponent>(); 
+	UAnimInstance* instance = mesh->GetAnimInstance();
+
+	canMove = false;
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *instance->GetName());
+
+	mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	if (!instance || !animation) return; //are our references of instance and animation not null
+
+	instance->OnPlayMontageNotifyEnd.AddDynamic(this, &AEnemyBase::OnNotifyEnd);
+	
+	//if not playing this montage -> play it
+	if (!instance->Montage_IsPlaying(animation))
+	{
+		instance->Montage_Play(animation); //play montage
+	}
+	
+
+}
+
 void AEnemyBase::Move_Implementation(){
+
+	if (!canMove) return; //if the enemy cant move then dont execute below
+	
 	// Distance between target move position and position after moving max speed to desired location
 	FVector n = targetMovePos - GetActorLocation();
 	UKismetMathLibrary::Vector_Normalize(n);
@@ -68,5 +99,19 @@ void AEnemyBase::Damage_Implementation(float amount){
 
 EEnemyType AEnemyBase::IsOfType() {
 	return EEnemyType::ET_Basic;
+}
+
+/// For when we have Montages and we want to execute code when a montage Notify State finishes 
+/// @param NotifyName the name of the Notify State created in the Montage
+/// @param Payload 
+void AEnemyBase::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload)
+{
+	UAnimInstance* instance = FindComponentByClass<USkeletalMeshComponent>()->GetAnimInstance();
+	
+	if (NotifyName == "Executed")
+	{
+		Damage_Implementation(200);
+		instance->OnPlayMontageNotifyEnd.RemoveAll(this);
+	}
 }
 
