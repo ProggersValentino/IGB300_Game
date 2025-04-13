@@ -3,6 +3,7 @@
 
 #include "GAS/GladiatorAttributeSet.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
 
 UGladiatorAttributeSet::UGladiatorAttributeSet()
 {
@@ -25,14 +26,76 @@ void UGladiatorAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 }
 
-void UGladiatorAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	
+	
+	//checks for each attribute -> cannot use switch statement due to the const
+	const FGameplayAttribute& Attribute = Data.EvaluatedData.Attribute;
+
+	if (Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+
+		FString Message = FString::Printf(TEXT("Health: %f"), GetHealth());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+		
+	}
+	else if (Attribute == GetSpeedAttribute())
+	{
+		SetSpeed(FMath::Clamp(GetSpeed(), 0.0f, GetMaxSpeed()));
+	}
+	else if (Attribute == GetBaseDamageAttribute())
+	{
+		SetBaseDamage(FMath::Clamp(GetBaseDamage(), 0.0f, GetMaxBaseDamage()));
+	}
+	else if (Attribute == GetToughnessAttribute())
+	{
+		SetToughness(FMath::Clamp(GetToughness(), 0.0f, GetMaxToughness()));
+	}
+	else if (Attribute == GetGoldAttribute())
+	{
+		SetGold(FMath::Clamp(GetGold(), 0.0f, GetMaxGold()));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Attribute not defined, new value cannot be set"));
+	}
+	
+	
 }
 
 void UGladiatorAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxHealth());
+	}
+	else if (Attribute == GetSpeedAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxSpeed());
+	}
+	else if (Attribute == GetBaseDamageAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxBaseDamage());
+	}
+	else if (Attribute == GetToughnessAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxToughness());
+	}
+	else if (Attribute == GetGoldAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxGold());
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Attribute not defined, no clamping done"));
+	}
+
 }
 
 void UGladiatorAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
