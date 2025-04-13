@@ -23,8 +23,8 @@ AGladiatorBaseChar::AGladiatorBaseChar()
 	//init attribute set
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 
-	/*AttributeSet->Health.SetBaseValue(100.0f);
-	AttributeSet->Health.SetCurrentValue(100.0f);*/
+	AttributeSet->Health.SetBaseValue(100.0f);
+	AttributeSet->Health.SetCurrentValue(100.0f);
 	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), GetHealth())
 	
 }
@@ -35,7 +35,7 @@ float AGladiatorBaseChar::GetHealth() const
 {
 	if (!AttributeSet) return 0.0f;
 
-	return AttributeSet->GetHealth();
+	return AttributeSet->Health.GetCurrentValue();
 }
 
 float AGladiatorBaseChar::GetMaxHealth() const
