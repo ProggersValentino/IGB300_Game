@@ -8,6 +8,11 @@
 #include "AbilitySystemInterface.h"
 #include "GladiatorBaseChar.generated.h"
 
+class UGameplayAbility;
+class UGladiatorAbilitySystemComponent;
+class UGladiatorAttributeSet;
+class UGameplayEffect; //UE recommends init attributes through GameplayEffect
+
 UCLASS()
 class IGB300_GEME_API AGladiatorBaseChar : public ACharacter, public IAbilitySystemInterface
 {
@@ -21,6 +26,8 @@ public:
 	// Sets default values for this character's properties
 	AGladiatorBaseChar();
 
+	virtual UGladiatorAttributeSet* GetAttributeSet() const;
+	
 	UFUNCTION(BlueprintCallable, Category="GladiatorStats")
 	virtual float GetHealth() const;
 
@@ -58,34 +65,36 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UFUNCTION()
+	void GiveDefaultAbilities();
+	
+	UFUNCTION()
+	void InitDefaultAttributes() const;
+
 	UPROPERTY()
-	class UAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
+	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
 
 	UPROPERTY()
 	class UGladiatorAttributeSet* AttributeSet;
 
-	//the level of the gladiator -> should not be changed directly during runtime
-	UPROPERTY(EditAnywhere, Category = "Gladiator Abilities")
-	int32 GladiatorLvl;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category="Gladiator Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gladiator Attributes")
-	TSubclassOf<class UGameplayEffect> DefaultAttributeEffects;
+	TSubclassOf<UGameplayEffect> DefaultAttributeEffects;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Abilities|Debug")
-	TArray<TSubclassOf<class UGameplayAbility>> TestAbilities;
-
-	virtual void SetTestAbilities();
-
-	//if you want to test abilities set this to true
-	UPROPERTY(EditAnywhere, Category = "Gladiator Abilities|Debug")
-	bool enableTestAbilities;
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+private:
+	void InitAbilitySystemComp();
 };

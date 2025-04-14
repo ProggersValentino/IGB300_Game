@@ -2,8 +2,10 @@
 
 
 #include "GladiatorBaseChar.h"
-
 #include "GAS/GladiatorAbilitySystemComponent.h"
+#include "GAS/GladiatorAttributeSet.h"
+#include "Player/GladiatorPlayerState.h"
+
 
 UAbilitySystemComponent* AGladiatorBaseChar::GetAbilitySystemComponent() const
 {
@@ -16,17 +18,13 @@ AGladiatorBaseChar::AGladiatorBaseChar()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//creating ability system comp and setting it to be explicity replicated
-	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetIsReplicated(true);
-
-	//init attribute set
-	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
-
-	AttributeSet->Health.SetBaseValue(100.0f);
-	AttributeSet->Health.SetCurrentValue(100.0f);
-	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), GetHealth())
 	
+	
+}
+
+UGladiatorAttributeSet* AGladiatorBaseChar::GetAttributeSet() const
+{
+	return AttributeSet;
 }
 
 #pragma region AGladiatorAbilitySystemComponent Getters
@@ -121,16 +119,35 @@ void AGladiatorBaseChar::BeginPlay()
 	
 }
 
-void AGladiatorBaseChar::SetTestAbilities()
+void AGladiatorBaseChar::GiveDefaultAbilities()
 {
-	if (!AbilitySystemComponent) return;
+	check(AbilitySystemComponent);
 
-	if (GetLocalRole() == ROLE_Authority)
+	if (!HasAuthority()) return;
+
+	for (TSubclassOf<UGameplayAbility> AbilityClass : DefaultAbilities)
 	{
-		for (TSubclassOf<UGameplayAbility>& TestAbility : TestAbilities)
-		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(TestAbility, 1,INDEX_NONE, this));
-		}
+		const FGameplayAbilitySpec AbilitySpec(AbilityClass, 1); //data surrounding for the ability class
+
+		//give ability to player
+		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+}
+
+void AGladiatorBaseChar::InitDefaultAttributes() const
+{
+	if (!AbilitySystemComponent || !DefaultAttributeEffects) return;
+
+	//applying default attribute effects to the characters ability system component
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext(); 
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffects, 1.f, EffectContext);
+
+	//apply effect spec to character
+	if (NewHandle.IsValid())
+	{
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
 	}
 }
 
@@ -148,29 +165,39 @@ void AGladiatorBaseChar::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 }
 
+/// Initializing the Ability system comp on the player character through extracting from the player state
+void AGladiatorBaseChar::InitAbilitySystemComp()
+{
+	AGladiatorPlayerState* playerState = GetPlayerState<AGladiatorPlayerState>(); //we initializing the AbilitySystemComp on the player state therefore we need to get access to it
+
+	check(playerState); //can we safely dereference the pointer? 
+
+	AbilitySystemComponent = CastChecked<UGladiatorAbilitySystemComponent>(
+		playerState->GetAbilitySystemComponent());
+
+	AbilitySystemComponent->InitAbilityActorInfo(playerState, this);
+
+	AttributeSet = playerState->GetAttributeSet();
+}
+
 void AGladiatorBaseChar::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController); //call to parent implementation
 
+	InitAbilitySystemComp();
+	InitDefaultAttributes();
+	
 	if (!AbilitySystemComponent) return;
 
-	if (enableTestAbilities) SetTestAbilities(); //sets up for testing grounds
+	GiveDefaultAbilities();
+	
+}
 
-	
-	
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	
-	//applying default attribute effects to the characters ability system component
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext(); 
-	EffectContext.AddSourceObject(this);
-	
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffects, 1, EffectContext);
+void AGladiatorBaseChar::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
 
-	if (NewHandle.IsValid())
-	{
-		FActiveGameplayEffectHandle activeHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
-	}
-
-	
+	InitAbilitySystemComp();
+	InitDefaultAttributes();
 }
 

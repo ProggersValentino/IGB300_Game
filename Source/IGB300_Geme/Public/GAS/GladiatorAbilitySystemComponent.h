@@ -13,5 +13,6 @@ UCLASS()
 class IGB300_GEME_API UGladiatorAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+	UGladiatorAbilitySystemComponent();
 	
 };

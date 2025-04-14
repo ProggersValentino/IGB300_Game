@@ -76,34 +76,34 @@ public:
 
 	//Replication Functions ------
 	UFUNCTION()
-	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
+	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
-	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 
 	UFUNCTION()
-	virtual void OnRep_Speed(const FGameplayAttributeData& OldSpeed);
+	virtual void OnRep_Speed(const FGameplayAttributeData& OldSpeed) const;
 
 	UFUNCTION()
-	virtual void OnRep_MaxSpeed(const FGameplayAttributeData& OldMaxSpeed);
+	virtual void OnRep_MaxSpeed(const FGameplayAttributeData& OldMaxSpeed) const;
 
 	UFUNCTION()
-	virtual void OnRep_BaseDamage(const FGameplayAttributeData& OldBaseDamage);
+	virtual void OnRep_BaseDamage(const FGameplayAttributeData& OldBaseDamage) const;
 
 	UFUNCTION()
-	virtual void OnRep_MaxBaseDamage(const FGameplayAttributeData& OldMaxBaseDamage);
+	virtual void OnRep_MaxBaseDamage(const FGameplayAttributeData& OldMaxBaseDamage) const;
 
 	UFUNCTION()
-	virtual void OnRep_Toughness(const FGameplayAttributeData& OldToughness);
+	virtual void OnRep_Toughness(const FGameplayAttributeData& OldToughness) const;
 
 	UFUNCTION()
-	virtual void OnRep_MaxToughness(const FGameplayAttributeData& OldMaxToughness);
+	virtual void OnRep_MaxToughness(const FGameplayAttributeData& OldMaxToughness) const;
 
 	UFUNCTION()
-	virtual void OnRep_Gold(const FGameplayAttributeData& OldHealth);
+	virtual void OnRep_Gold(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
-	virtual void OnRep_MaxGold(const FGameplayAttributeData& OldMaxGold);
+	virtual void OnRep_MaxGold(const FGameplayAttributeData& OldMaxGold) const;
 
 	
 };

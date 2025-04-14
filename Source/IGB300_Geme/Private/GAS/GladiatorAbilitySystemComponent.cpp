@@ -3,3 +3,9 @@
 
 #include "GAS/GladiatorAbilitySystemComponent.h"
 
+UGladiatorAbilitySystemComponent::UGladiatorAbilitySystemComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicated(true);
+}
