@@ -6,6 +6,8 @@
 #include "EnemyType.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "CoreMinimal.h"
+#include "GladiatorBaseChar.h"
+
 #include "IFinishable.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
@@ -13,7 +15,7 @@
 class AEnemyManager;
 
 UCLASS()
-class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy, public IIFinishable
+class IGB300_GEME_API AEnemyBase : public AGladiatorBaseChar, public IIEnemy, public IIFinishable
 {
 	GENERATED_BODY()
 	

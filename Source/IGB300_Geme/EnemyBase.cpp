@@ -4,20 +4,35 @@
 #include "EnemyBase.h"
 #include "EnemyManager.h"
 #include "EnemyType.h"
+#include "GAS/GladiatorAbilitySystemComponent.h"
+#include "GAS/GladiatorAttributeSet.h"
 #include "IGB300_Geme/EnemyType.h"
+#include "UObject/ReferenceChainSearch.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
 
 // Called when the game starts or when spawned
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//ability setup releated
+	AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
+	GiveDefaultAbilities();
+	InitDefaultAttributes();
+	
 	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (enemyManAct)
 		enemyManager = Cast<AEnemyManager>(enemyManAct);

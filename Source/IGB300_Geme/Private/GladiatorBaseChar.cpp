@@ -114,9 +114,6 @@ bool AGladiatorBaseChar::activateAbilitiesWithTag(FGameplayTagContainer abilityT
 void AGladiatorBaseChar::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
-	
 }
 
 void AGladiatorBaseChar::GiveDefaultAbilities()
@@ -148,6 +145,15 @@ void AGladiatorBaseChar::InitDefaultAttributes() const
 	if (NewHandle.IsValid())
 	{
 		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
+
+		/*FString Message = FString::Printf(TEXT("new handle was valid"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, Message);*/
+
+	}
+	else
+	{
+		FString Message = FString::Printf(TEXT("new handle was not valid"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, Message);
 	}
 }
 
@@ -165,39 +171,6 @@ void AGladiatorBaseChar::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 }
 
-/// Initializing the Ability system comp on the player character through extracting from the player state
-void AGladiatorBaseChar::InitAbilitySystemComp()
-{
-	AGladiatorPlayerState* playerState = GetPlayerState<AGladiatorPlayerState>(); //we initializing the AbilitySystemComp on the player state therefore we need to get access to it
 
-	check(playerState); //can we safely dereference the pointer? 
 
-	AbilitySystemComponent = CastChecked<UGladiatorAbilitySystemComponent>(
-		playerState->GetAbilitySystemComponent());
-
-	AbilitySystemComponent->InitAbilityActorInfo(playerState, this);
-
-	AttributeSet = playerState->GetAttributeSet();
-}
-
-void AGladiatorBaseChar::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController); //call to parent implementation
-
-	InitAbilitySystemComp();
-	InitDefaultAttributes();
-	
-	if (!AbilitySystemComponent) return;
-
-	GiveDefaultAbilities();
-	
-}
-
-void AGladiatorBaseChar::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	InitAbilitySystemComp();
-	InitDefaultAttributes();
-}
 

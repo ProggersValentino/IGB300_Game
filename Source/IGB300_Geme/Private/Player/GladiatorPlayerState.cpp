@@ -19,10 +19,10 @@ AGladiatorPlayerState::AGladiatorPlayerState()
 {
 	NetUpdateFrequency = 100.f; //default value to low and may cause lag thus we bump up update frequency to 100 per second
 
+	//init attribute set
+	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
+	
 	//creating ability system comp and setting it to be explicity replicated
 	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	//init attribute set
-	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }

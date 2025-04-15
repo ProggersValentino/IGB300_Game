@@ -69,8 +69,8 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 
-		FString Message = FString::Printf(TEXT("Health: %f"), GetHealth());
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+		/*FString Message = FString::Printf(TEXT("Health: %f"), GetHealth());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);*/
 		
 	}
 	else if (Data.EvaluatedData.Attribute == GetSpeedAttribute())

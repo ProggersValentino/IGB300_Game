@@ -65,11 +65,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UFUNCTION()
-	void GiveDefaultAbilities();
 	
-	UFUNCTION()
-	void InitDefaultAttributes() const;
 
 	UPROPERTY()
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
@@ -92,9 +88,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_PlayerState() override;
-
-private:
-	void InitAbilitySystemComp();
+	UFUNCTION()
+	void GiveDefaultAbilities();
+	
+	UFUNCTION()
+	void InitDefaultAttributes() const;
 };
