@@ -53,6 +53,7 @@ void UGladiatorAttributeSet::PreAttributeChange(const FGameplayAttribute& Attrib
 		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxGold());
 	}
 	
+	
 }
 
 ///Here is where the actual values will be commited to the                               
@@ -89,7 +90,15 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 	{
 		SetGold(FMath::Clamp(GetGold(), 0.0f, GetMaxGold()));
 	}
-	
+
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{	
+		float newHealth = GetHealth() - GetDamage();
+		SetDamage(0.f); //resetting damage to 0 to ensure it wont poision any future damage calculations
+		
+		//apply damage
+		SetHealth(FMath::Clamp(newHealth, 0.0f, GetMaxHealth()));
+	}
 	
 	
 }

@@ -74,6 +74,10 @@ public:
 	FGameplayAttributeData MaxGold;
 	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, MaxGold)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Meta GladiatorStats")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, Damage)
+
 	//Replication Functions ------
 	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth) const;

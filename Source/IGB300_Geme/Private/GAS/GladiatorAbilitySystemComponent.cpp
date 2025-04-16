@@ -9,3 +9,9 @@ UGladiatorAbilitySystemComponent::UGladiatorAbilitySystemComponent()
 
 	SetIsReplicated(true);
 }
+
+void UGladiatorAbilitySystemComponent::ReiceveDamage(UGladiatorAbilitySystemComponent* SourceASC,
+	float UnmitigatedDamage, float MitigatedDamage)
+{
+	RecieveDamage.Broadcast(SourceASC,UnmitigatedDamage,MitigatedDamage);
+}
