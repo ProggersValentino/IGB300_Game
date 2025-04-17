@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayEffectTypes.h"
+#include "GameplayTagContainer.h"
 #include "GladiatorPlayerState.generated.h"
 
 /**
@@ -17,19 +19,35 @@ class UGladiatorAttributeSet;
 UCLASS()
 class IGB300_GEME_API AGladiatorPlayerState : public APlayerState, public IAbilitySystemInterface
 {
+	GENERATED_BODY()
+	
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UGladiatorAttributeSet* GetAttributeSet() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
+	float GetHealth() const;
+
+	FGameplayTag DeathTag;
+
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY()
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent;
 
 	UPROPERTY()
 	UGladiatorAttributeSet* AttributeSet;
+	
+	FDelegateHandle HealthChangedDelegate;
 
+	//attribute change callbacks
+	virtual void HealthChanged(const FOnAttributeChangeData& Data);
+
+	bool IsAlive() const;
+
+	
 
 private:
-	GENERATED_BODY()
 	AGladiatorPlayerState();
 };

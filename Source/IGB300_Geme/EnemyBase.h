@@ -7,7 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "CoreMinimal.h"
 #include "GladiatorBaseChar.h"
-
+#include "GameplayEffectTypes.h"
 #include "IFinishable.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
@@ -60,7 +60,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Die_Implementation();
 	virtual void Attack_Implementation();
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
@@ -69,6 +68,10 @@ public:
 	virtual void GetExecuted_Implementation(UAnimMontage* animation) override;
 	UFUNCTION(BlueprintCallable)
 	virtual EEnemyType IsOfType();
+
+	FDelegateHandle HealthChangeDelegate;
+
+	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 	UFUNCTION()
 	void OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload);

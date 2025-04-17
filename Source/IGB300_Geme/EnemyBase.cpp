@@ -4,6 +4,7 @@
 #include "EnemyBase.h"
 #include "EnemyManager.h"
 #include "EnemyType.h"
+#include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "IGB300_Geme/EnemyType.h"
@@ -32,6 +33,9 @@ void AEnemyBase::BeginPlay()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
 	GiveDefaultAbilities();
 	InitDefaultAttributes();
+
+	//binding to the health attribute so when it changes the function gets called
+	HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
 	
 	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	if (enemyManAct)
@@ -99,19 +103,29 @@ void AEnemyBase::Move_Implementation(){
 void AEnemyBase::Attack_Implementation(){
 	
 }
-void AEnemyBase::Die_Implementation(){
-	enemyManager->DeregisterEnemy(this);
-	Destroy();
-}
+
 void AEnemyBase::Damage_Implementation(float amount){
 	health -= amount;
 	if (health < 0){
-		Die_Implementation();
+		//Die_Implementation();
 	}
 }
 
 EEnemyType AEnemyBase::IsOfType() {
 	return EEnemyType::ET_Basic;
+}
+
+void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
+{
+
+	//kill enemy
+	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
+	{
+		enemyManager->DeregisterEnemy(this);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
+		Die();
+	}
 }
 
 /// For when we have Montages and we want to execute code when a montage Notify State finishes 

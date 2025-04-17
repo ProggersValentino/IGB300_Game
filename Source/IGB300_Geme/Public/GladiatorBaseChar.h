@@ -62,6 +62,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
 	bool activateAbilitiesWithTag(FGameplayTagContainer abilityTag, bool AllowRemoteActivation = true);
 	
+	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
+	bool IsAlive();
+	
+	UFUNCTION()
+	void Die();
+
+	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
+	void DeathCleanup();
+
+	UPROPERTY()
+	FGameplayTag DeathTag;
+
+	UPROPERTY()
+	UAnimMontage* DeathMontage;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -90,6 +105,9 @@ public:
 
 	UFUNCTION()
 	void GiveDefaultAbilities();
+
+	UFUNCTION()
+	void RemoveAbilities() const;
 	
 	UFUNCTION()
 	void InitDefaultAttributes() const;

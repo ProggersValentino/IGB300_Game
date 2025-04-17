@@ -2,6 +2,8 @@
 
 
 #include "GladiatorBaseChar.h"
+
+#include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "Player/GladiatorPlayerState.h"
@@ -18,7 +20,7 @@ AGladiatorBaseChar::AGladiatorBaseChar()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	
+	DeathTag = FGameplayTag::RequestGameplayTag("State.Death");
 	
 }
 
@@ -106,9 +108,36 @@ bool AGladiatorBaseChar::activateAbilitiesWithTag(FGameplayTagContainer abilityT
 	return AbilitySystemComponent->TryActivateAbilitiesByTag(abilityTag, AllowRemoteActivation);
 }
 
-
 #pragma endregion
 
+bool AGladiatorBaseChar::IsAlive()
+{
+	return GetHealth() > 0.0f;
+}
+
+//Kill character, if its the player then it will be called on the player state (server) otherwise will be called directly on the actor
+void AGladiatorBaseChar::Die()
+{
+	//RemoveAbilities();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (AbilitySystemComponent->IsValidLowLevel())
+	{
+		AbilitySystemComponent->CancelAbilities();
+		FGameplayTagContainer EffectTagsToRemove;
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeathTag); //applies to actor while still active and is not permantely registered on the ASC
+	}
+
+	if (DeathMontage) PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
+	else DeathCleanup();
+}
+
+void AGladiatorBaseChar::DeathCleanup()
+{
+	Destroy();
+}
 
 // Called when the game starts or when spawned
 void AGladiatorBaseChar::BeginPlay()
@@ -128,6 +157,26 @@ void AGladiatorBaseChar::GiveDefaultAbilities()
 
 		//give ability to player
 		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+}
+
+void AGladiatorBaseChar::RemoveAbilities() const
+{
+	if (!HasAuthority() || AbilitySystemComponent->IsValidLowLevel()) return;
+
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+	{
+		if (Spec.SourceObject == this && DefaultAbilities.Contains(Spec.SourceObject->GetClass()))
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
+	}
+
+	//remove abilities from the player's dead body
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); ++i)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
 	}
 }
 
