@@ -32,6 +32,8 @@ void AGladiatorPlayerState::BeginPlay()
 void AGladiatorPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	AGladiatorPlayerChar* Player = Cast<AGladiatorPlayerChar>(GetPawn()); //getting the player
+
+	if (!Player) return; //prevents Die function from being called post death of player (when it gets deleted) which will most certainly cause UE to crash 
 	
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
@@ -55,7 +57,7 @@ AGladiatorPlayerState::AGladiatorPlayerState()
 	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	DeathTag = FGameplayTag::RequestGameplayTag("State.Death");
+	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
 }
 
 

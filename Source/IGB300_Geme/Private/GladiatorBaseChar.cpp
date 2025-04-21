@@ -20,7 +20,7 @@ AGladiatorBaseChar::AGladiatorBaseChar()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DeathTag = FGameplayTag::RequestGameplayTag("State.Death");
+	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
 	
 }
 
@@ -118,7 +118,7 @@ bool AGladiatorBaseChar::IsAlive()
 //Kill character, if its the player then it will be called on the player state (server) otherwise will be called directly on the actor
 void AGladiatorBaseChar::Die()
 {
-	//RemoveAbilities();
+	RemoveAbilities();
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
