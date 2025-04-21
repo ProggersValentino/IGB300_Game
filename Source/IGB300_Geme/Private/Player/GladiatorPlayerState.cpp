@@ -2,9 +2,12 @@
 
 
 #include "Player/GladiatorPlayerState.h"
+
+#include "Blueprint/UserWidget.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "Player/GladiatorPlayerChar.h"
+#include "UI/GladiatorHUDBase.h"
 
 UAbilitySystemComponent* AGladiatorPlayerState::GetAbilitySystemComponent() const
 {
@@ -38,6 +41,13 @@ void AGladiatorPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
 		Player->Die();
+		//get HUD to display restart
+		AGladiatorHUDBase* HUD = Cast<AGladiatorHUDBase>(GetPlayerController()->GetHUD());
+
+		check(HUD);
+
+		//spawn Death UI
+		HUD->Death();
 	}
 }
 
