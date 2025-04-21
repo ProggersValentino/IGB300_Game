@@ -6,13 +6,16 @@
 #include "EnemyType.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "CoreMinimal.h"
+#include "GladiatorBaseChar.h"
+#include "GameplayEffectTypes.h"
+#include "IFinishable.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.generated.h"
 
 class AEnemyManager;
 
 UCLASS()
-class IGB300_GEME_API AEnemyBase : public AActor, public IIEnemy
+class IGB300_GEME_API AEnemyBase : public AGladiatorBaseChar, public IIEnemy, public IIFinishable
 {
 	GENERATED_BODY()
 	
@@ -41,6 +44,9 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
+	bool canMove;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
 
@@ -54,11 +60,19 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void Die_Implementation();
 	virtual void Attack_Implementation();
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
 	virtual bool CanDoFinisher();
+	virtual bool CanFinish_Implementation();
+	virtual void GetExecuted_Implementation(UAnimMontage* animation) override;
 	UFUNCTION(BlueprintCallable)
 	virtual EEnemyType IsOfType();
+
+	FDelegateHandle HealthChangeDelegate;
+
+	virtual void HealthChanged(const FOnAttributeChangeData& Data);
+
+	UFUNCTION()
+	void OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload);
 };
