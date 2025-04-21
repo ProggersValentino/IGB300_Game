@@ -20,6 +20,12 @@ public:
 	UFUNCTION()
 	void Init();
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> DeathUIClass;
+	
+	UFUNCTION()
+	void Death();
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGladiatorAttributeWidget> AttributeWidgetClass;
@@ -27,4 +33,6 @@ protected:
 private:
 	UPROPERTY()
 	UGladiatorAttributeWidget* AttributeWidget;
+	UPROPERTY()
+	UUserWidget* DeathWidget;
 };

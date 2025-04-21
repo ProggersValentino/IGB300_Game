@@ -2,9 +2,12 @@
 
 
 #include "Player/GladiatorPlayerState.h"
+
+#include "Blueprint/UserWidget.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "Player/GladiatorPlayerChar.h"
+#include "UI/GladiatorHUDBase.h"
 
 UAbilitySystemComponent* AGladiatorPlayerState::GetAbilitySystemComponent() const
 {
@@ -32,10 +35,19 @@ void AGladiatorPlayerState::BeginPlay()
 void AGladiatorPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	AGladiatorPlayerChar* Player = Cast<AGladiatorPlayerChar>(GetPawn()); //getting the player
+
+	if (!Player) return; //prevents Die function from being called post death of player (when it gets deleted) which will most certainly cause UE to crash 
 	
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
 		Player->Die();
+		//get HUD to display restart
+		AGladiatorHUDBase* HUD = Cast<AGladiatorHUDBase>(GetPlayerController()->GetHUD());
+
+		check(HUD);
+
+		//spawn Death UI
+		HUD->Death();
 	}
 }
 
@@ -55,7 +67,7 @@ AGladiatorPlayerState::AGladiatorPlayerState()
 	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
-	DeathTag = FGameplayTag::RequestGameplayTag("State.Death");
+	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
 }
 
 

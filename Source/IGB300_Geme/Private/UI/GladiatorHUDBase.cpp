@@ -12,3 +12,9 @@ void AGladiatorHUDBase::Init()
 	AttributeWidget->AddToViewport(); //adds to the view port of the player
 	
 }
+
+void AGladiatorHUDBase::Death()
+{
+	DeathWidget = CreateWidget<UUserWidget>(GetOwningPlayerController(), DeathUIClass);
+	DeathWidget->AddToViewport();
+}
