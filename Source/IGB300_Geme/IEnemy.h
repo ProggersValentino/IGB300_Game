@@ -28,6 +28,4 @@ public:
 		void Move();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void Damage(float amount);
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-		void Die();
 };
