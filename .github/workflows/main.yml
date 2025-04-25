@@ -13,14 +13,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Print Start Message
-        run: echo "Example Workflow Starting"
-
       - name: Run check-uproject.bat
         run: Actions\check-uproject.bat
 
-      - name: The job has failed
+      - name: Uproject Check Failure
         if: ${{ failure() }}
         run: gh pr close ${{github.event.pull_request.number}} --comment "Could Not Find *.uproject file"
         env:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Run plugins-checker.bat
+        if: ${{ success() }}
+        run: Actions\plugins-checker.bat
+
+      - name: Plugin Check Failure
+        if: ${{ failure() }}
+        run: gh pr close ${{github.event.pull_request.number}} --comment "Error Missing Plugins"
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      
