@@ -1,7 +1,10 @@
 name: Example Workflow
 
 on: 
-  push:
+  pull_request:
+    types: [opened]
+
+permissions: write-all
 
 jobs:
   ExampleWorkflow:
@@ -15,3 +18,9 @@ jobs:
 
       - name: Run check-uproject.bat
         run: Actions\check-uproject.bat
+
+      - name: The job has failed
+        if: ${{ failure() }}
+        run: gh pr close ${{github.event.pull_request.number}} --comment "Tests Failed"
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
