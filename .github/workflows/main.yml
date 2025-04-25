@@ -1,0 +1,17 @@
+name: Example Workflow
+
+on: 
+  push:
+
+jobs:
+  ExampleWorkflow:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Print Start Message
+        run: echo "Example Workflow Starting"
+
+      - name: Run check-uproject.bat
+        run: Actions\check-uproject.bat
