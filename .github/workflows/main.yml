@@ -2,9 +2,6 @@ on: push
 jobs:
   ExampleWorkflow:
     runs-on: windows-latest
-    defaults:
-      run: 
-        working-directory: Actions
     steps:
     - run: echo "Example Workflow Starting"
-    - run: check-uproject.bat
+    - run: Actions/check-uproject.bat
