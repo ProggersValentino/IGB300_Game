@@ -4,7 +4,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run: 
-        working-directory: Actions
+        working-directory: Actions\
     steps:
     - run: echo "Example Workflow Starting"
     - run: check-uproject.bat
