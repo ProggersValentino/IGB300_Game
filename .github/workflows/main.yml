@@ -16,3 +16,7 @@ jobs:
 
       - name: Run check-uproject.bat
         run: Actions\check-uproject.bat
+
+      - name: The job has failed
+        if: ${{ failure() }}
+        run: gh pr close {github.event.pull_request.number}
