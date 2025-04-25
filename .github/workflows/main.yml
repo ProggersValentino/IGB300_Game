@@ -1,7 +1,8 @@
 name: Example Workflow
 
 on: 
-  push:
+  pull_request:
+    types: [opened]
 
 jobs:
   ExampleWorkflow:
