@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [opened]
 
+permissions: write-all
+
 jobs:
   ExampleWorkflow:
     runs-on: windows-latest
