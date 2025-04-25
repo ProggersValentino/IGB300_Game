@@ -61,7 +61,7 @@ func main() {
 
 	for i, a := range args {
 		if !slices.Contains(pluginNames, a) && i != 0 {
-			log.Fatal(a + " has been deleted")
+			panic(err)
 		}
 	}
 }
