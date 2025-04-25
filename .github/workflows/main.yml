@@ -19,4 +19,4 @@ jobs:
 
       - name: The job has failed
         if: ${{ failure() }}
-        run: gh pr close {github.event.pull_request.number}
+        run: gh pr close ${{github.event.pull_request.number}} --comment "Tests Failed"
