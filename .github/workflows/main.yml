@@ -20,3 +20,5 @@ jobs:
       - name: The job has failed
         if: ${{ failure() }}
         run: gh pr close ${{github.event.pull_request.number}} --comment "Tests Failed"
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
