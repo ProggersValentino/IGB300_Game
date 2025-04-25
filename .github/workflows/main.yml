@@ -1,7 +1,10 @@
 on: push
 jobs:
   ExampleWorkflow:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run: 
+        working-directory: ./Actions
     steps:
     - run: echo "Example Workflow Starting"
-    
+    - run: check-uproject.bat
