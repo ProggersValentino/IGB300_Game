@@ -2,8 +2,14 @@
 
 
 #include "BasicMeleeEnemy.h"
+#include "EnemyManager.h"
+#include "IGB300_Geme/EnemyType.h"
 
-void ABasicMeleeEnemy::Move() {
+void ABasicMeleeEnemy::Move_Implementation() {
+	AEnemyBase::Move_Implementation();
+}
+
+void ABasicMeleeEnemy::Attack_Implementation() {
 
 }
 
@@ -12,7 +18,9 @@ void ABasicMeleeEnemy::BeginPlay() {
 }
 
 void ABasicMeleeEnemy::Tick(float DeltaTime) {
-	targetMovePos = enemyManager->ReturnPlayerPos(0);
-	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, DeltaTime * speed));
+	AEnemyBase::Tick(DeltaTime);
 }
 
+EEnemyType ABasicMeleeEnemy::IsOfType(){
+	return EEnemyType::ET_Basic;
+}
