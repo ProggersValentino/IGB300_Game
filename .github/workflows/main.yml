@@ -1,7 +1,7 @@
 name: Example Workflow
 
 on: 
-  push:
+  pull-request:
 
 jobs:
   ExampleWorkflow:
