@@ -1,0 +1,7 @@
+on: push
+jobs:
+  ExampleWorkflow:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Example Workflow Starting"
+    
