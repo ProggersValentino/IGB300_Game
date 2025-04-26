@@ -15,7 +15,7 @@
 
 
 /**
- * 
+ * Holds all the attributes we want to store for all characters from player to enemy
  */
 UCLASS()
 class IGB300_GEME_API UGladiatorAttributeSet : public UAttributeSet

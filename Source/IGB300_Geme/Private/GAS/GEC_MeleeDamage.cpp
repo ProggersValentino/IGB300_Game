@@ -2,6 +2,8 @@
 
 
 #include "GAS/GEC_MeleeDamage.h"
+
+#include "GAS/FGladiatorGameplayEffectContext.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 
@@ -85,14 +87,26 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	//Damage calculation
 	float UnMitigatedDamage = baseDamage;
 
-	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01);
+	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01); 
 
 	UE_LOG(LogTemp, Warning, TEXT("Total Damage Calc: %f"), MitigatedDamage);
 	
 	if (MitigatedDamage > 0.f)
 	{
-		//setting the Target's damage meta attribute that will impact its health upon recieving it
+		//setting the Target's damage meta attribute that will impact its health upon recieving it -> the final health calc is handled in the Gladiator attribute class
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UGladiatorAttributeSet::GetDamageAttribute(), EGameplayModOp::Additive, MitigatedDamage));
+
+		//is the current context our custom context created
+		if (FGladiatorGameplayEffectContext* context = static_cast<FGladiatorGameplayEffectContext*>(Spec.GetContext().Get()))
+		{
+			context->Data_Damage = MitigatedDamage; //set custom context's data to the final calculated dmg
+		
+			UE_LOG(LogTemp, Warning, TEXT("Context is: %s"), *context->ToString());
+			UE_LOG(LogTemp, Warning, TEXT("Context is: %f"), context->Data_Damage);
+			
+		}
+		else UE_LOG(LogTemp, Warning, TEXT("Context failed cast"));
+		
 	}
 	
 }

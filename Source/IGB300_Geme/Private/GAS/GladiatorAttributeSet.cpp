@@ -7,7 +7,7 @@
 
 UGladiatorAttributeSet::UGladiatorAttributeSet()
 {
-	InitHealth(80.f);
+	//InitHealth(80.f);
 }
 
 void UGladiatorAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
