@@ -20,5 +20,7 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float GloryPercent;
-	
+
+	UPROPERTY(BlueprintReadOnly)
+	FString GloryText;
 };

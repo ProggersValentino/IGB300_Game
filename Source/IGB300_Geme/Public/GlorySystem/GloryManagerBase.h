@@ -59,6 +59,10 @@ public:
 	UFUNCTION()
 	void InitDefaultAttributes() const;
 
+	//Increase the overall level of the Glory 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Level And XP")
+	bool IncreaseLevel(int AddLevel) __override;
+
 	FDelegateHandle OnGloryChangedDelegate;
 
 	virtual void GloryChanged(const FOnAttributeChangeData& Data);
