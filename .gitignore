@@ -27,7 +27,8 @@
 
 # Executables
 *.exe
-!Tools/*.exe
+!Tools/*/*.exe
+!*.mod
 *.out
 *.app
 *.ipa

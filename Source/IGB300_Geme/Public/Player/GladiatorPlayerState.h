@@ -10,7 +10,7 @@
 #include "GladiatorPlayerState.generated.h"
 
 /**
- * The purpose of this is to house the ability system component and Attributes that will be passed down to characters that extract its values from here
+ * The purpose of this is to house the ability system component and Attributes that will be passed down to the player which will extract its values from here
  */
 
 class UGladiatorAbilitySystemComponent; //forward declaration of the class ability system
@@ -28,6 +28,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
 	float GetHealth() const;
 
+	//the tag temporally apply to the player when it dies -> this has potential to create instances of death effects when it changes to this tag
 	FGameplayTag DeathTag;
 
 protected:
@@ -41,7 +42,7 @@ protected:
 	
 	FDelegateHandle HealthChangedDelegate;
 
-	//attribute change callbacks
+	//attribute change callbacks -> whenever the health changes this will be called 
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 	bool IsAlive() const;

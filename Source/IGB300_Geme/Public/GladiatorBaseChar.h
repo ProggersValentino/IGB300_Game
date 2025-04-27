@@ -8,6 +8,12 @@
 #include "AbilitySystemInterface.h"
 #include "GladiatorBaseChar.generated.h"
 
+/*
+ * The purpose of this class is to be the base class for all future characters from different types player's to enemies
+ *
+ * It holds the foundational functions, variables and Utility functions that every new character created will need to function properly 
+*/
+
 class UGameplayAbility;
 class UGladiatorAbilitySystemComponent;
 class UGladiatorAttributeSet;
