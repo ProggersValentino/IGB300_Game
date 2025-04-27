@@ -2,8 +2,6 @@
 
 
 #include "UI/GloryAttributeWidget.h"
-
-#include "ToolBuilderUtil.h"
 #include "GlorySystem/GloryManagerBase.h"
 #include "Kismet/GameplayStatics.h"
 
