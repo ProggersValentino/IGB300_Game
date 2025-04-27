@@ -8,6 +8,7 @@
 void AGladiatorHUDBase::Init()
 {
 	AttributeWidget = CreateWidget<UGladiatorAttributeWidget>(GetOwningPlayerController(), AttributeWidgetClass); //creating a new widget
+	
 	AttributeWidget->BindToAttributes();//binding the attributes to the widget 
 	AttributeWidget->AddToViewport(); //adds to the view port of the player
 	

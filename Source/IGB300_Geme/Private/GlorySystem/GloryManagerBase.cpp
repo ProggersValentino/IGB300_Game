@@ -11,6 +11,11 @@ UAbilitySystemComponent* AGloryManagerBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UGloryAttributeSet* AGloryManagerBase::GetGloryAttributeSet() const
+{
+	return GloryAttributeSet;
+}
+
 // Sets default values
 AGloryManagerBase::AGloryManagerBase()
 {

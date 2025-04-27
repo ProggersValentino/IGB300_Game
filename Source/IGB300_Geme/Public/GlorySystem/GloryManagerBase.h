@@ -19,6 +19,7 @@ class IGB300_GEME_API AGloryManagerBase : public AActor, public IAbilitySystemIn
 {
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UGloryAttributeSet* GetGloryAttributeSet() const;
 
 private:
 	GENERATED_BODY()

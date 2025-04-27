@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GloryAttributeWidget.h"
 #include "GameFramework/HUD.h"
 #include "GladiatorHUDBase.generated.h"
 
@@ -30,9 +31,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGladiatorAttributeWidget> AttributeWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGloryAttributeWidget> GloryAttributeWidgetClass;
+
 private:
 	UPROPERTY()
 	UGladiatorAttributeWidget* AttributeWidget;
+	UPROPERTY()
+	UGloryAttributeWidget* GloryAttributeWidget;
+	
 	UPROPERTY()
 	UUserWidget* DeathWidget;
 };
