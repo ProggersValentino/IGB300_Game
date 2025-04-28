@@ -1,7 +1,34 @@
-on: push
+name: Example Workflow
+
+on: 
+  pull_request:
+    types: [opened]
+
+permissions: write-all
+
 jobs:
   ExampleWorkflow:
     runs-on: windows-latest
     steps:
-    - run: echo "Example Workflow Starting"
-    - run: "Actions/check-uproject.bat"
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run check-uproject.bat
+        run: Actions\check-uproject.bat
+
+      - name: Uproject Check Failure
+        if: ${{ failure() }}
+        run: gh pr close ${{github.event.pull_request.number}} --comment "Could Not Find *.uproject file"
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Run plugins-checker.bat
+        if: ${{ success() }}
+        run: Actions\plugins-checker.bat
+
+      - name: Plugin Check Failure
+        if: ${{ failure() }}
+        run: gh pr close ${{github.event.pull_request.number}} --comment "Error Missing Plugins"
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      

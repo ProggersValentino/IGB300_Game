@@ -1,0 +1,5 @@
+# File to information required to generate compile-commands.json
+UnrealPath = 'C:\apps\unreal\'
+UnrealVersion = '5.4'
+ProjectName = 'IGB300_Geme'
+ProjectPath = 'C:\dev\IGB300_Game\'

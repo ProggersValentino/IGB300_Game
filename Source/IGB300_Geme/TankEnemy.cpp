@@ -2,16 +2,26 @@
 
 
 #include "TankEnemy.h"
+#include "EnemyManager.h"
+#include "IGB300_Geme/EnemyType.h"
 
-void ATankEnemy::Move() {
+void ATankEnemy::Move_Implementation() {
+	AEnemyBase::Move_Implementation();
+}
+
+void ATankEnemy::Attack_Implementation() {
 
 }
+
 
 void ATankEnemy::BeginPlay() {
 	AEnemyBase::BeginPlay();
 }
 
 void ATankEnemy::Tick(float DeltaTime) {
-	targetMovePos = enemyManager->ReturnPlayerPos(9);
-	SetActorLocation(FMath::Lerp(GetActorLocation(), targetMovePos, DeltaTime * speed));
+	AEnemyBase::Tick(DeltaTime);
+}
+
+EEnemyType ATankEnemy::IsOfType(){
+	return EEnemyType::ET_Tank;
 }
