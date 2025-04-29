@@ -47,6 +47,9 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	AActor* sourceActor = SourceAbilitySystemComp ? SourceAbilitySystemComp->GetAvatarActor() : nullptr;
 	AActor* targetActor = TargetAbilitySystemComp ? TargetAbilitySystemComp->GetAvatarActor() : nullptr;
 
+	//blocking related
+	FGameplayTag blockTag = FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block");
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
 	//getting the owned tags for target and source as it can affect which buffs to use
@@ -89,6 +92,11 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01); 
 
+	if (TargetTags->HasTagExact(blockTag))
+	{
+		MitigatedDamage = MitigatedDamage * 0.2f; //when the player is blocking the damage is mitigated by 80% more
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Total Damage Calc: %f"), MitigatedDamage);
 	
 	if (MitigatedDamage > 0.f)
