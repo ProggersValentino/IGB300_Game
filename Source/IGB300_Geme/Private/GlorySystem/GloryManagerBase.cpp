@@ -11,6 +11,11 @@ UAbilitySystemComponent* AGloryManagerBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UGloryAttributeSet* AGloryManagerBase::GetGloryAttributeSet() const
+{
+	return GloryAttributeSet;
+}
+
 // Sets default values
 AGloryManagerBase::AGloryManagerBase()
 {
@@ -108,8 +113,18 @@ void AGloryManagerBase::InitDefaultAttributes() const
 	}
 }
 
+bool AGloryManagerBase::IncreaseLevel_Implementation(int AddLevel)
+{
+	return AGloryManagerBase::IncreaseLevel(AddLevel);
+}
+
 void AGloryManagerBase::GloryChanged(const FOnAttributeChangeData& Data)
 {
 	//apply checks for if the Glory is about to reach another level
+	if (Data.NewValue > GloryAttributeSet->GetMaxGlory())
+	{
+		GloryAttributeSet->SetGlory(0.0f); //reset glory level
+		IncreaseLevel(1);
+	}
 }
 

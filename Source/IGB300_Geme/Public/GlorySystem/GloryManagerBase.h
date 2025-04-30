@@ -19,6 +19,7 @@ class IGB300_GEME_API AGloryManagerBase : public AActor, public IAbilitySystemIn
 {
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UGloryAttributeSet* GetGloryAttributeSet() const;
 
 private:
 	GENERATED_BODY()
@@ -57,6 +58,10 @@ public:
 	
 	UFUNCTION()
 	void InitDefaultAttributes() const;
+
+	//Increase the overall level of the Glory 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Level And XP")
+	bool IncreaseLevel(int AddLevel) __override;
 
 	FDelegateHandle OnGloryChangedDelegate;
 
