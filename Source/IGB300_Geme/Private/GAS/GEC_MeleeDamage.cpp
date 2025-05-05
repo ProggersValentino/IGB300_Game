@@ -98,9 +98,10 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01); 
 
-	if (TargetTags->HasAllExact(BlockRequiredTags))
+	if (TargetTags->HasTag(blockTag) && SourceTags->HasTag(HitDirectionTag))
 	{
 		MitigatedDamage = MitigatedDamage * 0.2f; //when the player is blocking the damage is mitigated by 80% more
+		UE_LOG(LogTemp, Warning, TEXT("Block Damage Adjusted: %f"), MitigatedDamage);
 	}
 	
 	UE_LOG(LogTemp, Warning, TEXT("Total Damage Calc: %f"), MitigatedDamage);
