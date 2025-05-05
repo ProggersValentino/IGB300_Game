@@ -6,6 +6,7 @@
 #include "GAS/FGladiatorGameplayEffectContext.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
+#include "UObject/FastReferenceCollector.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct MeleeDamageStats
@@ -47,6 +48,14 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	AActor* sourceActor = SourceAbilitySystemComp ? SourceAbilitySystemComp->GetAvatarActor() : nullptr;
 	AActor* targetActor = TargetAbilitySystemComp ? TargetAbilitySystemComp->GetAvatarActor() : nullptr;
 
+	//blocking related
+	FGameplayTag blockTag = FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block");
+	FGameplayTag HitDirectionTag = FGameplayTag::RequestGameplayTag("Gameplay.HitDirection.Forward");
+	FGameplayTagContainer BlockRequiredTags;
+	BlockRequiredTags.AddTag(blockTag);
+	BlockRequiredTags.AddTag(HitDirectionTag);
+
+	
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
 	//getting the owned tags for target and source as it can affect which buffs to use
@@ -89,6 +98,11 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01); 
 
+	if (TargetTags->HasAllExact(BlockRequiredTags))
+	{
+		MitigatedDamage = MitigatedDamage * 0.2f; //when the player is blocking the damage is mitigated by 80% more
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Total Damage Calc: %f"), MitigatedDamage);
 	
 	if (MitigatedDamage > 0.f)

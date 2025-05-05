@@ -60,6 +60,7 @@ public:
 	virtual void Attack_Implementation();
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
+	virtual void Block_Implementation() override;
 	virtual bool CanDoFinisher();
 	virtual bool CanFinish_Implementation();
 	virtual void GetExecuted_Implementation(UAnimMontage* animation) override;

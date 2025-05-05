@@ -101,6 +101,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gladiator Attributes")
 	TSubclassOf<UGameplayEffect> DefaultAttributeEffects;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Reactions")
+	UAnimMontage* BlockRecoilReaction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hit Reactions")
+	UAnimMontage* BraceBlockReaction;
+
 	
 public:	
 	// Called every frame
