@@ -20,5 +20,6 @@ void AGladiatorHUDBase::Init()
 void AGladiatorHUDBase::Death()
 {
 	DeathWidget = CreateWidget<UUserWidget>(GetOwningPlayerController(), DeathUIClass);
+	GetOwningPlayerController()->bShowMouseCursor = true;
 	DeathWidget->AddToViewport();
 }
