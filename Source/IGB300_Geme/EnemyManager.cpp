@@ -143,7 +143,7 @@ void AEnemyManager::Spawn(int32 spawnIndex) {
 		        		) -
 		        		(FMath::Pow(playerPos.X, 4) +
 		        		2 * UKismetMathLibrary::Square(playerPos.X) * UKismetMathLibrary::Square(playerPos.Y) +
-								FMath::Pow(playerPos.X, 4) +
+								FMath::Pow(playerPos.Y, 4) +
 		        		FMath::Pow(zoneR, 4) +
 								FMath::Pow(arenaR, 4)
 		        	  )
@@ -155,7 +155,7 @@ void AEnemyManager::Spawn(int32 spawnIndex) {
 	          playerPos.X * UKismetMathLibrary::Square(arenaR) +
 	          playerPos.X * UKismetMathLibrary::Square(playerPos.Y) -
 	          playerPos.X * UKismetMathLibrary::Square(zoneR)
-	        )/ (2 * UKismetMathLibrary::Square(playerPos.Y) * UKismetMathLibrary::Square(playerPos.X));
+	        )/ (2 * (UKismetMathLibrary::Square(playerPos.Y) + UKismetMathLibrary::Square(playerPos.X)));
 
 	// Get b->x where quad is negative
 	float b = (-q +
@@ -163,7 +163,7 @@ void AEnemyManager::Spawn(int32 spawnIndex) {
 	          playerPos.X * UKismetMathLibrary::Square(arenaR) +
 	          playerPos.X * UKismetMathLibrary::Square(playerPos.Y) -
 	          playerPos.X * UKismetMathLibrary::Square(zoneR)
-	        )/ (2 * UKismetMathLibrary::Square(playerPos.Y) * UKismetMathLibrary::Square(playerPos.X));
+	        )/ (2 * (UKismetMathLibrary::Square(playerPos.Y) + UKismetMathLibrary::Square(playerPos.X)));
 
 	// Four Returns one for each quadrant
 	if (playerPos.X * playerPos.Y > 0){
@@ -176,10 +176,10 @@ void AEnemyManager::Spawn(int32 spawnIndex) {
 		}
 	} else {
 		if (playerPos.X > 0) {
-			ret.Y = a;
+			ret.X = a;
 			ret.Y = -UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(a));
 		}	else {
-			ret.Y = a;
+			ret.X = a;
 			ret.Y = UKismetMathLibrary::Sqrt(UKismetMathLibrary::Square(arenaR) - UKismetMathLibrary::Square(a));
 		}
 	}
