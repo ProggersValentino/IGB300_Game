@@ -69,6 +69,8 @@ void AEnemyManager::DeregisterEnemy(AEnemyBase* enemy){
 	enemies.Remove(enemy);
 }
 
+
+// Depreciating 06/05 for a float based spawner it will be in the BP_EnemyManager
 void AEnemyManager::Spawn(int32 spawnIndex) {
 	if (spawnLocations.Num() > 0) {
 		// Set Spawn Location
