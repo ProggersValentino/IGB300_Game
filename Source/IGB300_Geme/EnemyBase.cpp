@@ -111,6 +111,11 @@ void AEnemyBase::Damage_Implementation(float amount){
 	}
 }
 
+void AEnemyBase::Block_Implementation()
+{
+	IIEnemy::Block_Implementation();
+}
+
 EEnemyType AEnemyBase::IsOfType() {
 	return EEnemyType::ET_Basic;
 }
