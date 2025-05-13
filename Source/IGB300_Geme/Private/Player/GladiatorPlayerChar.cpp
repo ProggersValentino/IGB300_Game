@@ -120,21 +120,23 @@ void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 
 void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 {
-	if (!bIsLerping) return;
+	if (!bIsLerping) return; //if we arent lerping just return
 	
 	if (CameraOverTime < time)
 	{
 		CameraOverTime += GetWorld()->GetDeltaSeconds();
 		
-		float alpha = FMath::Clamp(CameraOverTime / time, 0.f, 1.f);
+		float alpha = FMath::Clamp(CameraOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
+		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
 
-		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha);
-		
+		//lerping betweeen the current camera rot to the new rotation that the player wants to look at. this happens overtime in the tick() method
 		smoothYawInput = FMath::Lerp(smoothYawInput, values.X, dragCalculation * sensivity);
-		//FVector2D smoothYawInput = FMath::Vector2DInterpTo(smoothYawInput, values, GetWorld()->GetDeltaSeconds(), 20.0f * 20);
+		smoothPitchInput = FMath::Lerp(smoothPitchInput, values.Y, dragCalculation * sensivity);
+
+		//once lerp is calculated we are able to apply that to the camera to follow the player if it set to unlocked in ECameraLockSettings
+		if (CameraYawAxisSettings == ECameraLockSettings::Unlocked) AddControllerYawInput(smoothYawInput);
+		if (CameraPitchAxisSettings == ECameraLockSettings::Unlocked) AddControllerPitchInput(smoothPitchInput);
 		
-		AddControllerYawInput(smoothYawInput);
-		//AddControllerPitchInput(smoothYawInput.Y);
 	
 	}
 	else
@@ -142,8 +144,7 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 		bIsLerping = false;
 		CameraOverTime = 0;
 	}
-		
-	//AddControllerYawInput(yaw);
+	
 }
 
 void AGladiatorPlayerChar::LerpPlayerRotation(const FVector2D values, float time)
@@ -154,28 +155,22 @@ void AGladiatorPlayerChar::LerpPlayerRotation(const FVector2D values, float time
 	{
 		PlayerOverTime += GetWorld()->GetDeltaSeconds();
 		
-		double direction = atan2(values.Y, values.X);
+		float alpha = FMath::Clamp(PlayerOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
 
-		double magnitude = sqrt(values.X * values.X + values.Y * values.Y);
-		
-		float yaw = magnitude * cos(direction) * 2;
-		float pitch = magnitude * sin(direction) * 2;
-		
-		float alpha = FMath::Clamp(PlayerOverTime / time, 0.f, 1.f);
+		UCameraComponent* cam = FindComponentByClass<UCameraComponent>(); //getting camera comp on the player
 
-		UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
-        
+		//rotation calculation where the player actor should be looking at (which where the camera is looking) 
 		cameraDirection = cam->GetComponentLocation() + (cam->GetForwardVector() * 2000);
-        
 		FVector lookDirection = cameraDirection - GetActorLocation();
-
-		lookDirection.RotateAngleAxis(60, FVector(0.0f, 0.0f, 1.0f));
-
+		FRotator lookRotation = FRotator(0, lookDirection.Rotation().Yaw, 0);	//we only want the player rotation on the yaw
+		
+		//determines what calculation of drag we will apply to the slerp which is set in the PlayerCharacterDragSettings
 		float dragCalculation = DetermineDragCalculation(PlayerCharacterDragSettings, alpha);
+
+		//Slerping to the new rotation overtime with the tick() 
+		FRotator newRot = (FRotator)FQuat::Slerp(GetActorRotation().Quaternion(), lookRotation.Quaternion(), dragCalculation);
 		
-		FRotator newRot = (FRotator)FQuat::Slerp(GetActorRotation().Quaternion(), lookDirection.Rotation().Quaternion(), dragCalculation);
-		//FRotator newRot = FMath::RInterpTo(GetActorRotation(), future, GetWorld()->GetDeltaSeconds(), 5.f);
-		
+		//apply the new rotation to the player to keep up with where the player is looking
 		SetActorRotation(newRot);
 	}
 	else

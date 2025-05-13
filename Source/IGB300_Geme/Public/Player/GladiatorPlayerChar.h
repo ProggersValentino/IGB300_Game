@@ -18,6 +18,13 @@ enum class EDragSettings : uint8
 	EaseInOutDrag = 3 UMETA(DisplayName = "EaseInOut"),
 };
 
+UENUM(BlueprintType)
+enum class ECameraLockSettings: uint8
+{
+	Unlocked = 0 UMETA(DisplayName = "Unlocked"),
+	Locked = 1 UMETA(DisplayName = "Locked"),
+};
+
 UCLASS()
 class IGB300_GEME_API AGladiatorPlayerChar : public AGladiatorBaseChar
 {
@@ -28,6 +35,12 @@ protected:
 	EDragSettings CameraDragSettings; //different drag settings for camera
 	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "Different drag behaviours", DisplayPriority = 0))
 	EDragSettings PlayerCharacterDragSettings;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "Determines if the camera's yaw axis should lock and not move", DisplayPriority = 0))
+	ECameraLockSettings CameraYawAxisSettings; //whether the camera yaw axis is locked
+	
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "Determines if the camera's pitch axis should lock and not move", DisplayPriority = 0))
+	ECameraLockSettings CameraPitchAxisSettings; //whether the camera pitch axis is locked
 	
 	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "affects the speed of the camera rotation", DisplayPriority = 0, ClampMin = "0.1",
 		ClampMax = "1.", UIMin = "0.1", UIMax = "1."))
@@ -63,6 +76,7 @@ private:
 	
 	
 	float smoothYawInput = 0.0f;
+	float smoothPitchInput = 0.0f;
 	bool bIsLerping = false;
 	bool bIsPlayerLerping = false;
 	
@@ -75,8 +89,14 @@ protected:
 	UInputAction* LookAction;
 	
 	void CameraInputCallback(const FInputActionInstance& instance);
+
+	//sync the LerpInput() & LerpPlayerRotation() in one function
 	void LerpCameraSystem(const FVector2D values);
+
+	//lerps the camera based off the new input from the player
 	void LerpInput(const FVector2D values, float time);
+
+	//slerps the player character to where the player is looking with the camera
 	void LerpPlayerRotation(const FVector2D values, float time);
 
 	//returns the calculated drag value based on the drag setting
