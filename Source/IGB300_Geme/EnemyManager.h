@@ -32,13 +32,13 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyManager();
 
-	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Members")
+	UPROPERTY(BluePrintReadOnly, Category = "Members")
 		TArray<FEnemyWave> waves;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Members")
 		TMap<int32, FVector> spawnLocations;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Members")
+	UPROPERTY(BlueprintReadWrite, Category = "Members")
 		TArray<AEnemyBase*> enemies;
 
 	AActor* player;
