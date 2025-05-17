@@ -8,6 +8,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "IGB300_Geme/EnemyBase.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Player/GladiatorPlayerController.h"
 #include "Player/GladiatorPlayerState.h"
 #include "UI/GladiatorHUDBase.h"
@@ -111,8 +113,18 @@ void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& insta
 
 void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 {
-	LerpInput(mouseInput, CameraLerpTime);
-	LerpPlayerRotation(mouseInput, PlayerLerpTime);
+	if (CurrentLockedTarget != nullptr)
+	{
+		LerpToTarget(CurrentLockedTarget, LerpTimeToTarget);
+		bIsPlayerLerping = true;
+		LerpPlayerRotation(LerpTimeToTarget);
+	}
+	else
+	{
+		LerpInput(mouseInput, CameraLerpTime);
+		LerpPlayerRotation(PlayerLerpTime);	
+	}
+	
 	
 }
 
@@ -145,7 +157,29 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 	
 }
 
-void AGladiatorPlayerChar::LerpPlayerRotation(const FVector2D values, float time)
+void AGladiatorPlayerChar::LerpToTarget(const AActor* target, float time)
+{
+	if (TargetOverTime >= time) TargetOverTime = 0.f;
+	
+	if (TargetOverTime < time)
+	{
+		TargetOverTime += GetWorld()->GetDeltaSeconds();
+		
+		float alpha = FMath::Clamp(TargetOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
+		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
+
+		FVector difference = target->GetActorLocation() - GetActorLocation();
+		FRotator diffRot = difference.Rotation();
+
+		FRotator newRot = (FRotator)FQuat::Slerp(GetControlRotation().Quaternion(), diffRot.Quaternion(), dragCalculation);
+
+		GetController()->SetControlRotation(newRot);
+	
+	}
+
+}
+
+void AGladiatorPlayerChar::LerpPlayerRotation(float time)
 {
 	if (!bIsPlayerLerping) return;
 	
@@ -193,6 +227,47 @@ float AGladiatorPlayerChar::DetermineDragCalculation(EDragSettings DragType, con
 	default:
 		return 0.f;
 	}
+}
+
+TArray<FHitResult> AGladiatorPlayerChar::GetEnemiesInView()
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesAllowed;
+	ObjectTypesAllowed.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+	TArray<FHitResult> hitResult;
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+
+	
+	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
+	FVector StartLoco = cam->GetComponentLocation();
+	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 2000;
+	
+	bool bHasHit = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), StartLoco, EndLoco, 100.f, ObjectTypesAllowed, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, hitResult,
+		true);
+	
+	return hitResult;
+}
+
+void AGladiatorPlayerChar::SetLockedTarget(TArray<FHitResult> enemies)
+{
+	if (enemies.Num() == 0)
+	{
+		ClearLockOn();
+		return;
+	}
+
+	AEnemyBase* target = CastChecked<AEnemyBase>(enemies[0].GetActor());
+
+	if (target != CurrentLockedTarget) CurrentLockedTarget = target;
+	
+	
+}
+
+void AGladiatorPlayerChar::ClearLockOn()
+{
+	CurrentLockedTarget = nullptr;
 }
 
 

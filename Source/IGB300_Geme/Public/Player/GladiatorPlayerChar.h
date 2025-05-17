@@ -8,6 +8,8 @@
 #include "InputAction.h"
 #include "GladiatorPlayerChar.generated.h"
 
+class AEnemyBase;
+
 ///determien what type drag you want to set the camera and the player
 UENUM(BlueprintType)
 enum class EDragSettings : uint8
@@ -73,6 +75,7 @@ private:
 	FVector2D mouseInput;
 	float CameraOverTime;
 	float PlayerOverTime;
+	float TargetOverTime;
 	
 	
 	float smoothYawInput = 0.0f;
@@ -96,16 +99,28 @@ protected:
 	//lerps the camera based off the new input from the player
 	void LerpInput(const FVector2D values, float time);
 
+	void LerpToTarget(const AActor* target, float time);
+	
 	//slerps the player character to where the player is looking with the camera
-	void LerpPlayerRotation(const FVector2D values, float time);
+	void LerpPlayerRotation(float time);
 
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 
-	
+	UPROPERTY()
+	AEnemyBase* CurrentLockedTarget;
 
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	float LerpTimeToTarget = 1.0f;
 	
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
+	TArray<FHitResult> GetEnemiesInView();	
+
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
+	void SetLockedTarget(TArray<FHitResult> enemies);
 	
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
+	void ClearLockOn();
 	
 };
 
