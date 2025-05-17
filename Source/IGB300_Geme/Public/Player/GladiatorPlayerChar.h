@@ -6,6 +6,7 @@
 #include "GladiatorBaseChar.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
+#include "Engine/DecalActor.h"
 #include "GladiatorPlayerChar.generated.h"
 
 class AEnemyBase;
@@ -110,16 +111,40 @@ protected:
 	UPROPERTY()
 	AEnemyBase* CurrentLockedTarget;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsLocking = false;
+	bool bCanBeLocked = false;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	EDragSettings LockOnDragSettings;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	UMaterialInterface* LockOnDecal;
+
+	UDecalComponent* currentDecal;
+	
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	FVector LockOnDecalSize;
+	
 	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
 	float LerpTimeToTarget = 1.0f;
+
+	UPROPERTY()
+	int iterator = -1;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Lock On")
+	TArray<FHitResult> CurrentHitResults;
 	
-	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	TArray<FHitResult> GetEnemiesInView();	
 
-	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
-	void SetLockedTarget(TArray<FHitResult> enemies);
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void SetLockedTarget(AEnemyBase* enemies);
+
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void CycleToNextTarget(TArray<FHitResult> enemies);
 	
-	UFUNCTION(BlueprintCallable, Category = "Gladiator Lockon")
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void ClearLockOn();
 	
 };

@@ -8,7 +8,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/DecalComponent.h"
+#include "Engine/DecalActor.h"
 #include "IGB300_Geme/EnemyBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/GladiatorPlayerController.h"
 #include "Player/GladiatorPlayerState.h"
@@ -104,6 +107,9 @@ void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& insta
 	FVector2D input = instance.GetValue().Get<FVector2D>();
 
 	mouseInput = input;
+	TargetOverTime = 0.0f;
+	
+	bCanBeLocked = false;
 	
 	bIsLerping = true;
 	bIsPlayerLerping = true;
@@ -113,18 +119,20 @@ void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& insta
 
 void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 {
-	if (CurrentLockedTarget != nullptr)
+	LerpInput(mouseInput, CameraLerpTime);
+	LerpPlayerRotation(PlayerLerpTime);	
+
+	if (IsValid(CurrentLockedTarget) && bCanBeLocked)
 	{
-		LerpToTarget(CurrentLockedTarget, LerpTimeToTarget);
+		bIsLocking = true;
 		bIsPlayerLerping = true;
+		LerpToTarget(CurrentLockedTarget, LerpTimeToTarget);
 		LerpPlayerRotation(LerpTimeToTarget);
 	}
 	else
 	{
-		LerpInput(mouseInput, CameraLerpTime);
-		LerpPlayerRotation(PlayerLerpTime);	
+		bIsLocking = false;
 	}
-	
 	
 }
 
@@ -152,6 +160,7 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 	else
 	{
 		bIsLerping = false;
+		bCanBeLocked = true;
 		CameraOverTime = 0;
 	}
 	
@@ -159,14 +168,12 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 
 void AGladiatorPlayerChar::LerpToTarget(const AActor* target, float time)
 {
-	if (TargetOverTime >= time) TargetOverTime = 0.f;
-	
 	if (TargetOverTime < time)
 	{
 		TargetOverTime += GetWorld()->GetDeltaSeconds();
 		
 		float alpha = FMath::Clamp(TargetOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
-		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
+		float dragCalculation = DetermineDragCalculation(LockOnDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
 
 		FVector difference = target->GetActorLocation() - GetActorLocation();
 		FRotator diffRot = difference.Rotation();
@@ -176,6 +183,7 @@ void AGladiatorPlayerChar::LerpToTarget(const AActor* target, float time)
 		GetController()->SetControlRotation(newRot);
 	
 	}
+	else TargetOverTime = 0.f;
 
 }
 
@@ -208,6 +216,7 @@ void AGladiatorPlayerChar::LerpPlayerRotation(float time)
 	else
 	{
 		bIsPlayerLerping = false;
+		bCanBeLocked = true;
 		PlayerOverTime = 0;
 	}
 }
@@ -244,30 +253,60 @@ TArray<FHitResult> AGladiatorPlayerChar::GetEnemiesInView()
 	FVector StartLoco = cam->GetComponentLocation();
 	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 2000;
 	
-	bool bHasHit = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), StartLoco, EndLoco, 100.f, ObjectTypesAllowed, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, hitResult,
+	bool bHasHit = UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), StartLoco, EndLoco, 400.f, ObjectTypesAllowed, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, hitResult,
 		true);
+
+	iterator = -1; //reset iterator for the new array
 	
 	return hitResult;
 }
 
-void AGladiatorPlayerChar::SetLockedTarget(TArray<FHitResult> enemies)
+void AGladiatorPlayerChar::SetLockedTarget(AEnemyBase* enemies)
 {
-	if (enemies.Num() == 0)
+	if (!IsValid(enemies))
 	{
 		ClearLockOn();
 		return;
 	}
 
-	AEnemyBase* target = CastChecked<AEnemyBase>(enemies[0].GetActor());
+	
+	if (enemies != CurrentLockedTarget)
+	{
+		ClearLockOn();
+		
+		CurrentLockedTarget = enemies;
 
-	if (target != CurrentLockedTarget) CurrentLockedTarget = target;
+		//spawn lock on decal on target
+		UDecalComponent* decal = UGameplayStatics::SpawnDecalAttached(LockOnDecal, LockOnDecalSize, CurrentLockedTarget->GetRootComponent(), "Name_NONE", 
+		FVector(0, 0, 0), FRotator(0, 0, 0), EAttachLocation::Type::KeepRelativeOffset, false);
+
+		currentDecal = decal;	
+	}
+}
+
+void AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
+{
+	if (enemies.Num() == 0) return;
 	
+	iterator+=1;
+
+	if (iterator >= enemies.Num() - 1) iterator = 0;
 	
+	AEnemyBase* target = CastChecked<AEnemyBase>(enemies[iterator].GetActor());
+
+	GEngine->AddOnScreenDebugMessage(
+		-1,                         // Key (-1 = add new, or use ID to overwrite)
+		5.0f,                       // Duration (seconds)
+		FColor::Green,             // Text color
+		 FString::Printf(TEXT("iterator: %d"), iterator)    // Message
+	);
+	SetLockedTarget(target);
 }
 
 void AGladiatorPlayerChar::ClearLockOn()
 {
 	CurrentLockedTarget = nullptr;
+	if (IsValid(currentDecal)) currentDecal->DestroyComponent();
 }
 
 
