@@ -124,6 +124,12 @@ void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 
 	if (IsValid(CurrentLockedTarget) && bCanBeLocked)
 	{
+		if (!IsInViewOfTarget(CurrentLockedTarget)) //if we arent in view of the target disconnect the lock on 
+		{
+			ClearLockOn();
+			return;
+		}
+		
 		bIsLocking = true;
 		bIsPlayerLerping = true;
 		LerpToTarget(CurrentLockedTarget, LerpTimeToTarget);
@@ -288,19 +294,41 @@ void AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
 {
 	if (enemies.Num() == 0) return;
 	
-	iterator+=1;
-
-	if (iterator >= enemies.Num() - 1) iterator = 0;
 	
-	AEnemyBase* target = CastChecked<AEnemyBase>(enemies[iterator].GetActor());
+	iterator++;
+	if (iterator > enemies.Num() - 1) iterator = 0;
 
-	GEngine->AddOnScreenDebugMessage(
-		-1,                         // Key (-1 = add new, or use ID to overwrite)
-		5.0f,                       // Duration (seconds)
-		FColor::Green,             // Text color
-		 FString::Printf(TEXT("iterator: %d"), iterator)    // Message
-	);
-	SetLockedTarget(target);
+	AActor* hitActor = enemies[iterator].GetActor();
+	
+	//if (!IsValid(hitActor)) return; //test to see if actor is still active in scene otherwise return*/
+	
+	if (AEnemyBase* target = Cast<AEnemyBase>(hitActor))
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,                         // Key (-1 = add new, or use ID to overwrite)
+			5.0f,                       // Duration (seconds)
+			FColor::Green,             // Text color
+			 FString::Printf(TEXT("iterator: %d"), iterator)    // Message
+		);
+		SetLockedTarget(target);	
+	}
+
+	
+}
+
+bool AGladiatorPlayerChar::IsInViewOfTarget(AEnemyBase* Target)
+{
+	FVector forwardVec = GetActorForwardVector();
+
+	FVector difference = Target->GetActorLocation() - GetActorLocation();
+
+	float dotDifference = FVector::DotProduct(forwardVec, difference);
+
+	float HalfAngleRad = FMath::DegreesToRadians(LookZoneBeforeDeactivate) * 0.5f;
+
+	float CosHalfAngle = FMath::Cos(HalfAngleRad);
+	
+	return dotDifference > CosHalfAngle;
 }
 
 void AGladiatorPlayerChar::ClearLockOn()

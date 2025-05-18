@@ -129,21 +129,33 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
 	float LerpTimeToTarget = 1.0f;
 
+	UPROPERTY(editAnywhere, Category = "Gladiator Lock On", meta = (ToolTip = "Determines how much the player can look around before the lock on system automatically deactivates",
+		ClampMin = 0, ClampMax = 180, UIMin = "0", UIMax = "180"))
+	float LookZoneBeforeDeactivate;
+
 	UPROPERTY()
 	int iterator = -1;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Lock On")
 	TArray<FHitResult> CurrentHitResults;
-	
+
+	//grabs an array of all enemies that are hit and returns them
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	TArray<FHitResult> GetEnemiesInView();	
 
+	//sets a valid locked target to CurrentLockedTarget and spawns in a decal as a marker to mark the target
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void SetLockedTarget(AEnemyBase* enemies);
 
+	//cycles to the next target in the array, once at the end it loops back to the beginning
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void CycleToNextTarget(TArray<FHitResult> enemies);
-	
+
+	//determines if the player is in view of the locked target which is dependent on the LookZoneBeforeDeactivate value
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	bool IsInViewOfTarget(AEnemyBase* Target);
+
+	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void ClearLockOn();
 	
