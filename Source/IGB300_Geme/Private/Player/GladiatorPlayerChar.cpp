@@ -252,9 +252,9 @@ TArray<FHitResult> AGladiatorPlayerChar::GetEnemiesInView()
 	TArray<FHitResult> hitResult;
 
 	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(this);
+	ActorsToIgnore.Add(this); //adding the player to ensure it doesnt hit itself
 
-	
+	//grabbing cam to gets location
 	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
 	FVector StartLoco = cam->GetComponentLocation();
 	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 2000;
