@@ -6,7 +6,10 @@
 #include "GladiatorBaseChar.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
+#include "Engine/DecalActor.h"
 #include "GladiatorPlayerChar.generated.h"
+
+class AEnemyBase;
 
 ///determien what type drag you want to set the camera and the player
 UENUM(BlueprintType)
@@ -73,6 +76,7 @@ private:
 	FVector2D mouseInput;
 	float CameraOverTime;
 	float PlayerOverTime;
+	float TargetOverTime;
 	
 	
 	float smoothYawInput = 0.0f;
@@ -96,16 +100,64 @@ protected:
 	//lerps the camera based off the new input from the player
 	void LerpInput(const FVector2D values, float time);
 
+	void LerpToTarget(const AActor* target, float time);
+	
 	//slerps the player character to where the player is looking with the camera
-	void LerpPlayerRotation(const FVector2D values, float time);
+	void LerpPlayerRotation(float time);
 
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 
-	
+	UPROPERTY()
+	AEnemyBase* CurrentLockedTarget;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsLocking = false;
+	bool bCanBeLocked = false;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	EDragSettings LockOnDragSettings;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	UMaterialInterface* LockOnDecal;
+
+	UDecalComponent* currentDecal;
 	
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	FVector LockOnDecalSize;
 	
+	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
+	float LerpTimeToTarget = 1.0f;
+
+	UPROPERTY(editAnywhere, Category = "Gladiator Lock On", meta = (ToolTip = "Determines how much the player can look around before the lock on system automatically deactivates",
+		ClampMin = 0, ClampMax = 180, UIMin = "0", UIMax = "180"))
+	float LookZoneBeforeDeactivate;
+
+	UPROPERTY()
+	int iterator = -1;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Lock On")
+	TArray<FHitResult> CurrentHitResults;
+
+	//grabs an array of all enemies that are hit and returns them
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	TArray<FHitResult> GetEnemiesInView();	
+
+	//sets a valid locked target to CurrentLockedTarget and spawns in a decal as a marker to mark the target
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void SetLockedTarget(AEnemyBase* enemies);
+
+	//cycles to the next target in the array, once at the end it loops back to the beginning
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void CycleToNextTarget(TArray<FHitResult> enemies);
+
+	//determines if the player is in view of the locked target which is dependent on the LookZoneBeforeDeactivate value
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	bool IsInViewOfTarget(AEnemyBase* Target);
+
+	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void ClearLockOn();
 	
 };
 
