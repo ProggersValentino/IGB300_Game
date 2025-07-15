@@ -8,7 +8,7 @@ public class IGB300_GemeTarget : TargetRules
 	public IGB300_GemeTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V5;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
 
 		ExtraModuleNames.AddRange( new string[] { "IGB300_Geme" } );
 	}
