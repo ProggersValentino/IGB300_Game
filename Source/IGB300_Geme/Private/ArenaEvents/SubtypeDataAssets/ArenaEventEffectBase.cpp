@@ -3,3 +3,7 @@
 
 #include "ArenaEvents/SubtypeDataAssets/ArenaEventEffectBase.h"
 
+void UArenaEventEffectBase::Init(UWorld* currentWorld)
+{
+	UWorld* world = currentWorld;
+}
