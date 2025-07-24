@@ -33,12 +33,20 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGloryAttributeWidget> GloryAttributeWidgetClass;
+	
+	/*UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UArenaEventWidget> LoadedArenaEventUIClass;*/
+
+	
 
 private:
 	UPROPERTY()
 	UGladiatorAttributeWidget* AttributeWidget;
 	UPROPERTY()
 	UGloryAttributeWidget* GloryAttributeWidget;
+
+	/*UPROPERTY()
+	UArenaEventWidget* ArenaEventUI;*/
 	
 	UPROPERTY()
 	UUserWidget* DeathWidget;

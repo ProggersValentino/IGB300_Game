@@ -22,7 +22,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Arena")
 	FString EventDesc;
 
-	/*for the event if you want to have 1 or multiple effects play out at the activation of the event*/
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Arena")
-	TArray<UArenaEventEffectBase*> Effects;
+	/*for the event if you want to have 1 or multiple effects play out at the activation of the event -> this is a hard ref so on load of this object it will load the array*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Arena", meta = (AllowedClasses="ArenaEventEffectBase"))
+	TArray<TSubclassOf<UArenaEventEffectBase>> Effects;
+	
 };
