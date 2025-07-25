@@ -24,12 +24,18 @@ class IGB300_GEME_API UCrowdWorldSubsystem : public UWorldSubsystem
     
 		UFUNCTION(BlueprintCallable)
 		virtual bool KeepCoinsActive();
+
+		UFUNCTION(BlueprintCallable)
+		virtual void SetCrowdSize(int size);
     
     	UFUNCTION(BlueprintCallable, BlueprintPure)
     	virtual float GetExcitement();
     
     	UFUNCTION(BlueprintCallable, BlueprintPure)
     	virtual float GetMaxExcitement();
+
+		UFUNCTION(BlueprintCallable, BlueprintPure)
+		virtual int GetCrowdSize();
     
     	//Excitement variables
     	UPROPERTY(VisibleAnywhere, Category="Crowd")
@@ -47,5 +53,8 @@ class IGB300_GEME_API UCrowdWorldSubsystem : public UWorldSubsystem
     
     	UPROPERTY(EditAnywhere, Category="Coin")
     	float TimeActive;
+    	
+    	UPROPERTY(EditAnywhere, Category="Crowd")
+        int CrowdSize = 50;
 	
 };
