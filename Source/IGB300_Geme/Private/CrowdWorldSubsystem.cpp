@@ -58,3 +58,13 @@ bool UCrowdWorldSubsystem::KeepCoinsActive()
 	}
 	return false;
 }
+
+int UCrowdWorldSubsystem::GetCrowdSize()
+{
+	return CrowdSize;
+}
+
+void UCrowdWorldSubsystem::SetCrowdSize(int size)
+{
+	CrowdSize = size;
+}
