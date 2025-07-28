@@ -12,6 +12,7 @@ public class IGB300_Geme : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
+			"MetasoundEngine"
 		});
 
 		// Uncomment if you are using Slate UI
