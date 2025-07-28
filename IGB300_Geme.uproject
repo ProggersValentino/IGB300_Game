@@ -43,6 +43,10 @@
 		{
 			"Name": "BlendStack",
 			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
 		}
 	]
 }
