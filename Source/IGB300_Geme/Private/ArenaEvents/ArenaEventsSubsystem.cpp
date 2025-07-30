@@ -48,15 +48,16 @@ void UArenaEventsSubsystem::Init()
 	UnloadedArenaEventUI = GetDefault<UArenaEventsSettings>()->ArenaEventUI;
 
 	/*loading the event UI class */
-	LoadSingleItemAsync<void>(UnloadedArenaEventUI.ToSoftObjectPath(), [&]()
-	{
-		TSubclassOf<UArenaEventWidget> loadedWidgetClass = UnloadedArenaEventUI.Get();
+	FStreamableManager& streamer = UAssetManager::GetStreamableManager();
 
-		if (loadedWidgetClass)
-		{
-			LoadedArenaEventUIClass = loadedWidgetClass;
-		}
-	});
+	LoadedArenaEventUIClass = streamer.LoadSynchronous(UnloadedArenaEventUI, true);
+	
+	if (!IsValid(LoadedArenaEventUIClass))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load Arena Event UI"));
+		return;	
+	}
+	
 	
 	LoadGroupItemsAsync();
 }
