@@ -12,8 +12,11 @@ public class IGB300_Geme : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
+			"MetasoundEngine",
+			"OnlineSubsystem",
 		});
 
+		DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
