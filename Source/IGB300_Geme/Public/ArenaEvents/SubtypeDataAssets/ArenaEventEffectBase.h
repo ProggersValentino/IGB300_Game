@@ -24,5 +24,6 @@ public:
 	void CleanupActivity();
 
 protected:
+	UPROPERTY(BlueprintType, BlueprintReadOnly)
 	UWorld* WorldRef;
 };

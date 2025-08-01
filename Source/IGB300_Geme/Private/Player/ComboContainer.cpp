@@ -3,3 +3,12 @@
 
 #include "Player/ComboContainer.h"
 
+void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
+{
+	selectedCharacter = abilityComp;
+}
+
+void UComboContainer::ExecuteCombo()
+{
+	selectedCharacter->TryActivateAbilityByClass(ChosenAbility);
+}

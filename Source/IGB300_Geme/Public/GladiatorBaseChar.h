@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "AbilitySystemInterface.h"
+#include "Player/ComboContainer.h"
 #include "GladiatorBaseChar.generated.h"
 
 /*
@@ -32,6 +33,9 @@ public:
 	// Sets default values for this character's properties
 	AGladiatorBaseChar();
 
+	UFUNCTION(BlueprintCallable)
+	void Init();
+	
 	virtual UGladiatorAttributeSet* GetAttributeSet() const;
 	
 	UFUNCTION(BlueprintCallable, Category="GladiatorStats")
@@ -82,6 +86,12 @@ public:
 
 	UPROPERTY()
 	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UComboContainer> ComboClass;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UComboContainer> ComboContainer;
 	
 protected:
 	// Called when the game starts or when spawned

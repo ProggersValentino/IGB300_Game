@@ -21,7 +21,15 @@ AGladiatorBaseChar::AGladiatorBaseChar()
 	PrimaryActorTick.bCanEverTick = true;
 
 	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
+}
+
+void AGladiatorBaseChar::Init()
+{
+	if (!IsValid(ComboClass)) return;
 	
+	//initialize combo with refs
+	ComboContainer = NewObject<UComboContainer>(this, ComboClass);
+	ComboContainer->Init(AbilitySystemComponent);
 }
 
 UGladiatorAttributeSet* AGladiatorBaseChar::GetAttributeSet() const
@@ -143,6 +151,7 @@ void AGladiatorBaseChar::DeathCleanup()
 void AGladiatorBaseChar::BeginPlay()
 {
 	Super::BeginPlay();
+	Init();
 }
 
 void AGladiatorBaseChar::GiveDefaultAbilities()
