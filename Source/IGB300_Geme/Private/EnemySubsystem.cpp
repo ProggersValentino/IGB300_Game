@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EnemySubsystem.h"
+#include "Difficulty.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 #include "IGB300_Geme/SpawnLocation.h"
@@ -33,23 +34,69 @@ bool UEnemySubsystem::HasRegisteredSpawns()
   return true;
 }
 
-FCustomError UEnemySubsystem::TrySpawn(float Difficulty, TSubclassOf<AEnemyBase> EnemyClass)
+FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnemyBase> EnemyClass)
 {
-  Difficulty = std::min(Difficulty, (float) EnemyPool);
-  if (Difficulty == 0)
+  int SpawnAmount = 0;
+  switch (Difficulty)
   {
-    return {false, "Enemy Pool Empty"};
+    case EDifficulty::NORMAL:
+    {
+      SpawnAmount = 3;
+    } break;
+
+    case EDifficulty::HARD:
+    {
+      SpawnAmount = 5;
+    } break;
+
+    case EDifficulty::HARDEST:
+    {
+      SpawnAmount = 7;
+    } break;
   }
-  for (int i = 0; i < Difficulty; i++)
+
+  if (EnemyPool == 0)
+  {
+    return {false, 0, 0};
+  }
+
+  if (SpawnAmount > EnemyPool)
+  {
+    SpawnAmount = EnemyPool;
+  }
+
+  for (int i = 0; i < SpawnAmount; i++)
   {
     FVector Position;
     FRotator Rotation;
     GetWorld()->SpawnActor<AActor>(EnemyClass, Position, Rotation);
   }
-  EnemyPool -= Difficulty;
-  return {true, ""};
+  EnemyPool -= SpawnAmount;
+  return {true, SpawnAmount, EnemyPool};
 }
 
-// Change to spawn at location
-// Look at enemy ai controller or put logic here
-// Add enemy registration and deregistration
+void UEnemySubsystem::ChangePool(EDifficulty Difficulty)
+{
+  switch (Difficulty)
+  {
+    case EDifficulty::NORMAL:
+    {
+      EnemyPool = 12;
+    } return;
+
+    case EDifficulty::HARD:
+    {
+      EnemyPool = 20;
+    } return;
+
+    case EDifficulty::HARDEST:
+    {
+      EnemyPool = 28;
+    } return;
+  }
+}
+
+// Change to spawn at location               | within try spawn
+// Add enemy registration and deregistration | private register public deregister
+// Setup enemy behaviour                     | public update enemy targets
+

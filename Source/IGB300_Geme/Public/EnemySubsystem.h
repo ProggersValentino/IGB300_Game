@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Difficulty.h"
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "CustomError.h"
@@ -15,6 +16,22 @@
  * 
  */
 
+USTRUCT(BlueprintType)
+
+struct FSpawnResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bDidSucceed;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 AmountSpawned;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 RemainingPool;
+};
+
 UCLASS()
 
 class IGB300_GEME_API UEnemySubsystem : public UWorldSubsystem
@@ -23,13 +40,16 @@ class IGB300_GEME_API UEnemySubsystem : public UWorldSubsystem
 		
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 EnemyPool = 2;
+	int32 EnemyPool = 20;
 
 public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	UFUNCTION(BlueprintCallable)
-	FCustomError TrySpawn(float Difficulty, TSubclassOf<AEnemyBase> EnemyClass);
+	FSpawnResult TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnemyBase> EnemyClass);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangePool(EDifficulty Difficulty);
 	
 private:
 	TArray<ASpawnLocation*> SpawnLocations;
