@@ -68,3 +68,13 @@ void UCrowdWorldSubsystem::SetCrowdSize(int size)
 {
 	CrowdSize = size;
 }
+
+float UCrowdWorldSubsystem::GetCumulativeExcitement()
+{
+	return CumulativeExcitement;
+}
+
+void UCrowdWorldSubsystem::UpdateAureus(int amount)
+{
+	Aureus = Aureus + amount;
+}
