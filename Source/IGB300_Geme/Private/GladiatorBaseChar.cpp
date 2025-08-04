@@ -25,11 +25,19 @@ AGladiatorBaseChar::AGladiatorBaseChar()
 
 void AGladiatorBaseChar::Init()
 {
-	if (!IsValid(ComboClass)) return;
+	MainComboChain.Reserve(MainComboChainClasses.Num());
 	
-	//initialize combo with refs
-	ComboContainer = NewObject<UComboContainer>(this, ComboClass);
-	ComboContainer->Init(AbilitySystemComponent);
+	for (int i = 0; i < MainComboChainClasses.Num(); ++i)
+	{
+		if (!IsValid(MainComboChainClasses[i])) continue;
+	
+		//initialize combo with refs
+		TObjectPtr<UComboContainer> combo = NewObject<UComboContainer>(this, MainComboChainClasses[i]);
+		
+		MainComboChain.AddUnique(combo); 
+		combo->Init(AbilitySystemComponent);	
+	}
+	
 }
 
 UGladiatorAttributeSet* AGladiatorBaseChar::GetAttributeSet() const
@@ -147,11 +155,48 @@ void AGladiatorBaseChar::DeathCleanup()
 	Destroy();
 }
 
+void AGladiatorBaseChar::ResetCombo()
+{
+	CurrentComboChainIndex = 0;
+}
+
+void AGladiatorBaseChar::ActivateCombo()
+{
+	//determine combo
+	CurrentCombo = DetermineCombo();
+	
+	//activate combo
+	CurrentCombo->ExecuteCombo();
+}
+
+TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()
+{
+	if (!IsValid(CurrentCombo))
+	{
+		return MainComboChain[CurrentComboChainIndex];	
+	}
+	
+	if (CurrentCombo->currentHitStreak >= CurrentCombo->NOOfHitsToNextComboCriteria
+		&& CurrentComboChainIndex < MainComboChain.Num() - 1) // true 
+	{
+		CurrentComboChainIndex++;
+		CurrentCombo->ClearStreak();
+	}
+	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1)
+	{
+		ResetCombo();
+		/*UE_LOG(LogTemp, Error, TEXT("current combo index: %d"), CurrentComboChainIndex)*/
+	}
+
+	//return selected combo
+	return MainComboChain[CurrentComboChainIndex];
+}
+
+
 // Called when the game starts or when spawned
 void AGladiatorBaseChar::BeginPlay()
 {
 	Super::BeginPlay();
-	Init();
 }
 
 void AGladiatorBaseChar::GiveDefaultAbilities()

@@ -88,10 +88,16 @@ public:
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UComboContainer> ComboClass;
+	TArray<TSubclassOf<UComboContainer>> MainComboChainClasses;
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class UComboContainer> ComboContainer;
+	TObjectPtr<UComboContainer> CurrentCombo;
+
+	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
+	void ResetCombo();
+
+	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
+	void ActivateCombo();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -133,4 +139,15 @@ public:
 	
 	UFUNCTION()
 	void InitDefaultAttributes() const;
+
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class UComboContainer>> MainComboChain;
+
+	int CurrentComboChainIndex;
+
+	/// 
+	/// @return returns the current combo based of the CurrentComboChainIn
+	TObjectPtr<UComboContainer> DetermineCombo();
 };

@@ -25,9 +25,22 @@ class IGB300_GEME_API UComboContainer : public UObject
 	GENERATED_BODY()
 public:
 	void Init(UGladiatorAbilitySystemComponent* abilityComp);
-	
+
+	/*executes the ability selected in ChosenAbility*/
 	UFUNCTION(BlueprintCallable)
 	void ExecuteCombo();
+
+	/// Inject data and execute a gameplay event from the selected gameplay tag 
+	/// @param result the array of results retrieved from a collision trace
+	UFUNCTION(BlueprintCallable)
+	void InjectExecuteGameplayEvents(TArray<FHitResult> result);
+	
+	
+	UFUNCTION(BlueprintCallable)
+	void AddHitStreak(int amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearStreak();
 	
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container")
@@ -35,14 +48,20 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container" , meta = (
 		ToolTip="if you want to have an ability that plays after the chosenAbility has had a successful hit e.g. chosenAbility is left strike and subChainAbility is right strike"))
-	TSubclassOf<UComboContainer> SubChainAbility;
+	TSubclassOf<UComboContainer> SubChainAbilityClass;
 
+	UPROPERTY()
+	TObjectPtr<UComboContainer> subChainAbility;
+
+	UPROPERTY(EditDefaultsOnly)
+	int SubChainActivationCriteria;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container", meta = (
 		ToolTip="The number of hits required for the player to land in a row before being able to continue to the next combo in the chain"))
 	int NOOfHitsToNextComboCriteria;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container", meta = (ToolTip="The tags to call to fulfill a gameplay event waiting on the abiltiy"))
-	FGameplayTagContainer gameplayEventTags;
+	FGameplayTag gameplayEventTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container")
 	EAbilityComboType AbilityComboType;
@@ -55,7 +74,9 @@ public:
 	float timeToPress;
 
 	UPROPERTY(BlueprintType, BlueprintReadOnly)
-	int currentNumberOfHits;
+	int currentHitStreak;
+
+	
 	
 private:
 	/*allows control of who can access it where its an enemy or player granted its stemmed from the GladiatorBaseCharacter class*/
@@ -65,10 +86,19 @@ private:
 	UPROPERTY()
 	bool bIsTimedCombo;
 
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
+	
+	int SubchainActivationGoal;
+
+	/*when a new benchmark needs to be set for the next time the subchain will activate*/
+	void RefreshActivationGoal();
+	
+	FGameplayAbilityTargetDataHandle CreateTargetDataFromHit(const FHitResult& hit);
+	/*virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
 	{
 		Super::PostEditChangeProperty(PropertyChangedEvent);
 
 		bIsTimedCombo = AbilityComboType == EAbilityComboType::Timed;
-	}
+	}*/
+
+	
 };
