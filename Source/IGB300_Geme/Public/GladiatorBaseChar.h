@@ -67,6 +67,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="GladiatorStats")
 	virtual float GetMaxGold() const;
+
+	void OnSpeedChanged(const FOnAttributeChangeData& Data);
 	
 	//activate all gameplay abilities that match a given tag
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")

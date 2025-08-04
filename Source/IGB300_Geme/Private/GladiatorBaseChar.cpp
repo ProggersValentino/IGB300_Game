@@ -4,8 +4,10 @@
 #include "GladiatorBaseChar.h"
 
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/GladiatorPlayerState.h"
 
 
@@ -35,7 +37,7 @@ void AGladiatorBaseChar::Init()
 		TObjectPtr<UComboContainer> combo = NewObject<UComboContainer>(this, MainComboChainClasses[i]);
 		
 		MainComboChain.AddUnique(combo); 
-		combo->Init(AbilitySystemComponent);	
+		combo->Init(AbilitySystemComponent);
 	}
 	
 }
@@ -115,6 +117,16 @@ float AGladiatorBaseChar::GetMaxGold() const
 	if (!AttributeSet) return 0.0f;
 
 	return AttributeSet->GetMaxGold();
+}
+
+void AGladiatorBaseChar::OnSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	float newSpeed = Data.NewValue;
+
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = newSpeed;
+	}
 }
 
 bool AGladiatorBaseChar::activateAbilitiesWithTag(FGameplayTagContainer abilityTag, bool AllowRemoteActivation)
