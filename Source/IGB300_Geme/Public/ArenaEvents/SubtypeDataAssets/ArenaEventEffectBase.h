@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="ArenaEvents", meta=(ToolTip="Called when the event is over and needs to cleanup. This might include deletion of actors that are spawned in or "))
 	void CleanupActivity();
 
+	UFUNCTION(BlueprintCallable, Category="ArenaEvents")
+	AActor* SpawnActorOfClass(UClass* actorToSpawn, const FTransform& SpawnTransform);
+	
 protected:
 	UPROPERTY(BlueprintType, BlueprintReadOnly)
 	UWorld* WorldRef;
