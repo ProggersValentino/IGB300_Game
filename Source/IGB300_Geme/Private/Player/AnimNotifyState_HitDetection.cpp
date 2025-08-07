@@ -3,10 +3,13 @@
 
 #include "Player/AnimNotifyState_HitDetection.h"
 
+#include "Chaos/PBDSuspensionConstraintData.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 {
+	if (!IsValid(MeshComponent)) return;
+	
 	character = Cast<AGladiatorBaseChar>(MeshComponent->GetOwner()); //set the global character var here
 
 	ActorsHitToIgnore.AddUnique(character);
@@ -14,6 +17,11 @@ void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 
 TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName)
 {
+	if (!IsValid(MeshComponent) && !IsValid(character))
+	{
+		return TArray<FHitResult>();
+	}
+	
 	FVector startLoco = socketName == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(socketName); //if socket name has been passed then add it in location otherwise use the characters location
 	
 	//adding the collisions to look for 
@@ -57,6 +65,8 @@ bool UAnimNotifyState_HitDetection::DidAbilityCollide()
 
 void UAnimNotifyState_HitDetection::ModifyStreak()
 {
+	if (!IsValid(character)) return;
+	
 	//did we hit or miss?
 	if (DidAbilityCollide())
 	{
