@@ -71,7 +71,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
 	bool IsAlive();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Die();
 
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")

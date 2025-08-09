@@ -8,17 +8,17 @@ int UGameplayStats::GetTotalKills()
 	return TotalKills;
 }
 
-int UGameplayStats::GetGoldEarned()
+/*int UGameplayStats::GetGoldEarned()
 {
 	return Aureus;
-}
+}*/
 
-int UGameplayStats::GetCrowdScore()
+/*int UGameplayStats::GetCrowdScore()
 {
 	return CumulativeExcitement;
-}
+}*/
 
-FString UGameplayStats::GetFansGained()
+/*FString UGameplayStats::GetFansGained()
 {
 	int fansGained = CrowdSize - InitCrowdSize;
 	if (fansGained >= 0 && fansGained < 5)
@@ -41,7 +41,7 @@ FString UGameplayStats::GetFansGained()
 	{
 		return "Everyone!!!";
 	}
-}
+}*/
 
 int UGameplayStats::GetChallengesCompleted()
 {
