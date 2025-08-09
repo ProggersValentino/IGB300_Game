@@ -43,39 +43,49 @@ public:
 	void ClearStreak();
 	
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	TSubclassOf<UGameplayAbility> ChosenAbility;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container" , meta = (
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability" , meta = (
 		ToolTip="if you want to have an ability that plays after the chosenAbility has had a successful hit e.g. chosenAbility is left strike and subChainAbility is right strike"))
 	TSubclassOf<UComboContainer> SubChainAbilityClass;
 
 	UPROPERTY()
 	TObjectPtr<UComboContainer> subChainAbility;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Ability")
 	int SubChainActivationCriteria;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container", meta = (
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability", meta = (
 		ToolTip="The number of hits required for the player to land in a row before being able to continue to the next combo in the chain"))
 	int NOOfHitsToNextComboCriteria;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container", meta = (ToolTip="The tags to call to fulfill a gameplay event waiting on the abiltiy"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Impact Freeze")
+	bool bImpactFreezeOnHit;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Impact Freeze", meta = (EditCondition = "bImpactFreezeOnHit", ClampMin="0.05", ClampMax="1.0"))
+	float SlowTimeDilationTo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Impact Freeze", meta = (EditCondition = "bImpactFreezeOnHit", ClampMin="0.1", ClampMax="1.0"))
+	float SlowmoTime;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability", meta = (ToolTip="The tags to call to fulfill a gameplay event waiting on the abiltiy"))
 	FGameplayTag gameplayEventTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	EAbilityComboType AbilityComboType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container",meta = (EditCondition="bIsTimedCombo", EditConditionHides, ToolTip="the value that determines how much the game slows down"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability",meta = (EditCondition="bIsTimedCombo", EditConditionHides, ToolTip="the value that determines how much the game slows down"))
 	float gameplaySlowdownValue;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combo Container",meta = (EditCondition="bIsTimedCombo", EditConditionHides,
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability",meta = (EditCondition="bIsTimedCombo", EditConditionHides,
 		ToolTip="the amount of time given to press the button otherwise combo will miss"))
 	float timeToPress;
 
 	UPROPERTY(BlueprintType, BlueprintReadOnly)
 	int currentHitStreak;
 
+	
 	
 	
 private:
@@ -85,7 +95,7 @@ private:
 	
 	UPROPERTY()
 	bool bIsTimedCombo;
-
+	
 	
 	int SubchainActivationGoal;
 
@@ -93,12 +103,20 @@ private:
 	void RefreshActivationGoal();
 	
 	FGameplayAbilityTargetDataHandle CreateTargetDataFromHit(const FHitResult& hit);
-	/*virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
 	{
 		Super::PostEditChangeProperty(PropertyChangedEvent);
 
 		bIsTimedCombo = AbilityComboType == EAbilityComboType::Timed;
-	}*/
+	}
+#endif
+	
+	FTimerHandle TimerHandle;
+	
+	void SlowGameOnHit(float slowTimeDilationTo, float slowmoTime);
 
+	void OnTimerEnd();
 	
 };

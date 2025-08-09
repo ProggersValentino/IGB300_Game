@@ -4,10 +4,12 @@
 #include "Player/ComboContainer.h"
 
 #include "GladiatorBaseChar.h"
+#include "Kismet/GameplayStatics.h"
 #include "Stats/StatsData.h"
 
 void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 {
+	/*WorldRef = world;*/
 	selectedCharacter = abilityComp;
 
 	RefreshActivationGoal();
@@ -45,7 +47,13 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 		eventData.Target = hitActor.GetActor();
 		eventData.TargetData = CreateTargetDataFromHit(hitActor);
 		selectedCharacter->HandleGameplayEvent(gameplayEventTag, &eventData);
+
+		if (bImpactFreezeOnHit)
+		{
+			SlowGameOnHit(SlowTimeDilationTo, SlowmoTime);
+		}
 	}
+	
 }
 
 void UComboContainer::AddHitStreak(int amount)
@@ -69,6 +77,21 @@ FGameplayAbilityTargetDataHandle UComboContainer::CreateTargetDataFromHit(const 
 	FGameplayAbilityTargetData_SingleTargetHit* targetData = new FGameplayAbilityTargetData_SingleTargetHit(hit);
 	
 	return FGameplayAbilityTargetDataHandle(targetData); /*the targetdatahandle assumes ownership over the targetData created from the 'new' instance thus handles the cleanup*/
+}
+
+void UComboContainer::SlowGameOnHit(float slowTimeDilationTo, float slowmoTime)
+{
+	//need to readjust how long the slowmo lasts based on what dilation gets set for the world 
+	float slowmoTimeReadjusted = slowmoTime * slowTimeDilationTo;
+	
+	UGameplayStatics::SetGlobalTimeDilation(GetOuter()->GetWorld(), slowTimeDilationTo);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UComboContainer::OnTimerEnd, slowmoTimeReadjusted, false);
+}
+
+void UComboContainer::OnTimerEnd()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 }
 
 
