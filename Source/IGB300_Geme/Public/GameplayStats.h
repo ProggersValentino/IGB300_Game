@@ -31,15 +31,6 @@ class IGB300_GEME_API UGameplayStats : public UCrowdWorldSubsystem
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual int GetTotalKills();
 
-	/*UFUNCTION(BlueprintCallable, BlueprintPure)
-	virtual int GetGoldEarned();*/
-
-	/*UFUNCTION(BlueprintCallable, BlueprintPure)
-	virtual int GetCrowdScore();*/
-
-	/*UFUNCTION(BlueprintCallable, BlueprintPure)
-	virtual FString GetFansGained();*/
-
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual int GetChallengesCompleted();
 
