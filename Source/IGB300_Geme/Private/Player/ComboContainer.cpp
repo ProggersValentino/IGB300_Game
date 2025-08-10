@@ -12,6 +12,8 @@ void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 	/*WorldRef = world;*/
 	selectedCharacter = abilityComp;
 
+	CrowdSubsystem = GetWorld()->GetSubsystem<UCrowdWorldSubsystem>(); //get access to crowd subsystem
+	
 	RefreshActivationGoal();
 	
 	/*if we have a subchain abiltiy then we init that*/
@@ -48,6 +50,9 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 		eventData.TargetData = CreateTargetDataFromHit(hitActor);
 		selectedCharacter->HandleGameplayEvent(gameplayEventTag, &eventData);
 
+		//process hit to the crowd subsystem
+		CrowdSubsystem->UpdateExcitement(CrowdInfluencePerHit);
+		
 		if (bImpactFreezeOnHit)
 		{
 			SlowGameOnHit(SlowTimeDilationTo, SlowmoTime);

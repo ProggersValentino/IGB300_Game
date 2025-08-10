@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrowdWorldSubsystem.h"
 #include "GameplayTagContainer.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "ComboContainer.generated.h"
@@ -85,7 +86,8 @@ public:
 	UPROPERTY(BlueprintType, BlueprintReadOnly)
 	int currentHitStreak;
 
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Crowd Influence", meta=(ToolTip="When the player hits something how much excitment does the crowd increase by"))
+	float CrowdInfluencePerHit;
 	
 	
 private:
@@ -96,6 +98,7 @@ private:
 	UPROPERTY()
 	bool bIsTimedCombo;
 	
+	UCrowdWorldSubsystem* CrowdSubsystem;
 	
 	int SubchainActivationGoal;
 
@@ -118,5 +121,6 @@ private:
 	void SlowGameOnHit(float slowTimeDilationTo, float slowmoTime);
 
 	void OnTimerEnd();
+
 	
 };
