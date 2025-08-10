@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "AbilitySystemInterface.h"
+#include "Player/ComboContainer.h"
 #include "GladiatorBaseChar.generated.h"
 
 /*
@@ -32,6 +33,9 @@ public:
 	// Sets default values for this character's properties
 	AGladiatorBaseChar();
 
+	UFUNCTION(BlueprintCallable)
+	void Init();
+	
 	virtual UGladiatorAttributeSet* GetAttributeSet() const;
 	
 	UFUNCTION(BlueprintCallable, Category="GladiatorStats")
@@ -63,6 +67,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="GladiatorStats")
 	virtual float GetMaxGold() const;
+
+	void OnSpeedChanged(const FOnAttributeChangeData& Data);
 	
 	//activate all gameplay abilities that match a given tag
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
@@ -71,7 +77,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
 	bool IsAlive();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Die();
 
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
@@ -82,6 +88,18 @@ public:
 
 	UPROPERTY()
 	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UComboContainer>> MainComboChainClasses;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UComboContainer> CurrentCombo;
+
+	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
+	void ResetCombo();
+
+	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
+	void ActivateCombo();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -123,4 +141,15 @@ public:
 	
 	UFUNCTION()
 	void InitDefaultAttributes() const;
+
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class UComboContainer>> MainComboChain;
+
+	int CurrentComboChainIndex;
+
+	/// 
+	/// @return returns the current combo based of the CurrentComboChainIn
+	TObjectPtr<UComboContainer> DetermineCombo();
 };

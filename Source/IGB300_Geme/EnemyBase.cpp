@@ -4,11 +4,13 @@
 #include "EnemyBase.h"
 #include "EnemyManager.h"
 #include "EnemyType.h"
+#include "GameplayStats.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "IGB300_Geme/EnemyType.h"
 #include "UObject/ReferenceChainSearch.h"
+#include "GameplayStats.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -128,7 +130,7 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	{
 		enemyManager->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+
 		Die();
 	}
 }

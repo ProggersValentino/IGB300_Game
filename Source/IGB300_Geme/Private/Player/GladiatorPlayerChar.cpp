@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Engine/DecalActor.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "IGB300_Geme/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -100,6 +101,14 @@ void AGladiatorPlayerChar::InitHUD() const
 void AGladiatorPlayerChar::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	//binding speed attribute changes to the pawn's speed setting
+	AGladiatorPlayerState* playerState = Cast<AGladiatorPlayerState>(GetPlayerState());
+	UGladiatorAttributeSet* ATS = playerState->GetAttributeSet();
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+		ATS->GetSpeedAttribute()).AddUObject(this, &AGladiatorBaseChar::OnSpeedChanged);
+
+	GetCharacterMovement()->MaxWalkSpeed = ATS->GetSpeedAttribute().GetNumericValue(ATS);
 }
 
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
