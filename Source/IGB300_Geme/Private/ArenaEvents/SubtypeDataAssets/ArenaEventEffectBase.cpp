@@ -5,5 +5,12 @@
 
 void UArenaEventEffectBase::Init(UWorld* currentWorld)
 {
-	UWorld* world = currentWorld;
+	WorldRef = currentWorld;
 }
+
+AActor* UArenaEventEffectBase::SpawnActorOfClass(UClass* actorToSpawn, FTransform const& SpawnTransform)
+{
+	return WorldRef->SpawnActor<AActor>(actorToSpawn, SpawnTransform);
+}
+
+

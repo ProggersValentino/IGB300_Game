@@ -23,6 +23,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> DeathUIClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> CoinUIClass;
 	
 	UFUNCTION()
 	void Death();
@@ -50,4 +53,6 @@ private:
 	
 	UPROPERTY()
 	UUserWidget* DeathWidget;
+	UPROPERTY()
+	UUserWidget* CoinWidget;
 };
