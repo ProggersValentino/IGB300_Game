@@ -19,6 +19,11 @@ void AGladiatorHUDBase::Init()
 	CoinWidget->AddToViewport();
 }
 
+UGloryAttributeWidget* AGladiatorHUDBase::GetGloryAttributeWidget()
+{
+	return GloryAttributeWidget;
+}
+
 void AGladiatorHUDBase::Death()
 {
 	DeathWidget = CreateWidget<UUserWidget>(GetOwningPlayerController(), DeathUIClass);

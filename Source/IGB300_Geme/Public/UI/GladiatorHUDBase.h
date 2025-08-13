@@ -30,6 +30,9 @@ public:
 	UFUNCTION()
 	void Death();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual UGloryAttributeWidget* GetGloryAttributeWidget();
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGladiatorAttributeWidget> AttributeWidgetClass;
@@ -39,6 +42,7 @@ protected:
 	
 	/*UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UArenaEventWidget> LoadedArenaEventUIClass;*/
+	
 
 	
 
@@ -47,6 +51,7 @@ private:
 	UGladiatorAttributeWidget* AttributeWidget;
 	UPROPERTY()
 	UGloryAttributeWidget* GloryAttributeWidget;
+	
 
 	/*UPROPERTY()
 	UArenaEventWidget* ArenaEventUI;*/
