@@ -5,4 +5,4 @@ rmdir /s /q "Binaries"
 rmdir /s /q "Intermediate"
 
 echo Done.
-"./IGB300_Geme.uproject"
+echo ./IGB300_Geme.uproject
