@@ -6,9 +6,12 @@
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "CustomError.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "IGB300_Geme/BasicMeleeEnemy.h"
 #include "IGB300_Geme/EnemyManager.h"
 #include "IGB300_Geme/SpawnLocation.h"
+#include "Math/MathFwd.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "EnemySubsystem.generated.h"
 
@@ -32,6 +35,13 @@ struct FSpawnResult
 	int32 RemainingPool;
 };
 
+
+struct FEnemyInfo
+{
+	AActor* Enemy;
+	FVector TargetPos;
+};
+
 UCLASS()
 
 class IGB300_GEME_API UEnemySubsystem : public UWorldSubsystem
@@ -50,9 +60,38 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangePool(EDifficulty Difficulty);
+
+	UFUNCTION(BlueprintCallable)
+	void DeregisterEnemy(AActor* Enemy);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateTargetPositions();
+
+	UFUNCTION(BlueprintCallable)
+	FVector RequestTargetPosition(AActor* Enemy);
+
+	UFUNCTION(BlueprintCallable)
+	FVector RequestPlayerPosition();
 	
 private:
 	TArray<ASpawnLocation*> SpawnLocations;
 
-	bool HasRegisteredSpawns();
+	TArray<FEnemyInfo> EnemyList;
+
+	AActor* Player;
+
+	float ZoneRadius = 300.0f;
+
+	float ArenaRadius = 1500.0f;
+
+	float EnemyBoidRepelThreshold = 200.0f;
+
+	float EnemyBoidRepelStrength = 50.0f;
+
+private:
+	bool DoesLevelContainSpawns();
+
+	FVector TargetEnemyPositionCalculator(FVector EnemyPosition);
+
+	void RetargetEnemyPositionRepel(FEnemyInfo& Enemy);
 };
