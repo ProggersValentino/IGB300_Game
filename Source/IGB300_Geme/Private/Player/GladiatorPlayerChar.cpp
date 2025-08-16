@@ -17,6 +17,7 @@
 #include "Player/GladiatorPlayerController.h"
 #include "Player/GladiatorPlayerState.h"
 #include "UI/GladiatorHUDBase.h"
+#include <cstddef>
 
 // Sets default values
 AGladiatorPlayerChar::AGladiatorPlayerChar()
@@ -299,9 +300,9 @@ void AGladiatorPlayerChar::SetLockedTarget(AEnemyBase* enemies)
 	}
 }
 
-void AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
+AEnemyBase* AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
 {
-	if (enemies.Num() == 0) return;
+	if (enemies.Num() == 0) return NULL;
 	
 	
 	iterator++;
@@ -311,7 +312,8 @@ void AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
 	
 	//if (!IsValid(hitActor)) return; //test to see if actor is still active in scene otherwise return*/
 	
-	if (AEnemyBase* target = Cast<AEnemyBase>(hitActor))
+	AEnemyBase* target = Cast<AEnemyBase>(hitActor);
+	if (target)
 	{
 		GEngine->AddOnScreenDebugMessage(
 			-1,                         // Key (-1 = add new, or use ID to overwrite)
@@ -321,6 +323,7 @@ void AGladiatorPlayerChar::CycleToNextTarget(TArray<FHitResult> enemies)
 		);
 		SetLockedTarget(target);	
 	}
+	return target;
 
 	
 }
@@ -340,10 +343,32 @@ bool AGladiatorPlayerChar::IsInViewOfTarget(AEnemyBase* Target)
 	return dotDifference > CosHalfAngle;
 }
 
-void AGladiatorPlayerChar::ClearLockOn()
+// Returns a reference to the previously locked on target for use in BP
+AEnemyBase* AGladiatorPlayerChar::ClearLockOn()
 {
+	AEnemyBase* oldTarget = CurrentLockedTarget;
+	EnemyDehighlight(oldTarget);
 	CurrentLockedTarget = nullptr;
 	if (IsValid(currentDecal)) currentDecal->DestroyComponent();
+	return oldTarget;
+}
+
+void AGladiatorPlayerChar::EnemyDehighlight(AEnemyBase* Enemy)
+{
+	if (Enemy == NULL)
+	{
+		return;
+	}
+	Enemy->GetMesh()->SetCustomDepthStencilValue(0);
+}
+
+void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
+{
+	if (Enemy == NULL)
+	{
+		return;
+	}
+	Enemy->GetMesh()->SetCustomDepthStencilValue(1);
 }
 
 FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime)

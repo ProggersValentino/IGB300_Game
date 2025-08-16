@@ -153,16 +153,16 @@ protected:
 
 	//cycles to the next target in the array, once at the end it loops back to the beginning
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
-	void CycleToNextTarget(TArray<FHitResult> enemies);
+	AEnemyBase* CycleToNextTarget(TArray<FHitResult> enemies);
 
 	//determines if the player is in view of the locked target which is dependent on the LookZoneBeforeDeactivate value
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	bool IsInViewOfTarget(AEnemyBase* Target);
 
-	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
-	void ClearLockOn();
+	AEnemyBase* ClearLockOn();
 
+	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
 	float InputActionValue; //store the Forward/Backward input action float value
 
@@ -175,6 +175,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Suck To Target", meta=(ToolTip="Shoot a collision trace and return the first enemy hit"))
 	FHitResult DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime);
 	
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void EnemyHighlight(AEnemyBase* Enemy);
 	
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
+	void EnemyDehighlight(AEnemyBase* Enemy);
+
 };
 
