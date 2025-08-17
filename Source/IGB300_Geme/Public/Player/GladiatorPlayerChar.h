@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Engine/DecalActor.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "GladiatorPlayerChar.generated.h"
 
 class AEnemyBase;
@@ -158,6 +159,19 @@ protected:
 	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void ClearLockOn();
+
+	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
+	float InputActionValue; //store the Forward/Backward input action float value
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving forward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
+	float ForwardSTTMultiplier;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving backward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
+	float BackwardSTTMultiplier;
+
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Suck To Target", meta=(ToolTip="Shoot a collision trace and return the first enemy hit"))
+	FHitResult DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime);
+	
 	
 };
 

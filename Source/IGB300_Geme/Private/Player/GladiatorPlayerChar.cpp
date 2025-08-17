@@ -346,6 +346,52 @@ void AGladiatorPlayerChar::ClearLockOn()
 	if (IsValid(currentDecal)) currentDecal->DestroyComponent();
 }
 
+FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime)
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesAllowed;
+	ObjectTypesAllowed.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+	FHitResult hitResult;
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this); //adding the player to ensure it doesnt hit itself
+	
+	
+	float currentPlayerSpeed = GetCharacterMovement()->Velocity.Size();
+
+	GEngine->AddOnScreenDebugMessage(
+			-1,                         // Key (-1 = add new, or use ID to overwrite)
+			5.0f,                       // Duration (seconds)
+			FColor::Green,             // Text color
+			 FString::Printf(TEXT("Player Speed: %f"), currentPlayerSpeed)    // Message
+		);
+	
+	//are we going forward or backward? apply the necessary math to suit each case
+	float STTDirectionMultiplier = InputActionValue > 0 ?
+			(currentPlayerSpeed * InputActionValue) * ForwardSTTMultiplier:
+			(currentPlayerSpeed * InputActionValue) * BackwardSTTMultiplier;
+	
+	//grabbing cam to gets location
+	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
+	FVector StartLoco = GetActorLocation();
+	FVector EndLoco = StartLoco + cam->GetForwardVector() * STTDirectionMultiplier;
+	
+	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), StartLoco, EndLoco, Radius, ObjectTypesAllowed, false, ActorsToIgnore, Debug, hitResult, true,
+		FLinearColor::Red, FLinearColor::Green, debugTraceTime);
+
+	if (!bHit)
+	{
+		return hitResult;
+	}
+
+	//rotate the player to face the target 
+	FRotator newplayerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), hitResult.ImpactPoint);
+		
+	SetActorRotation(FRotator(0, 0, newplayerRot.Yaw));
+	
+	return hitResult;
+}
+
 
 
 
