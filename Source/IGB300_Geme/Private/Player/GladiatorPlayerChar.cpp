@@ -387,7 +387,7 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	//rotate the player to face the target 
 	FRotator newplayerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), hitResult.ImpactPoint);
 		
-	SetActorRotation(FRotator(0, 0, newplayerRot.Yaw));
+	SetActorRotation(FRotator(0, newplayerRot.Yaw, 0));
 	
 	return hitResult;
 }
