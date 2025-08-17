@@ -50,7 +50,10 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move_Implementation();
+	if (isGameplay)
+	{
+		Move_Implementation();
+	}	
 }
 
 bool AEnemyBase::CanDoFinisher() {
@@ -151,3 +154,12 @@ void AEnemyBase::OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayloa
 	}
 }
 
+void AEnemyBase::SetIsGameplay(bool value)
+{
+	isGameplay = value;
+}
+
+bool AEnemyBase::IsGameplay()
+{
+	return isGameplay;
+}

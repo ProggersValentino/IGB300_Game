@@ -23,6 +23,9 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyBase();
 
+	UPROPERTY(EditAnywhere, Category = "Members")
+	bool isGameplay = true;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Members")
 	int32 UID;
 
@@ -73,4 +76,9 @@ public:
 
 	UFUNCTION()
 	void OnNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& Payload);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SetIsGameplay(bool value);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual bool IsGameplay();
 };
