@@ -264,3 +264,8 @@ FVector UEnemySubsystem::RequestPlayerPosition()
 // Setup enemy behaviour                     | public update enemy targets
 // Check for spawns rename
 
+int UEnemySubsystem::GetEnemies()
+{
+	return EnemyPool;
+}
+
