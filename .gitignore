@@ -78,6 +78,10 @@ Saved/*
 Intermediate/*
 Plugins/*/Intermediate/*
 
+# excluding rider binaries & intermediate
+Plugins/*/RiderLink/Binaries
+Plugins/*/RiderLink/Intermediate
+
 # Cache files for the editor to use
 DerivedDataCache/*
 Plugins/BlueprintAssist/NodeSizeCache/*
