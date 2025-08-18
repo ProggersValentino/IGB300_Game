@@ -39,10 +39,11 @@ void AEnemyBase::BeginPlay()
 	//binding to the health attribute so when it changes the function gets called
 	HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
 	
-	AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
-	if (enemyManAct)
-		enemyManager = Cast<AEnemyManager>(enemyManAct);
-	UID = enemyManager->RegisterEnemy(this);
+	// Depreceated
+	// AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
+	// if (enemyManAct)
+	// 	enemyManager = Cast<AEnemyManager>(enemyManAct);
+	// UID = enemyManager->RegisterEnemy(this);
 }
 
 // Called every frame
@@ -128,7 +129,7 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	//kill enemy
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
-		enemyManager->DeregisterEnemy(this);
+		// enemyManager->DeregisterEnemy(this); Depreceated
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		Die();
