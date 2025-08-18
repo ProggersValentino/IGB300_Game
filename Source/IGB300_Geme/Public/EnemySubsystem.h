@@ -35,7 +35,6 @@ struct FSpawnResult
 	int32 RemainingPool;
 };
 
-
 struct FEnemyInfo
 {
 	AActor* Enemy;
@@ -72,6 +71,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FVector RequestPlayerPosition();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual int GetEnemies();
 	
 private:
 	TArray<ASpawnLocation*> SpawnLocations;
