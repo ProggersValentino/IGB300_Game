@@ -79,7 +79,6 @@ Intermediate/*
 Plugins/*/Intermediate/*
 
 # excluding rider binaries & intermediate
-Plugins/*/RiderLink
 Plugins/*/RiderLink/Binaries
 Plugins/*/RiderLink/Intermediate
 
