@@ -359,12 +359,12 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	
 	float currentPlayerSpeed = GetCharacterMovement()->Velocity.Size();
 
-	GEngine->AddOnScreenDebugMessage(
+	/*GEngine->AddOnScreenDebugMessage(
 			-1,                         // Key (-1 = add new, or use ID to overwrite)
 			5.0f,                       // Duration (seconds)
 			FColor::Green,             // Text color
 			 FString::Printf(TEXT("Player Speed: %f"), currentPlayerSpeed)    // Message
-		);
+		);*/
 	
 	//are we going forward or backward? apply the necessary math to suit each case
 	float STTDirectionMultiplier = InputActionValue > 0 ?

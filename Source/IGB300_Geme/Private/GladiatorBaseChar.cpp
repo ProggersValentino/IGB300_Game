@@ -155,12 +155,19 @@ void AGladiatorBaseChar::Die()
 		AbilitySystemComponent->CancelAbilities();
 		FGameplayTagContainer EffectTagsToRemove;
 
+		PostDeathAction();
+		
 		AbilitySystemComponent->AddLooseGameplayTag(DeathTag); //applies to actor while still active and is not permantely registered on the ASC
 	}
 
 	if (DeathMontage) PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
 	else DeathCleanup();
 }
+
+void AGladiatorBaseChar::PostDeathAction_Implementation()
+{
+}
+
 
 void AGladiatorBaseChar::DeathCleanup()
 {

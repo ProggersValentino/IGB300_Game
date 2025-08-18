@@ -78,8 +78,11 @@ public:
 	bool IsAlive();
 	
 	UFUNCTION(BlueprintCallable)
-	void Die();
+	virtual void Die();
 
+	UFUNCTION(BlueprintNativeEvent, Category="Gladiator Abilities", meta=(ToolTip="When the character it activates its PostDeathAction. this is called from the base character"))
+	void PostDeathAction();
+	
 	UFUNCTION(BlueprintCallable, Category="Gladiator Abilities")
 	void DeathCleanup();
 
