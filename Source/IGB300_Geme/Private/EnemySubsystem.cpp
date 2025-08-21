@@ -127,12 +127,18 @@ void UEnemySubsystem::UpdateTargetPositions()
 {
   for (FEnemyInfo &e : EnemyList)
   {
-    e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation());
+  	if (e.Enemy)
+  	{
+  		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation());
+  	}    
   }
 
   for (FEnemyInfo &e : EnemyList)
   {
-    RetargetEnemyPositionRepel(e);
+  	if (e.Enemy)
+  	{
+  		RetargetEnemyPositionRepel(e);
+  	}    
   }
 }
 
