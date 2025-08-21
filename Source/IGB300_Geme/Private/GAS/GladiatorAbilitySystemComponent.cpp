@@ -15,3 +15,13 @@ void UGladiatorAbilitySystemComponent::ReiceveDamage(UGladiatorAbilitySystemComp
 {
 	RecieveDamage.Broadcast(SourceASC,UnmitigatedDamage,MitigatedDamage);
 }
+
+const FGladiatorGameplayEffectContext* UGladiatorAbilitySystemComponent::GetLastHitData() const
+{
+	return LastObjectThatHitData;
+}
+
+void UGladiatorAbilitySystemComponent::SetLastHitData(const FGladiatorGameplayEffectContext* Context)
+{
+	LastObjectThatHitData = Context;
+}

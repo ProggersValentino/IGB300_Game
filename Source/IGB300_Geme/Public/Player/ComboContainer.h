@@ -88,7 +88,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Crowd Influence", meta=(ToolTip="When the player hits something how much excitment does the crowd increase by"))
 	float CrowdInfluencePerHit;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float VerticalForce;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float HorizontalForce;
 	
 private:
 	/*allows control of who can access it where its an enemy or player granted its stemmed from the GladiatorBaseCharacter class*/
@@ -106,7 +111,7 @@ private:
 	void RefreshActivationGoal();
 	
 	FGameplayAbilityTargetDataHandle CreateTargetDataFromHit(const FHitResult& hit);
-
+	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
 	{
@@ -122,5 +127,8 @@ private:
 
 	void OnTimerEnd();
 
+	FGameplayEffectSpec MakeEffectSpec(FGladiatorGameplayEffectContext contextHandle);
+
+	void MakeEffectContext(FGladiatorGameplayEffectContext*& contextRef);
 	
 };

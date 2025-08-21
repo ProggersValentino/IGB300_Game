@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "FGladiatorGameplayEffectContext.h"
 #include "GladiatorAbilitySystemComponent.generated.h"
 
 /**
@@ -23,5 +24,15 @@ public:
 	FRecieveDamageDelegate RecieveDamage;
 	
 	virtual void ReiceveDamage(UGladiatorAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
+
+	const FGladiatorGameplayEffectContext* GetLastHitData() const;
+
+	void SetLastHitData(const FGladiatorGameplayEffectContext* Context);
+
+	
+protected:
+	/*utility variable for applications that needs to call upon the last thing that hit the object as well as relative data like hit location*/
+	const FGladiatorGameplayEffectContext* LastObjectThatHitData;
+
 	
 };

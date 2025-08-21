@@ -19,9 +19,17 @@ struct FGladiatorGameplayEffectContext : public FGameplayEffectContext
 
 	FGladiatorGameplayEffectContext();
 
+	FGladiatorGameplayEffectContext(AActor* instigator, AActor* effectCauser);
+
 	public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Data_Damage = 0.0f; 
+	float Data_Damage = 0.0f;  
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Data_Knockack_verticalForce = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Data_Knockack_HorrizontalForce = 0.0f;  
 	
 	virtual UScriptStruct* GetScriptStruct() const override
 	{

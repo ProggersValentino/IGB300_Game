@@ -5,6 +5,8 @@
 
 #include "GladiatorBaseChar.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/GladiatorPlayerChar.h"
+#include "Player/GladiatorPlayerState.h"
 #include "Stats/StatsData.h"
 
 void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
@@ -15,6 +17,7 @@ void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 	CrowdSubsystem = GetWorld()->GetSubsystem<UCrowdWorldSubsystem>(); //get access to crowd subsystem
 	
 	RefreshActivationGoal();
+	
 	
 	/*if we have a subchain abiltiy then we init that*/
 	if (!IsValid(SubChainAbilityClass)) return;
@@ -27,25 +30,38 @@ void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 
 void UComboContainer::ExecuteCombo()
 {
+	/*abilitySpec = MakeAbilitySpec(ChosenAbility, MakeEffectContext());*/
+	
 	//activate 
 	if (IsValid(subChainAbility) && currentHitStreak == SubchainActivationGoal)
 	{
+		/*abilitySpec.Ability = subChainAbility->ChosenAbility;*/
 		selectedCharacter->TryActivateAbilityByClass(subChainAbility->ChosenAbility);
 		RefreshActivationGoal();
 		return;
 	} 
 	
 	selectedCharacter->TryActivateAbilityByClass(ChosenAbility);
+	
 }
 
 void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 {
 	FGameplayEventData eventData;
-	eventData.Instigator = selectedCharacter->GetOwner();
-
+	eventData.Instigator = selectedCharacter->GetOwnerActor();
+	
+	
 	/*apply effects to all results*/
 	for (FHitResult hitActor : result)
 	{
+		FGladiatorGameplayEffectContext* newContext;
+		MakeEffectContext(newContext);
+		
+		FGameplayEffectContextHandle Handle(newContext); //make the handle responsible for the lifetime of the newContext
+		eventData.ContextHandle = Handle;
+		Handle.Get()->AddHitResult(hitActor);
+		eventData.ContextHandle = Handle;
+
 		eventData.Target = hitActor.GetActor();
 		eventData.TargetData = CreateTargetDataFromHit(hitActor);
 		selectedCharacter->HandleGameplayEvent(gameplayEventTag, &eventData);
@@ -57,6 +73,7 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 		{
 			SlowGameOnHit(SlowTimeDilationTo, SlowmoTime);
 		}
+		
 	}
 	
 }
@@ -97,6 +114,31 @@ void UComboContainer::OnTimerEnd()
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+}
+
+FGameplayEffectSpec UComboContainer::MakeEffectSpec(FGladiatorGameplayEffectContext contextHandle)
+{
+	AGladiatorPlayerChar* Player = Cast<AGladiatorPlayerChar, AActor>( selectedCharacter->GetAvatarActor());
+
+	
+	
+
+	
+	FGameplayEffectSpec effectSpc = FGameplayEffectSpec();
+	
+	return effectSpc;
+}
+
+void UComboContainer::MakeEffectContext(FGladiatorGameplayEffectContext*& contextRef)
+{
+	/*allocate new context on the heap*/
+	FGladiatorGameplayEffectContext* context_allo = new FGladiatorGameplayEffectContext(selectedCharacter->GetAvatarActor(), selectedCharacter->GetAvatarActor());
+
+	context_allo->Data_Knockack_verticalForce = VerticalForce;
+	context_allo->Data_Knockack_HorrizontalForce = HorizontalForce;
+	
+	contextRef = context_allo;
+	
 }
 
 
