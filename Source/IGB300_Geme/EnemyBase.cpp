@@ -5,6 +5,8 @@
 #include "EnemyManager.h"
 #include "EnemyType.h"
 #include "GameplayStats.h"
+#include "Engine/World.h"
+#include "EnemySubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
