@@ -133,6 +133,7 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
 		// enemyManager->DeregisterEnemy(this); Depreceated
+		GetWorld()->GetSubsystem<UEnemySubsystem>()->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		Die();
