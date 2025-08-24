@@ -5,6 +5,8 @@
 #include "EnemyManager.h"
 #include "EnemyType.h"
 #include "GameplayStats.h"
+#include "Engine/World.h"
+#include "EnemySubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
@@ -133,6 +135,7 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
 		// enemyManager->DeregisterEnemy(this); Depreceated
+		GetWorld()->GetSubsystem<UEnemySubsystem>()->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		Die();
