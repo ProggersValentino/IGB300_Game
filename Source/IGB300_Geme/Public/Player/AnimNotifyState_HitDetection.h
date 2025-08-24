@@ -33,7 +33,7 @@ public:
 	/// @param MeshComponent the mesh component thats activating the notify state
 	/// @return 
 	UFUNCTION(BlueprintCallable)
-	TArray<FHitResult> GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType);
+	TArray<FHitResult> GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, int subSteps, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType);
 
 	TArray<FHitResult> FrameDependentDetection(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, EDrawDebugTrace::Type drawType);
 	TArray<FHitResult> FrameIndependentDetection(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, int substeps, EDrawDebugTrace::Type drawType);

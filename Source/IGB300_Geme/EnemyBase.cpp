@@ -23,7 +23,9 @@ AEnemyBase::AEnemyBase()
 	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
 
 	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	
 
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
@@ -32,11 +34,19 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (AbilitySystemComponent)
+	{
+		//ability setup releated
+		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
+		GiveDefaultAbilities();
+		InitDefaultAttributes();
+		
+		//binding to the health attribute so when it changes the function gets called
+		HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
+	}
 
 	
-
-	//binding to the health attribute so when it changes the function gets called
-	HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
 	
 	// Depreceated
 	// AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
@@ -49,13 +59,7 @@ void AEnemyBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (AbilitySystemComponent)
-	{
-		//ability setup releated
-		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
-		GiveDefaultAbilities();
-		InitDefaultAttributes();
-	}
+	
 }
 
 // Called every frame

@@ -204,7 +204,7 @@ void AGladiatorPlayerChar::LerpToTarget(const AActor* target, float time)
 
 void AGladiatorPlayerChar::LerpPlayerRotation(float time)
 {
-	if (!bIsPlayerLerping) return;
+	if (!bIsPlayerLerping && bPlayerIsSuckingToTarget) return;
 	
 	if (PlayerOverTime < time)
 	{
