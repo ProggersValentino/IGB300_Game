@@ -25,7 +25,6 @@ AEnemyBase::AEnemyBase()
 	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-	
 
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }

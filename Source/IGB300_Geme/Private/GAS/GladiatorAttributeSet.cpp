@@ -105,8 +105,8 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 			/*cache the last actor to hit this actor and save it for later use i.e. executing an ability after death*/
 			asc->SetLastHitData(context);
 
-			FString Message = FString::Printf(TEXT("context: %s"), *context.Get()->GetInstigator()->GetName());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);
+			/*FString Message = FString::Printf(TEXT("context: %s"), *context.Get()->GetInstigator()->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);*/
 		}
 
 		
