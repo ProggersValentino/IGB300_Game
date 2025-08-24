@@ -25,14 +25,16 @@ public:
 	
 	virtual void ReiceveDamage(UGladiatorAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 
-	const FGladiatorGameplayEffectContext* GetLastHitData() const;
+	const FGameplayEffectContextHandle GetLastHitData() const;
 
-	void SetLastHitData(const FGladiatorGameplayEffectContext* Context);
+	void SetLastHitData(const FGameplayEffectContextHandle Context);
 
+	/*translate the cache into Event Data for gameplay ability*/
+	FGameplayEventData MakeLastHitEventData() const;
 	
 protected:
 	/*utility variable for applications that needs to call upon the last thing that hit the object as well as relative data like hit location*/
-	const FGladiatorGameplayEffectContext* LastObjectThatHitData;
+	FGameplayEffectContextHandle LastObjectThatHitData;
 
 	
 };

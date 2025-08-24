@@ -33,10 +33,7 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ability setup releated
-	AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
-	GiveDefaultAbilities();
-	InitDefaultAttributes();
+	
 
 	//binding to the health attribute so when it changes the function gets called
 	HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
@@ -46,6 +43,19 @@ void AEnemyBase::BeginPlay()
 	// if (enemyManAct)
 	// 	enemyManager = Cast<AEnemyManager>(enemyManAct);
 	// UID = enemyManager->RegisterEnemy(this);
+}
+
+void AEnemyBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (AbilitySystemComponent)
+	{
+		//ability setup releated
+		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
+		GiveDefaultAbilities();
+		InitDefaultAttributes();
+	}
 }
 
 // Called every frame
@@ -139,6 +149,13 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		Die();
+
+		if (KnockBackAbility)
+		{
+			FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
+			FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
+			AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
+		}
 	}
 }
 

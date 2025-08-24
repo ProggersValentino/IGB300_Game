@@ -46,6 +46,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
 	bool canMove;
+
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
@@ -57,8 +58,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Members")
+	TSubclassOf<UGameplayAbility> KnockBackAbility;
+
+	/*runs before begin player and after initialisation of constructor*/
+	virtual void PostInitializeComponents() override;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -99,13 +99,17 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 
 		
 		UGladiatorAbilitySystemComponent* asc = Cast<UGladiatorAbilitySystemComponent, UAbilitySystemComponent>(GetOwningAbilitySystemComponent());
-		const FGladiatorGameplayEffectContext* context = static_cast<const FGladiatorGameplayEffectContext*>(Data.EffectSpec.GetEffectContext().Get());
+		if (Data.EffectSpec.GetEffectContext().IsValid())
+		{
+			const FGameplayEffectContextHandle context = Data.EffectSpec.GetEffectContext();
+			/*cache the last actor to hit this actor and save it for later use i.e. executing an ability after death*/
+			asc->SetLastHitData(context);
 
-		/*cache the last actor to hit this actor and save it for later use i.e. executing an ability after death*/
-		asc->SetLastHitData(context);
+			FString Message = FString::Printf(TEXT("context: %s"), *context.Get()->GetInstigator()->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);
+		}
 
-		FString Message = FString::Printf(TEXT("context: %s as well as X: %f Y: %f"), *context->GetInstigator()->GetName(), context->Data_Knockack_HorrizontalForce, context->Data_Knockack_verticalForce);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);
+		
 		
 		//apply damage
 		SetHealth(FMath::Clamp(newHealth, 0.0f, GetMaxHealth()));

@@ -11,17 +11,26 @@ void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 	if (!IsValid(MeshComponent)) return;
 	
 	character = Cast<AGladiatorBaseChar>(MeshComponent->GetOwner()); //set the global character var here
-
+	
 	ActorsHitToIgnore.AddUnique(character);
-}
 
-TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName)
+	prevLoco = SocketToAttachTo == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(SocketToAttachTo);
+} 
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType)
 {
 	if (!IsValid(MeshComponent) && !IsValid(character))
 	{
 		return TArray<FHitResult>();
 	}
+
+	return FrameIndependentDetection(MeshComponent, radius, socketName, 1, drawType);
 	
+}
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::FrameDependentDetection(USkeletalMeshComponent* MeshComponent, float radius,
+	FName socketName, EDrawDebugTrace::Type drawType)
+{
 	FVector startLoco = socketName == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(socketName); //if socket name has been passed then add it in location otherwise use the characters location
 	
 	//adding the collisions to look for 
@@ -56,6 +65,49 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkelet
 	
 
 	return hits;
+}
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::FrameIndependentDetection(USkeletalMeshComponent* MeshComponent,
+	float radius, FName socketName, int substeps = 1, EDrawDebugTrace::Type drawType = EDrawDebugTrace::None)
+{
+	FCollisionObjectQueryParams objectParams;
+	objectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+
+	FCollisionQueryParams collisionParams;
+	collisionParams.AddIgnoredActors(ActorsHitToIgnore); //set ignored actors
+	
+	FVector currentLoco = socketName == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(socketName);
+
+	float capsuleHeight = (prevLoco - currentLoco).Size();
+	FCollisionShape CollisionShapeType = FCollisionShape::MakeCapsule(radius, capsuleHeight);
+
+	TArray<FHitResult> hits;
+	
+	bool bHit = GetWorld()->SweepMultiByObjectType(
+		hits, prevLoco, currentLoco,
+		FQuat::Identity,
+		objectParams,
+		CollisionShapeType,
+		collisionParams);
+
+	if (!bHit)
+	{
+		DrawDebugCapsule(GetWorld(), prevLoco - currentLoco, capsuleHeight, radius, FQuat::Identity, FColor::Red, true, 5.f);
+		return TArray<FHitResult>();
+	}
+	else
+	{
+		DrawDebugCapsule(GetWorld(), prevLoco - currentLoco, capsuleHeight, radius, FQuat::Identity, FColor::Green, true, 5.f);
+	}
+
+	for (FHitResult hit : hits)
+	{
+		ActorsHitToIgnore.AddUnique(hit.GetActor());
+	}
+	
+	prevLoco = currentLoco; //set the prev to the currentloco at the end 
+	
+	return TArray<FHitResult>();
 }
 
 bool UAnimNotifyState_HitDetection::DidAbilityCollide()

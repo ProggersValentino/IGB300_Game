@@ -30,6 +30,7 @@ struct FGladiatorGameplayEffectContext : public FGameplayEffectContext
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Data_Knockack_HorrizontalForce = 0.0f;  
+
 	
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
@@ -40,6 +41,7 @@ struct FGladiatorGameplayEffectContext : public FGameplayEffectContext
 	{
 		return new FGladiatorGameplayEffectContext(*this);
 	}
+
 	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 };
