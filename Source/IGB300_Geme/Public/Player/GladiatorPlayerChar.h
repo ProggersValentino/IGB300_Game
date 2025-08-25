@@ -112,6 +112,9 @@ protected:
 	UPROPERTY()
 	AEnemyBase* CurrentLockedTarget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Input")
+	bool bPlayerIsSuckingToTarget = false;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsLocking = false;
 	bool bCanBeLocked = false;

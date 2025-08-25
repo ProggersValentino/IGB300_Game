@@ -115,7 +115,6 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		if (FGladiatorGameplayEffectContext* context = static_cast<FGladiatorGameplayEffectContext*>(Spec.GetContext().Get()))
 		{
 			context->Data_Damage = MitigatedDamage; //set custom context's data to the final calculated dmg
-		
 			UE_LOG(LogTemp, Warning, TEXT("Context is: %s"), *context->ToString());
 			UE_LOG(LogTemp, Warning, TEXT("Context is: %f"), context->Data_Damage);
 			

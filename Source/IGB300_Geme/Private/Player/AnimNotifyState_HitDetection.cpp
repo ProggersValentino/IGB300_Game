@@ -11,17 +11,37 @@ void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 	if (!IsValid(MeshComponent)) return;
 	
 	character = Cast<AGladiatorBaseChar>(MeshComponent->GetOwner()); //set the global character var here
-
+	
 	ActorsHitToIgnore.AddUnique(character);
-}
 
-TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName)
+	prevLoco = SocketToAttachTo == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(SocketToAttachTo);
+} 
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, int subSteps, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType)
 {
 	if (!IsValid(MeshComponent) && !IsValid(character))
 	{
 		return TArray<FHitResult>();
 	}
+	TArray<FHitResult> hitResults;
+	switch (traceMode)
+	{
+		case ETraceType::Continuous:
+			 hitResults = FrameIndependentDetection(MeshComponent, radius, socketName, subSteps, drawType);
+			break;
+	case ETraceType::Discrete:
+		hitResults = FrameDependentDetection(MeshComponent, radius, socketName, drawType);
+		break;
+	}
 	
+	//
+
+	return hitResults;
+}
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::FrameDependentDetection(USkeletalMeshComponent* MeshComponent, float radius,
+	FName socketName, EDrawDebugTrace::Type drawType)
+{
 	FVector startLoco = socketName == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(socketName); //if socket name has been passed then add it in location otherwise use the characters location
 	
 	//adding the collisions to look for 
@@ -40,7 +60,7 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkelet
 		ObjectTypes,
 		false,
 		ActorsHitToIgnore,
-		EDrawDebugTrace::None,
+		drawType,
 		hits,
 		true);
 
@@ -55,6 +75,81 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkelet
 	}
 	
 
+	return hits;
+}
+
+TArray<FHitResult> UAnimNotifyState_HitDetection::FrameIndependentDetection(USkeletalMeshComponent* MeshComponent,
+	float radius, FName socketName, int substeps = 1, EDrawDebugTrace::Type drawType = EDrawDebugTrace::None)
+{
+	FCollisionObjectQueryParams objectParams;
+	objectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+
+	FCollisionQueryParams collisionParams;
+	collisionParams.AddIgnoredActors(ActorsHitToIgnore); //set ignored actors
+	
+	FVector currentLoco = socketName == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(socketName);
+
+	/*currentLoco += currentLoco.RightVector * 10;*/ 
+	
+	FCollisionShape CollisionShapeType = FCollisionShape::MakeSphere(radius);
+
+	TArray<FHitResult> hits;
+
+	FVector rotationDirection = currentLoco - prevLoco; 
+	FRotator rot = rotationDirection.Rotation();
+	FQuat rotQuat = rot.Quaternion();
+	bool bHit;
+	//substeping - calculate what each segment will be 
+	FVector segment = (currentLoco - prevLoco) / substeps;
+
+	for (int i = 0; i < substeps; ++i)
+	{
+		//calculate the start loco and endloco from the prevLoco  
+		FVector startLoco = prevLoco + segment * i; //getting the start location
+		FVector EndLoco = prevLoco + segment * (i + 1);
+
+		/*sweep that area*/
+		bHit = character->GetWorld()->SweepMultiByObjectType(
+		hits, startLoco, EndLoco,
+		FQuat::Identity,
+		objectParams,
+		CollisionShapeType,
+		collisionParams);
+
+		if (drawType != EDrawDebugTrace::None)
+		{
+			DrawDebugSphere(character->GetWorld(), currentLoco, radius, 20, (!bHit ? FColor::Red : FColor::Green), false, 5.f);
+		}
+
+		//if we hit something 
+		for (FHitResult hit : hits)
+		{
+			ActorsHitToIgnore.AddUnique(hit.GetActor());
+		}
+		
+		
+	}
+	
+	
+
+	prevLoco = currentLoco; //set the prev to the currentloco at the end 
+	UE_LOG(LogTemp, Warning, TEXT("new prevLoco: %f %f %f"), prevLoco.X, prevLoco.Y, prevLoco.Z);
+
+	
+	
+	if (!bHit)
+	{
+		return TArray<FHitResult>();
+	}
+
+	
+
+	
+	
+	
+
+	
+	
 	return hits;
 }
 
