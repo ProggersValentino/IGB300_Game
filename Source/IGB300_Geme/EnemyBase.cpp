@@ -23,9 +23,9 @@ AEnemyBase::AEnemyBase()
 	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
 
 	
-	/*AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);*/
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
