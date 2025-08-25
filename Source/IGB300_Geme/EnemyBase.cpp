@@ -26,7 +26,8 @@ AEnemyBase::AEnemyBase(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
-
+	
+	
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
 
@@ -162,6 +163,8 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 			FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
 			AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
 		}
+
+		GetWorldTimerManager().SetTimer(timerHandle, this, &AEnemyBase::DeathCleanup, timeTillRemoved, false);
 	}
 }
 

@@ -89,4 +89,8 @@ public:
 	virtual void SetIsGameplay(bool value);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual bool IsGameplay();
+
+	FTimerHandle timerHandle;
+	float timeTillRemoved = 2.f;
+	
 };
