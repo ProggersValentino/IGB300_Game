@@ -25,6 +25,11 @@ AGladiatorBaseChar::AGladiatorBaseChar()
 	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
 }
 
+AGladiatorBaseChar::AGladiatorBaseChar(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	
+}
+
 void AGladiatorBaseChar::Init()
 {
 	MainComboChain.Reserve(MainComboChainClasses.Num());
@@ -148,7 +153,7 @@ void AGladiatorBaseChar::Die()
 {
 	RemoveAbilities();
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);*/
 
 	if (AbilitySystemComponent->IsValidLowLevel())
 	{
@@ -160,8 +165,8 @@ void AGladiatorBaseChar::Die()
 		AbilitySystemComponent->AddLooseGameplayTag(DeathTag); //applies to actor while still active and is not permantely registered on the ASC
 	}
 
-	if (DeathMontage) PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
-	else DeathCleanup();
+	/*if (DeathMontage) PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
+	else DeathCleanup();*/
 }
 
 void AGladiatorBaseChar::PostDeathAction_Implementation()

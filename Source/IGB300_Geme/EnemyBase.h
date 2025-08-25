@@ -21,7 +21,7 @@ class IGB300_GEME_API AEnemyBase : public AGladiatorBaseChar, public IIEnemy, pu
 	
 public:	
 	// Sets default values for this actor's properties
-	AEnemyBase();
+	AEnemyBase(const FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, Category = "Members")
 	bool isGameplay = true;
@@ -46,6 +46,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
 	bool canMove;
+
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
@@ -57,8 +58,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category = "Members")
+	TSubclassOf<UGameplayAbility> KnockBackAbility;
+
+	/*runs before begin player and after initialisation of constructor*/
+	virtual void PostInitializeComponents() override;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -83,4 +89,8 @@ public:
 	virtual void SetIsGameplay(bool value);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual bool IsGameplay();
+
+	FTimerHandle timerHandle;
+	float timeTillRemoved = 2.f;
+	
 };

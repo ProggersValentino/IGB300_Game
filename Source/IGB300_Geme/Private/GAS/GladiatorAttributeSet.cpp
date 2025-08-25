@@ -4,6 +4,7 @@
 #include "GAS/GladiatorAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
+#include "GAS/GladiatorAbilitySystemComponent.h"
 
 UGladiatorAttributeSet::UGladiatorAttributeSet()
 {
@@ -95,11 +96,24 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 	{	
 		float newHealth = GetHealth() - GetDamage();
 		SetDamage(0.f); //resetting damage to 0 to ensure it wont poision any future damage calculations
+
+		
+		UGladiatorAbilitySystemComponent* asc = Cast<UGladiatorAbilitySystemComponent, UAbilitySystemComponent>(GetOwningAbilitySystemComponent());
+		if (Data.EffectSpec.GetEffectContext().IsValid())
+		{
+			const FGameplayEffectContextHandle context = Data.EffectSpec.GetEffectContext();
+			/*cache the last actor to hit this actor and save it for later use i.e. executing an ability after death*/
+			asc->SetLastHitData(context);
+
+			/*FString Message = FString::Printf(TEXT("context: %s"), *context.Get()->GetInstigator()->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);*/
+		}
+
+		
 		
 		//apply damage
 		SetHealth(FMath::Clamp(newHealth, 0.0f, GetMaxHealth()));
 	}
-	
 	
 }
 

@@ -5,6 +5,8 @@
 #include "EnemyManager.h"
 #include "EnemyType.h"
 #include "GameplayStats.h"
+#include "Engine/World.h"
+#include "EnemySubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
@@ -13,16 +15,19 @@
 #include "GameplayStats.h"
 
 // Sets default values
-AEnemyBase::AEnemyBase()
+AEnemyBase::AEnemyBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
-
-	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	
+	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(this, TEXT("AbilitySystemComponentV2"));
+	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-
+	
+	
+	
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
 
@@ -30,20 +35,34 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (AbilitySystemComponent)
+	{
+		
+		
+		//ability setup releated
+		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
+		GiveDefaultAbilities();
+		InitDefaultAttributes();
+		
+		//binding to the health attribute so when it changes the function gets called
+		HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
+	}
 
-	//ability setup releated
-	AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
-	GiveDefaultAbilities();
-	InitDefaultAttributes();
-
-	//binding to the health attribute so when it changes the function gets called
-	HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
+	
 	
 	// Depreceated
 	// AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
 	// if (enemyManAct)
 	// 	enemyManager = Cast<AEnemyManager>(enemyManAct);
 	// UID = enemyManager->RegisterEnemy(this);
+}
+
+void AEnemyBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	
 }
 
 // Called every frame
@@ -133,9 +152,19 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
 		// enemyManager->DeregisterEnemy(this); Depreceated
+		GetWorld()->GetSubsystem<UEnemySubsystem>()->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		Die();
+
+		if (KnockBackAbility)
+		{
+			FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
+			FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
+			AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
+		}
+
+		GetWorldTimerManager().SetTimer(timerHandle, this, &AEnemyBase::DeathCleanup, timeTillRemoved, false);
 	}
 }
 

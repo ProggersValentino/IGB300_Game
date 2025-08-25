@@ -16,9 +16,11 @@ type Module struct {
 }
 
 type Plugin struct {
-	Name            string
-	Enabled         bool
-	TargetAllowList []string
+	Name                     string
+	Enabled                  bool
+	MarketplaceURL           string
+	SupportedTargetPlatforms []string
+	TargetAllowList          []string
 }
 
 type ProjectConfig struct {
@@ -39,7 +41,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	data := make([]byte, 1000)
+	data := make([]byte, 10000)
 	count, err := file.Read(data)
 	if err != nil {
 		log.Fatal(err)

@@ -5,11 +5,21 @@
 #include "CoreMinimal.h"
 #include "GladiatorBaseChar.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "AnimNotifyState_HitDetection.generated.h"
 
 /**
  * 
  */
+UENUM(BlueprintType)
+enum ETraceType : uint8
+{
+	Discrete, Continuous
+};
+
+
+
+
 UCLASS()
 class IGB300_GEME_API UAnimNotifyState_HitDetection : public UAnimNotifyState
 {
@@ -23,8 +33,11 @@ public:
 	/// @param MeshComponent the mesh component thats activating the notify state
 	/// @return 
 	UFUNCTION(BlueprintCallable)
-	TArray<FHitResult> GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, FName socketName);
+	TArray<FHitResult> GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, int subSteps, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType);
 
+	TArray<FHitResult> FrameDependentDetection(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, EDrawDebugTrace::Type drawType);
+	TArray<FHitResult> FrameIndependentDetection(USkeletalMeshComponent* MeshComponent, float radius, FName socketName, int substeps, EDrawDebugTrace::Type drawType);
+	
 	/*to give a clear signal whether during the ability hit at least one thing over the course of the attack*/
 	bool DidAbilityCollide();
 
@@ -44,6 +57,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	AGladiatorBaseChar* character;
 
+protected:
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite, meta = (ToolTip="Used to set what socket will be used during the anim notify"))
+	FName SocketToAttachTo;
+	
 private:
 	bool didHit;
+	FVector prevLoco;
+
+	
 };

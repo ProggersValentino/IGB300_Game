@@ -7,6 +7,11 @@ FGladiatorGameplayEffectContext::FGladiatorGameplayEffectContext()
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("Gladiator Context Created"));
 }
 
+FGladiatorGameplayEffectContext::FGladiatorGameplayEffectContext(AActor* instigator, AActor* effectCauser)
+{
+	FGameplayEffectContext::AddInstigator(instigator, effectCauser);
+}
+
 bool FGladiatorGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
 {
 	return FGameplayEffectContext::NetSerialize(Ar, Map, bOutSuccess);

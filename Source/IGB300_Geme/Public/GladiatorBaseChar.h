@@ -32,6 +32,7 @@ private:
 public:
 	// Sets default values for this character's properties
 	AGladiatorBaseChar();
+	AGladiatorBaseChar(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
 	void Init();

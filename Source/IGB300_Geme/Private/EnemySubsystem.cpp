@@ -53,17 +53,17 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnem
   {
     case EDifficulty::NORMAL:
     {
-      SpawnAmount = 3;
+      SpawnAmount = 10;
     } break;
 
     case EDifficulty::HARD:
     {
-      SpawnAmount = 5;
+      SpawnAmount = 15;
     } break;
 
     case EDifficulty::HARDEST:
     {
-      SpawnAmount = 7;
+      SpawnAmount = 25;
     } break;
   }
 
