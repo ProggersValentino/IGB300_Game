@@ -15,17 +15,17 @@
 #include "GameplayStats.h"
 
 // Sets default values
-AEnemyBase::AEnemyBase()
+AEnemyBase::AEnemyBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	targetMovePos = FVector(0.0f, 0.0f, 0.0f);
-
 	
-	AbilitySystemComponent = CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UGladiatorAbilitySystemComponent>(this, TEXT("AbilitySystemComponentV2"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	
 
 	AttributeSet = CreateDefaultSubobject<UGladiatorAttributeSet>("AttributeSet");
 }
@@ -37,6 +37,8 @@ void AEnemyBase::BeginPlay()
 	
 	if (AbilitySystemComponent)
 	{
+		
+		
 		//ability setup releated
 		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
 		GiveDefaultAbilities();

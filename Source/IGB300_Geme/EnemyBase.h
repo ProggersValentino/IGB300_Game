@@ -21,7 +21,7 @@ class IGB300_GEME_API AEnemyBase : public AGladiatorBaseChar, public IIEnemy, pu
 	
 public:	
 	// Sets default values for this actor's properties
-	AEnemyBase();
+	AEnemyBase(const FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, Category = "Members")
 	bool isGameplay = true;

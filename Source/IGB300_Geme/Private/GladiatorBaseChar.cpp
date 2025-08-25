@@ -25,6 +25,11 @@ AGladiatorBaseChar::AGladiatorBaseChar()
 	DeathTag = FGameplayTag::RequestGameplayTag("Gameplay.State.Death");
 }
 
+AGladiatorBaseChar::AGladiatorBaseChar(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	
+}
+
 void AGladiatorBaseChar::Init()
 {
 	MainComboChain.Reserve(MainComboChainClasses.Num());
