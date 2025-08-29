@@ -61,6 +61,10 @@
 				"Win64",
 				"Android"
 			]
+		},
+		{
+			"Name": "NiagaraFluids",
+			"Enabled": true
 		}
 	]
 }
