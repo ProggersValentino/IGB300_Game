@@ -58,6 +58,8 @@ protected:
 		ClampMax = "2.", UIMin = "0.5", UIMax = "2."))
 	float sensivity = 1.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
+	bool bUseCameraLerpWithMouse = true;
 	
 public:
 	// Sets default values for this character's properties

@@ -63,7 +63,10 @@ void AGladiatorPlayerChar::SetupPlayerInputComponent(UInputComponent* playerInpu
 void AGladiatorPlayerChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	LerpCameraSystem(mouseInput);
+	if (bUseCameraLerpWithMouse)
+	{
+		LerpCameraSystem(mouseInput);
+	}
 
 	mouseInput = FVector2D::ZeroVector;
 	
