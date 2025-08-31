@@ -49,7 +49,7 @@ class IGB300_GEME_API UEnemySubsystem : public UWorldSubsystem
 		
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 EnemyPool = 30;
+	int32 EnemyPool = 100;
 
 public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;

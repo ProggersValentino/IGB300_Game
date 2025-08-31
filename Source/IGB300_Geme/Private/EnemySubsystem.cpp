@@ -51,14 +51,18 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnem
   int SpawnAmount = 0;
   switch (Difficulty)
   {
+  case EDifficulty::EASY:
+	  {
+		  SpawnAmount = 1;
+	  } break;
     case EDifficulty::NORMAL:
     {
-      SpawnAmount = 5;
+      SpawnAmount = 3;
     } break;
 
     case EDifficulty::HARD:
     {
-      SpawnAmount = 10;
+      SpawnAmount = 7;
     } break;
 
     case EDifficulty::HARDEST:
@@ -105,19 +109,23 @@ void UEnemySubsystem::ChangePool(EDifficulty Difficulty)
 {
   switch (Difficulty)
   {
+  	case EDifficulty::EASY:
+  		{
+  			EnemyPool = 10;
+  		} return;
     case EDifficulty::NORMAL:
     {
-      EnemyPool = 12;
+      EnemyPool = 25;
     } return;
 
     case EDifficulty::HARD:
     {
-      EnemyPool = 20;
+      EnemyPool = 50;
     } return;
 
     case EDifficulty::HARDEST:
     {
-      EnemyPool = 28;
+      EnemyPool = 75;
     } return;
   }
 }
