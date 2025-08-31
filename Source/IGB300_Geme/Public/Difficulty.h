@@ -11,7 +11,8 @@
 UENUM(BlueprintType)
 enum class EDifficulty : uint8
 {
- 	NORMAL  = 0 UMETA(DisplayName = "NORMAL"),
- 	HARD    = 1 UMETA(DisplayName = "HARD"),
- 	HARDEST = 2 UMETA(DisplayName = "HARDEST")
+	EASY = 0 UMETA(DisplayName = "EASY"),
+ 	NORMAL  = 1 UMETA(DisplayName = "NORMAL"),
+ 	HARD    = 2 UMETA(DisplayName = "HARD"),
+ 	HARDEST = 3 UMETA(DisplayName = "HARDEST")
 };
