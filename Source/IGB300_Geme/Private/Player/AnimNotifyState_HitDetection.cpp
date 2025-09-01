@@ -14,7 +14,7 @@ void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 	
 	ActorsHitToIgnore.AddUnique(character);
 
-	prevLoco = SocketToAttachTo == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(SocketToAttachTo);
+	if (IsRunningGame()) prevLoco = SocketToAttachTo == "None" ? character->GetActorLocation() : MeshComponent->GetSocketLocation(SocketToAttachTo);
 } 
 
 TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkeletalMeshComponent* MeshComponent, float radius, int subSteps, FName socketName, ETraceType traceMode, EDrawDebugTrace::Type drawType)

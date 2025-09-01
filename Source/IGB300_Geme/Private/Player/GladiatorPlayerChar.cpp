@@ -132,9 +132,19 @@ void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& insta
 
 void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 {
+	float currentSpeed = GetCharacterMovement()->Velocity.Size();
+	
 	LerpInput(mouseInput, CameraLerpTime);
-	LerpPlayerRotation(PlayerLerpTime);	
 
+	/*we only want the player model to follow the direction of the camera if the player is moving
+	 */
+	if (currentSpeed > 2.0f)
+	{
+		LerpPlayerRotation(PlayerLerpTime);		
+	}
+	
+
+	//lock on target system 
 	if (IsValid(CurrentLockedTarget) && bCanBeLocked)
 	{
 		if (!IsInViewOfTarget(CurrentLockedTarget)) //if we arent in view of the target disconnect the lock on 
