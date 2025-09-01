@@ -105,7 +105,7 @@ protected:
 
 	void LerpToTarget(const AActor* target, float time);
 	
-	//slerps the player character to where the player is looking with the camera
+	//slerps the player character to where the camera is looking 
 	void LerpPlayerRotation(float time);
 
 	//returns the calculated drag value based on the drag setting
