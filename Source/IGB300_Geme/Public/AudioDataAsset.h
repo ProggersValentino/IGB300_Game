@@ -15,16 +15,16 @@ USTRUCT(Blueprintable)
 struct FAudioInfo {
 	GENERATED_BODY()
  				 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FString AssetName;
  				 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundWave* AssetSoundWave;
  				 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMetaSoundSource* MetaSoundSource;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* AudioComponent; 
 };
 
@@ -32,8 +32,9 @@ UCLASS(Blueprintable)
 class IGB300_GEME_API UAudioDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere)
+
+	public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<FAudioInfo> AudioItems;
 	
 };
