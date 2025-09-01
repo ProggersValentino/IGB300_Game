@@ -8,7 +8,9 @@
 #include "InputAction.h"
 #include "Engine/DecalActor.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Camera/CameraShakeBase.h"
 #include "GladiatorPlayerChar.generated.h"
+
 
 class AEnemyBase;
 
@@ -60,6 +62,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
 	bool bUseCameraLerpWithMouse = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is idle then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> IdleShake;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> RunShake;
+	
 	
 public:
 	// Sets default values for this character's properties
@@ -182,6 +191,17 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void EnemyDehighlight(AEnemyBase* Enemy);
+
+private:
+	APlayerCameraManager* CameraManager;
+	float gCurrentPlayerSpeed;
+
+	UPROPERTY()
+	UCameraShakeBase* currentActiveCameraShake;
+	
+	void UpdateCameraShake(float speed);
+
+	bool isRunning = false;
 
 };
 

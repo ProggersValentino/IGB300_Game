@@ -63,11 +63,16 @@ void AGladiatorPlayerChar::SetupPlayerInputComponent(UInputComponent* playerInpu
 void AGladiatorPlayerChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	gCurrentPlayerSpeed = GetCharacterMovement()->Velocity.Size();
+	
 	if (bUseCameraLerpWithMouse)
 	{
 		LerpCameraSystem(mouseInput);
 	}
 
+	UpdateCameraShake(gCurrentPlayerSpeed);
+	
 	mouseInput = FVector2D::ZeroVector;
 	
 }
@@ -113,6 +118,9 @@ void AGladiatorPlayerChar::BeginPlay()
 		ATS->GetSpeedAttribute()).AddUObject(this, &AGladiatorBaseChar::OnSpeedChanged);
 
 	GetCharacterMovement()->MaxWalkSpeed = ATS->GetSpeedAttribute().GetNumericValue(ATS);
+
+	//retrieving camera manager for use
+	CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
 }
 
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
@@ -132,18 +140,16 @@ void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& insta
 
 void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 {
-	float currentSpeed = GetCharacterMovement()->Velocity.Size();
 	
 	LerpInput(mouseInput, CameraLerpTime);
 
 	/*we only want the player model to follow the direction of the camera if the player is moving
 	 */
-	if (currentSpeed > 2.0f)
+	if (gCurrentPlayerSpeed > 2.0f)
 	{
 		LerpPlayerRotation(PlayerLerpTime);		
 	}
 	
-
 	//lock on target system 
 	if (IsValid(CurrentLockedTarget) && bCanBeLocked)
 	{
@@ -375,6 +381,33 @@ void AGladiatorPlayerChar::EnemyDehighlight(AEnemyBase* Enemy)
 	Enemy->GetMesh()->SetCustomDepthStencilValue(0);
 }
 
+void AGladiatorPlayerChar::UpdateCameraShake(float speed)
+{
+	
+	if (speed > 2.0f && !isRunning)
+	{
+		isRunning = true;
+		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
+		{
+			CameraManager->StopCameraShake(currentActiveCameraShake);
+		}
+		
+		CameraManager->StopCameraShake(currentActiveCameraShake);
+
+		currentActiveCameraShake = CameraManager->StartCameraShake(RunShake);
+	}
+	else if (speed < 2.0f && isRunning)
+	{
+		isRunning = false;
+		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
+		{
+			CameraManager->StopCameraShake(currentActiveCameraShake);
+		}
+
+		currentActiveCameraShake = CameraManager->StartCameraShake(IdleShake);
+	}
+}
+
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
 {
 	if (Enemy == NULL)
@@ -395,7 +428,7 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	ActorsToIgnore.Add(this); //adding the player to ensure it doesnt hit itself
 	
 	
-	float currentPlayerSpeed = GetCharacterMovement()->Velocity.Size();
+	float currentSpeed = GetCharacterMovement()->Velocity.Size();
 
 	/*GEngine->AddOnScreenDebugMessage(
 			-1,                         // Key (-1 = add new, or use ID to overwrite)
@@ -406,8 +439,8 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	
 	//are we going forward or backward? apply the necessary math to suit each case
 	float STTDirectionMultiplier = InputActionValue > 0 ?
-			(currentPlayerSpeed * InputActionValue) * ForwardSTTMultiplier:
-			(currentPlayerSpeed * InputActionValue) * BackwardSTTMultiplier;
+			(currentSpeed * InputActionValue) * ForwardSTTMultiplier:
+			(currentSpeed * InputActionValue) * BackwardSTTMultiplier;
 	
 	//grabbing cam to gets location
 	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
@@ -429,6 +462,7 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	
 	return hitResult;
 }
+
 
 
 
