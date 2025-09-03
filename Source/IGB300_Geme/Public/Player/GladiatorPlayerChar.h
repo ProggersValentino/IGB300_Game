@@ -68,6 +68,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> RunShake;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Post Process")
+	UMaterialInterface* DamagePostProcessMat;
 	
 	
 public:
@@ -194,15 +197,24 @@ protected:
 
 private:
 	APlayerCameraManager* CameraManager;
+	UCameraComponent* CameraComponent;
 	float gCurrentPlayerSpeed;
-
+	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;
 	
 	void UpdateCameraShake(float speed);
 
+	FTimerHandle TimerHandle;
+	
 	bool isRunning = false;
 
+	UMaterialInstanceDynamic* PPDamagedMat;
+
+	void CreateAndApplyDynamicMaterialToCamera();
+	
+	void ApplyEffect();
+	
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
 
 };

@@ -44,6 +44,8 @@ void AGladiatorBaseChar::Init()
 		MainComboChain.AddUnique(combo); 
 		combo->Init(AbilitySystemComponent);
 	}
+
+	
 	
 }
 

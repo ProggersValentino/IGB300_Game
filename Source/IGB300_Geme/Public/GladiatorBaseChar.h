@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "AbilitySystemInterface.h"
+#include "Camera/CameraComponent.h"
 #include "Player/ComboContainer.h"
 #include "GladiatorBaseChar.generated.h"
 
@@ -153,6 +154,8 @@ private:
 
 	int CurrentComboChainIndex;
 
+	
+	
 	/// 
 	/// @return returns the current combo based of the CurrentComboChainIn
 	TObjectPtr<UComboContainer> DetermineCombo();

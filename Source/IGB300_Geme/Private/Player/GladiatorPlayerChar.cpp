@@ -25,6 +25,8 @@ AGladiatorPlayerChar::AGladiatorPlayerChar()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
+
+	
 }
 
 void AGladiatorPlayerChar::PossessedBy(AController* NewController)
@@ -117,10 +119,15 @@ void AGladiatorPlayerChar::BeginPlay()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		ATS->GetSpeedAttribute()).AddUObject(this, &AGladiatorBaseChar::OnSpeedChanged);
 
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+		ATS->GetHealthAttribute()).AddUObject(this, &AGladiatorPlayerChar::OnHealthChanged); 
+	
 	GetCharacterMovement()->MaxWalkSpeed = ATS->GetSpeedAttribute().GetNumericValue(ATS);
 
 	//retrieving camera manager for use
 	CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+	CameraComponent = GetComponentByClass<UCameraComponent>();
+	CreateAndApplyDynamicMaterialToCamera();
 }
 
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
@@ -391,8 +398,6 @@ void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 		{
 			CameraManager->StopCameraShake(currentActiveCameraShake);
 		}
-		
-		CameraManager->StopCameraShake(currentActiveCameraShake);
 
 		currentActiveCameraShake = CameraManager->StartCameraShake(RunShake);
 	}
@@ -408,8 +413,30 @@ void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 	}
 }
 
+
+void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
+{
+	PPDamagedMat = UMaterialInstanceDynamic::Create(DamagePostProcessMat, this);
+
+	if (!PPDamagedMat)
+	{
+		return;
+	}
+	
+	CameraComponent->PostProcessSettings.AddBlendable(PPDamagedMat, 1.f);
+}
+
+void AGladiatorPlayerChar::ApplyEffect()
+{
+	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 0.0);
+}
+
 void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
+	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1);
+	
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGladiatorPlayerChar::ApplyEffect, 1.f, false);
 	
 }
 
