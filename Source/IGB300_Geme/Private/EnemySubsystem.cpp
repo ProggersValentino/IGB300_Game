@@ -278,8 +278,8 @@ FVector UEnemySubsystem::RequestPlayerPosition()
 // Setup enemy behaviour                     | public update enemy targets
 // Check for spawns rename
 
-int UEnemySubsystem::GetEnemies()
+int UEnemySubsystem::GetEnemyCount()
 {
-	return EnemyPool;
+	return EnemyList.Num();
 }
 

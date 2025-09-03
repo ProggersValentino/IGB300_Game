@@ -73,7 +73,7 @@ public:
 	FVector RequestPlayerPosition();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	virtual int GetEnemies();
+	int GetEnemyCount();
 	
 private:
 	TArray<ASpawnLocation*> SpawnLocations;
