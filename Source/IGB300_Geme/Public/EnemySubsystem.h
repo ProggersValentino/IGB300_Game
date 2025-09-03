@@ -51,6 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 EnemyPool = 100;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool b_IsFearing = false;
+
 public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
@@ -74,6 +77,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int GetEnemyCount();
+
+	UFUNCTION(BlueprintCallable)
+	void StartFearing();
+
+	UFUNCTION(BlueprintCallable)
+	void EndFearing();
 	
 private:
 	TArray<ASpawnLocation*> SpawnLocations;

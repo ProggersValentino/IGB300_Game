@@ -283,3 +283,16 @@ int UEnemySubsystem::GetEnemyCount()
 	return EnemyList.Num();
 }
 
+void UEnemySubsystem::StartFearing()
+{
+  ZoneRadius = 1000.0f;
+  b_IsFearing = true;
+  return;
+}
+void UEnemySubsystem::EndFearing()
+{
+  ZoneRadius = 300.0f;
+  b_IsFearing = false;
+  return;
+}
+
