@@ -18,11 +18,11 @@
 void UEnemySubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
   bool b_shouldCreate = DoesLevelContainSpawns();
+	Player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
   if (!b_shouldCreate)
   {
     return;
   } 
-	Player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
 }
 
 bool UEnemySubsystem::DoesLevelContainSpawns()
