@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Members")
 	float crowdXPWhenFinished;
 
+	UPROPERTY(EditAnywhere, Category = "Members")
+	FVector2f knockbackForce = FVector2f(10000, 10000);
+
 	float lastTimeHitByplayer;
 	float timeAlive;
 
@@ -64,6 +67,8 @@ protected:
 
 	/*runs before begin player and after initialisation of constructor*/
 	virtual void PostInitializeComponents() override;
+
+	void Ragdoll(bool b_shouldKnockback, float forceX, float forceY);
 	
 public:	
 	// Called every frame

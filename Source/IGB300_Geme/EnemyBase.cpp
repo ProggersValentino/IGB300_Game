@@ -4,6 +4,7 @@
 #include "EnemyBase.h"
 #include "EnemyManager.h"
 #include "EnemyType.h"
+#include "Engine/EngineTypes.h"
 #include "GameplayStats.h"
 #include "Engine/World.h"
 #include "EnemySubsystem.h"
@@ -151,7 +152,6 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	//kill enemy
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
-		// enemyManager->DeregisterEnemy(this); Depreceated
 		GetWorld()->GetSubsystem<UEnemySubsystem>()->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -159,12 +159,25 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 
 		if (KnockBackAbility)
 		{
-			FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
-			FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
-			AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
+			Ragdoll(true, knockbackForce.X, knockbackForce.Y);
+
+			// Note(Jack): I may need this to reincorporate GAS but fro my sanity i am just putting it as a member on the enemy for now 
+			// FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
+			// FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
+			// AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
 		}
 
 		GetWorldTimerManager().SetTimer(timerHandle, this, &AEnemyBase::DeathCleanup, timeTillRemoved, false);
+	}
+}
+
+void AEnemyBase::Ragdoll(bool b_shouldKnockback, float forceX, float forceY)
+{
+  GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	if (b_shouldKnockback) {
+		FVector launch_vel = GetActorForwardVector() * -forceX + GetActorUpVector() * forceY;
+		GetMesh()->AddImpulse(launch_vel, NAME_None, true);
 	}
 }
 
