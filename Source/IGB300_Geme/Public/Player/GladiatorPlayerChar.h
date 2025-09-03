@@ -203,5 +203,7 @@ private:
 
 	bool isRunning = false;
 
+	void OnHealthChanged(const FOnAttributeChangeData& Data);
+
 };
 

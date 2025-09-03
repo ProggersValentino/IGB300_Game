@@ -19,5 +19,21 @@ public:
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	float HealthPercent; //how much health we have left 
+	float HealthPercent; //how much health we have left
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float oldPercent;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ActivateAfterEffectHealth();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ActivateHealthEffect();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float timeTillActivation = 2.f;
+	
+private:
+	FTimerHandle TimerHandle;
+	
 };

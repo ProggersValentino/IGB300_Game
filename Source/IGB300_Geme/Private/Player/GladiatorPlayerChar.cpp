@@ -408,6 +408,11 @@ void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 	}
 }
 
+void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	
+}
+
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
 {
 	if (Enemy == NULL)

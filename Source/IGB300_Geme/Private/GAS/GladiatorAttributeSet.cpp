@@ -5,6 +5,8 @@
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/GladiatorPlayerChar.h"
 
 UGladiatorAttributeSet::UGladiatorAttributeSet()
 {
@@ -108,8 +110,6 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 			/*FString Message = FString::Printf(TEXT("context: %s"), *context.Get()->GetInstigator()->GetName());
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::MakeRandomColor(), Message);*/
 		}
-
-		
 		
 		//apply damage
 		SetHealth(FMath::Clamp(newHealth, 0.0f, GetMaxHealth()));
