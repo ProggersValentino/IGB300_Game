@@ -64,6 +64,8 @@ protected:
 
 	/*runs before begin player and after initialisation of constructor*/
 	virtual void PostInitializeComponents() override;
+
+	void Ragdoll(bool b_shouldKnockback);
 	
 public:	
 	// Called every frame

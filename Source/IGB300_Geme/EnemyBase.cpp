@@ -4,6 +4,7 @@
 #include "EnemyBase.h"
 #include "EnemyManager.h"
 #include "EnemyType.h"
+#include "Engine/EngineTypes.h"
 #include "GameplayStats.h"
 #include "Engine/World.h"
 #include "EnemySubsystem.h"
@@ -151,7 +152,6 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 	//kill enemy
 	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeathTag))
 	{
-		// enemyManager->DeregisterEnemy(this); Depreceated
 		GetWorld()->GetSubsystem<UEnemySubsystem>()->DeregisterEnemy(this);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -159,12 +159,21 @@ void AEnemyBase::HealthChanged(const FOnAttributeChangeData& Data)
 
 		if (KnockBackAbility)
 		{
-			FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
-			FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
-			AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
+			Ragdoll(true);
 		}
 
 		GetWorldTimerManager().SetTimer(timerHandle, this, &AEnemyBase::DeathCleanup, timeTillRemoved, false);
+	}
+}
+
+void AEnemyBase::Ragdoll(bool b_shouldKnockback)
+{
+  GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	if (b_shouldKnockback) {
+		FGameplayAbilitySpec spec = FGameplayAbilitySpec(KnockBackAbility);
+		FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
+		AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
 	}
 }
 
