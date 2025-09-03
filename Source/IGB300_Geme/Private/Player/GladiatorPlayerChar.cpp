@@ -416,14 +416,24 @@ void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 
 void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
 {
-	PPDamagedMat = UMaterialInstanceDynamic::Create(DamagePostProcessMat, this);
+	FWeightedBlendables blendies = CameraComponent->PostProcessSettings.WeightedBlendables;
+
+	//this is a must as we need the second material instance as it is the Enemy Stencile
+	if (blendies.Array.Num() < 2)
+	{
+		return;
+	}
+
+	
+	
+	PPDamagedMat = Cast<UMaterialInstanceDynamic>(blendies.Array[1].Object); //this code susceptiable to a simple order change in the Post Process volumn box 
 
 	if (!PPDamagedMat)
 	{
 		return;
 	}
 	
-	CameraComponent->PostProcessSettings.AddBlendable(PPDamagedMat, 1.f);
+
 }
 
 void AGladiatorPlayerChar::ApplyEffect()
@@ -433,7 +443,12 @@ void AGladiatorPlayerChar::ApplyEffect()
 
 void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1);
+	if (!PPDamagedMat)
+	{
+		return;
+	}
+	
+	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1.f);
 	
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGladiatorPlayerChar::ApplyEffect, 1.f, false);
