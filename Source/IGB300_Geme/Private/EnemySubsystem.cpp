@@ -18,11 +18,11 @@
 void UEnemySubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
   bool b_shouldCreate = DoesLevelContainSpawns();
+	Player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
   if (!b_shouldCreate)
   {
     return;
   } 
-	Player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
 }
 
 bool UEnemySubsystem::DoesLevelContainSpawns()
@@ -278,8 +278,21 @@ FVector UEnemySubsystem::RequestPlayerPosition()
 // Setup enemy behaviour                     | public update enemy targets
 // Check for spawns rename
 
-int UEnemySubsystem::GetEnemies()
+int UEnemySubsystem::GetEnemyCount()
 {
-	return EnemyPool;
+	return EnemyList.Num();
+}
+
+void UEnemySubsystem::StartFearing()
+{
+  ZoneRadius = 1000.0f;
+  b_IsFearing = true;
+  return;
+}
+void UEnemySubsystem::EndFearing()
+{
+  ZoneRadius = 300.0f;
+  b_IsFearing = false;
+  return;
 }
 
