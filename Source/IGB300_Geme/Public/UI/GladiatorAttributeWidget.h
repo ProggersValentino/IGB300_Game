@@ -30,6 +30,11 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ActivateHealthEffect();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateHeartBeat(int healthState);
+
+	int FindHealthState(float currentPercent);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float timeTillActivation = 2.f;
 	

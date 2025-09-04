@@ -120,7 +120,9 @@ void AGladiatorPlayerChar::BeginPlay()
 		ATS->GetSpeedAttribute()).AddUObject(this, &AGladiatorBaseChar::OnSpeedChanged);
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		ATS->GetHealthAttribute()).AddUObject(this, &AGladiatorPlayerChar::OnHealthChanged); 
+		GetAttributeSet()->GetHealthAttribute()).AddUObject(this, &AGladiatorPlayerChar::OnHealthChanged);
+
+	AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.Healthy"));
 	
 	GetCharacterMovement()->MaxWalkSpeed = ATS->GetSpeedAttribute().GetNumericValue(ATS);
 
@@ -128,6 +130,8 @@ void AGladiatorPlayerChar::BeginPlay()
 	CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
 	CameraComponent = GetComponentByClass<UCameraComponent>();
 	CreateAndApplyDynamicMaterialToCamera();
+
+
 }
 
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
@@ -423,8 +427,6 @@ void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
 	{
 		return;
 	}
-
-	
 	
 	PPDamagedMat = Cast<UMaterialInstanceDynamic>(blendies.Array[1].Object); //this code susceptiable to a simple order change in the Post Process volumn box 
 
@@ -436,22 +438,65 @@ void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
 
 }
 
-void AGladiatorPlayerChar::ApplyEffect()
+void AGladiatorPlayerChar::ApplyEffect(float timeToLerp)
 {
-	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 0.0);
+	float percent = FMath::Lerp(timeToLerp, 0, timerAlpha * GetWorld()->GetDeltaSeconds() * 125);
+
+	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", percent);
+
+	UE_LOG(LogTemp, Error, TEXT("current combo index: %f"), percent);
+
+	//once we have lerped to our destination stop the timer
+	if (percent < 0.05f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 0.0);
+	}
+
+	timerAlpha += GetWorld()->GetDeltaSeconds();
+	
+	
 }
 
 void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
+	timerAlpha = 0.f;
+	
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AGladiatorPlayerChar::ApplyEffect, 2.f);
+	
 	if (!PPDamagedMat)
 	{
 		return;
 	}
+
+	float difference = Data.NewValue - Data.OldValue;
 	
-	PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1.f);
+	if (difference < 0)
+	{
+		PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1.5f);
 	
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGladiatorPlayerChar::ApplyEffect, 1.f, false);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, timerDelegate, 0.01f, true);	
+	}
+
+	if (HealthStateTag.IsValid())
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag(HealthStateTag); //remove the previous current tag
+	}
+	
+	HealthStateTag = GetHealthStateTag(Data.NewValue, GetAttributeSet()->GetMaxHealth());
+	AbilitySystemComponent->AddLooseGameplayTag(HealthStateTag); //apply new one
+
+	
+	if (HealthStateTag.GetTagName() == "Gameplay.State.Critical")
+	{
+		PPDamagedMat->SetScalarParameterValue("CriticalHaloStrength", 1.5f);
+	}
+	else
+	{
+		PPDamagedMat->SetScalarParameterValue("CriticalHaloStrength", 0.f);
+	}
+	
 	
 }
 

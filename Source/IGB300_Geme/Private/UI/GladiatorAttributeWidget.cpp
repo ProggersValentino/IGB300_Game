@@ -22,6 +22,8 @@ void UGladiatorAttributeWidget::BindToAttributes()
 		GladiatorAS->GetMaxHealthAttribute().GetNumericValue(GladiatorAS);
 
 	oldPercent = HealthPercent; //initial set
+
+	UpdateHeartBeat(FindHealthState(HealthPercent)); //initial setup for heart beat
 	
 	//attribute changes -> happens everytime the attribute changes -> updates the desired attribute
 	ASC->GetGameplayAttributeValueChangeDelegate(GladiatorAS->GetHealthAttribute()).AddLambda(
@@ -35,5 +37,19 @@ void UGladiatorAttributeWidget::BindToAttributes()
 		//engage "after health bar effect"  
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle); //if any current timers are going stop them cancelling the execution of the delegate
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UGladiatorAttributeWidget::ActivateAfterEffectHealth, timeTillActivation, false);
+
+		UpdateHeartBeat(FindHealthState(HealthPercent));
 	});
+}
+
+int UGladiatorAttributeWidget::FindHealthState(float currentPercent)
+{
+	int healthState = 0;
+
+	//test to see what the current state of player is 
+	healthState = currentPercent > 0.5f ? 3 : healthState; //are we healthy?
+	healthState = currentPercent > 0.25f && currentPercent < 0.5f ? 2 : healthState;//are we semi-healthy?
+	healthState = currentPercent < 0.25f ? 1 : healthState; //are we not healthy?
+
+	return healthState;
 }

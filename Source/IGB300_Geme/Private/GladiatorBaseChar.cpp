@@ -44,8 +44,6 @@ void AGladiatorBaseChar::Init()
 		MainComboChain.AddUnique(combo); 
 		combo->Init(AbilitySystemComponent);
 	}
-
-	
 	
 }
 
@@ -193,6 +191,35 @@ void AGladiatorBaseChar::ActivateCombo()
 	
 	//activate combo
 	CurrentCombo->ExecuteCombo();
+}
+
+FGameplayTag AGladiatorBaseChar::GetHealthStateTag(float currentHealth, float maxHealth) const
+{
+	float normalizedHealth = currentHealth / maxHealth;
+	
+	if (normalizedHealth > 0.5f)
+	{
+		return FGameplayTag::RequestGameplayTag("Gameplay.State.Healthy");
+	}
+	else if (normalizedHealth < 0.5f && normalizedHealth > 0.3f)
+	{
+		return FGameplayTag::RequestGameplayTag("Gameplay.State.SemiHealthy");
+	}
+	else
+	{
+		return FGameplayTag::RequestGameplayTag("Gameplay.State.Critical");
+	}
+}
+
+void AGladiatorBaseChar::OnChageHealthState(const FOnAttributeChangeData& Data)
+{
+	if (HealthStateTag.IsValid())
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag(HealthStateTag); //remove the previous current tag
+	}
+	
+	HealthStateTag = GetHealthStateTag(Data.NewValue, GetAttributeSet()->GetMaxHealth());
+	AbilitySystemComponent->AddLooseGameplayTag(HealthStateTag); //apply new one
 }
 
 TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()

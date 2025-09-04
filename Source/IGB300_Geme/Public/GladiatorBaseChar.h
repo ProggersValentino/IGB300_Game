@@ -89,6 +89,9 @@ public:
 	void DeathCleanup();
 
 	UPROPERTY()
+	FGameplayTag HealthStateTag;
+	
+	UPROPERTY()
 	FGameplayTag DeathTag;
 
 	UPROPERTY()
@@ -147,7 +150,12 @@ public:
 	UFUNCTION()
 	void InitDefaultAttributes() const;
 
+	void OnChageHealthState(const FOnAttributeChangeData& Data);
 
+protected:
+	FGameplayTag GetHealthStateTag(float currentHealth, float maxHealth) const;
+	
+	
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<class UComboContainer>> MainComboChain;

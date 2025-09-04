@@ -206,6 +206,7 @@ private:
 	void UpdateCameraShake(float speed);
 
 	FTimerHandle TimerHandle;
+	float timerAlpha = 0.f;
 	
 	bool isRunning = false;
 
@@ -213,7 +214,7 @@ private:
 
 	void CreateAndApplyDynamicMaterialToCamera();
 	
-	void ApplyEffect();
+	void ApplyEffect(float timeToLerp);
 	
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
 
