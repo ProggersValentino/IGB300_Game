@@ -91,7 +91,7 @@ private:
 
 	AActor* Player;
 
-	float ZoneRadius = 300.0f;
+	float ZoneRadius = 100.0f;
 
 	float ArenaRadius = 1500.0f;
 

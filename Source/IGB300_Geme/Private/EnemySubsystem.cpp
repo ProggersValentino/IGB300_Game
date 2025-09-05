@@ -291,7 +291,7 @@ void UEnemySubsystem::StartFearing()
 }
 void UEnemySubsystem::EndFearing()
 {
-  ZoneRadius = 300.0f;
+  ZoneRadius = 100.0f;
   b_IsFearing = false;
   return;
 }
