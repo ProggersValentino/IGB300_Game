@@ -178,7 +178,7 @@ protected:
 
 	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
-	float InputActionValue; //store the Forward/Backward input action float value
+	FVector2D InputActionValue; //store the Forward/Backward input action float value
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving forward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float ForwardSTTMultiplier;
