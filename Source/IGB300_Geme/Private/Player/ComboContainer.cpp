@@ -64,6 +64,9 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 
 		eventData.Target = hitActor.GetActor();
 		eventData.TargetData = CreateTargetDataFromHit(hitActor);
+
+		UE_LOG(LogTemp, Warning, TEXT("Gameplay Tag to activate gameplay event is: %s"), *gameplayEventTag.ToString());
+		
 		selectedCharacter->HandleGameplayEvent(gameplayEventTag, &eventData);
 
 		//process hit to the crowd subsystem
