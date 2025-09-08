@@ -188,6 +188,8 @@ void AGladiatorBaseChar::ActivateCombo()
 {
 	//determine combo
 	CurrentCombo = DetermineCombo();
+
+	UE_LOG(LogTemp, Warning, TEXT("Combo is: %s"), *CurrentCombo->GetName());
 	
 	//activate combo
 	CurrentCombo->ExecuteCombo();
