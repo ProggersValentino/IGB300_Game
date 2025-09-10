@@ -23,6 +23,11 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::GenerateTraceCollision(USkelet
 	{
 		return TArray<FHitResult>();
 	}
+
+	if (!MeshComponent->GetAnimInstance()->Montage_IsPlaying(NULL))
+	{
+		return TArray<FHitResult>();
+	}
 	TArray<FHitResult> hitResults;
 	switch (traceMode)
 	{
@@ -176,6 +181,7 @@ void UAnimNotifyState_HitDetection::ModifyStreak()
 
 void UAnimNotifyState_HitDetection::CleanUp()
 {
+	
 	//reset the actors to ignore to nothing
 	ActorsHitToIgnore.Empty();
 }
