@@ -186,6 +186,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving backward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float BackwardSTTMultiplier;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When player attempts to attack we dont always want to STT if the player is in range to hit the enemy"))
+	float STTDeadzone = 60.f;
+	
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Suck To Target", meta=(ToolTip="Shoot a collision trace and return the first enemy hit"))
 	FHitResult DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime);
 	
