@@ -49,7 +49,7 @@ void UComboContainer::ExecuteCombo()
 void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 {
 	FGameplayEventData eventData;
-	eventData.Instigator = selectedCharacter->GetOwnerActor();
+	eventData.Instigator = selectedCharacter->GetAvatarActor();
 	
 	
 	/*apply effects to all results*/
