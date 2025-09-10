@@ -4,6 +4,7 @@
 #include "Player/ComboContainer.h"
 
 #include "GladiatorBaseChar.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/GladiatorPlayerChar.h"
 #include "Player/GladiatorPlayerState.h"
@@ -72,9 +73,14 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 		//process hit to the crowd subsystem
 		CrowdSubsystem->UpdateExcitement(CrowdInfluencePerHit);
 		
-		if (bImpactFreezeOnHit)
+		if (bSlowGameOnHit)
 		{
 			SlowGameOnHit(SlowTimeDilationTo, SlowmoTime);
+		}
+
+		if (bImpactFreezeOnHit)
+		{
+			FreezeFrameAnimationsPlaying(selectedCharacter->GetAvatarActor(), hitActor.GetActor());
 		}
 		
 	}
@@ -110,22 +116,18 @@ void UComboContainer::SlowGameOnHit(float slowTimeDilationTo, float slowmoTime)
 	float slowmoTimeReadjusted = slowmoTime * slowTimeDilationTo;
 	
 	UGameplayStatics::SetGlobalTimeDilation(GetOuter()->GetWorld(), slowTimeDilationTo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UComboContainer::OnTimerEnd, slowmoTimeReadjusted, false);
+	GetWorld()->GetTimerManager().SetTimer(SlowTimeTimerHandle, this, &UComboContainer::OnTimerEnd, slowmoTimeReadjusted, false);
 }
 
 void UComboContainer::OnTimerEnd()
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(SlowTimeTimerHandle);
 }
 
 FGameplayEffectSpec UComboContainer::MakeEffectSpec(FGladiatorGameplayEffectContext contextHandle)
 {
 	AGladiatorPlayerChar* Player = Cast<AGladiatorPlayerChar, AActor>( selectedCharacter->GetAvatarActor());
-
-	
-	
-
 	
 	FGameplayEffectSpec effectSpc = FGameplayEffectSpec();
 	
@@ -141,7 +143,77 @@ void UComboContainer::MakeEffectContext(FGladiatorGameplayEffectContext*& contex
 	context_allo->Data_Knockack_HorrizontalForce = HorizontalForce;
 	
 	contextRef = context_allo;
+
+
 	
 }
+
+void UComboContainer::PauseAnimationPlaying(USkeletalMeshComponent* mesh)
+{
+	UAnimInstance* animInstance = Cast<UAnimInstance>(mesh->GetAnimInstance());
+
+	//animInstance->Montage_Pause(); //the pause all current active montage
+	animInstance->Montage_SetPlayRate(NULL, 0.01f);
+}
+
+void UComboContainer::SetActorTimeDialation(AActor* actor, float timeDialation)
+{
+	actor->CustomTimeDilation = timeDialation;
+}
+
+
+
+void UComboContainer::ResumeAnimationPlaying(USkeletalMeshComponent* mesh)
+{
+	UAnimInstance* animInstance = Cast<UAnimInstance>(mesh->GetAnimInstance());
+
+	//animInstance->Montage_Resume(NULL); //resume all active montages that were paused
+	animInstance->Montage_SetPlayRate(NULL, 1.0f);
+}
+
+void UComboContainer::PauseMultipleAnimationsPlaying(USkeletalMeshComponent* owner, USkeletalMeshComponent* target)
+{
+	PauseAnimationPlaying(owner);
+	PauseAnimationPlaying(target);
+}
+
+void UComboContainer::ResumeMultipleAnimationsPlaying(USkeletalMeshComponent* owner, USkeletalMeshComponent* target)
+{
+	ResumeAnimationPlaying(target);
+	ResumeAnimationPlaying(owner);
+}
+
+void UComboContainer::SetMultipleActorTime(AActor* owner, AActor* target, float timeDialation)
+{
+	SetActorTimeDialation(owner, timeDialation);
+	SetActorTimeDialation(target, timeDialation);
+}
+
+void UComboContainer::FreezeFrameAnimationsPlaying(ACharacter* owner, ACharacter* target)
+{
+	USkeletalMeshComponent* ownerMesh = owner->GetMesh();
+	USkeletalMeshComponent* targetMesh = target->GetMesh();
+
+	
+	//PauseMultipleAnimationsPlaying(ownerMesh, targetMesh);
+
+	FTimerDelegate FreezeFrameTimerDelegate = FTimerDelegate::CreateUObject(this, &UComboContainer::ResumeMultipleAnimationsPlaying, ownerMesh, targetMesh);
+	
+	GetWorld()->GetTimerManager().SetTimer(FreezeFrameTimerHandle, FreezeFrameTimerDelegate, ImpactFreezeTime, false);
+}
+
+void UComboContainer::FreezeFrameAnimationsPlaying(AActor* owner, AActor* target)
+{
+	SetMultipleActorTime(owner, target, 0.0f);
+
+	AGladiatorPlayerChar* playerChar = Cast<AGladiatorPlayerChar>(owner);
+	playerChar->GetCharacterMovement()->Velocity = FVector(0, 0, 0);
+
+	FTimerDelegate FreezeFrameTimerDelegate = FTimerDelegate::CreateUObject(this, &UComboContainer::SetMultipleActorTime, owner, target, 1.0f);
+	
+	GetWorld()->GetTimerManager().SetTimer(FreezeFrameTimerHandle, FreezeFrameTimerDelegate, ImpactFreezeTime, false);
+}
+
+
 
 
