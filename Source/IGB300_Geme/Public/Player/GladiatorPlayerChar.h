@@ -3,12 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemySubsystem.h"
 #include "GladiatorBaseChar.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Engine/DecalActor.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraShakeBase.h"
+#include "Camera/GladiatorCameraBase.h"
+#include "Camera/GladiatorCameraPositionComponent.h"
 #include "GladiatorPlayerChar.generated.h"
 
 
@@ -198,10 +201,29 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void EnemyDehighlight(AEnemyBase* Enemy);
 
+	//to predict if the closest enemy (the assumed target) will die next
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Kill Camera")
+	void PredictEnemyDeath(float searchRadius, EDrawDebugTrace::Type Debug, float debugTraceTime);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Kill Camera")
+	TSubclassOf<AGladiatorCameraBase> FinalKillCamera;
+	AActor* SpawnedKillCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera")
+	UGladiatorCameraPositionComponent* KillCameraPosition;
+
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Kill Camera")
+	void TransistionCameraTargetView(TSubclassOf<AGladiatorCameraBase> Target);
+
+	void TransitionBackToMainCamera();
+	
 private:
 	APlayerCameraManager* CameraManager;
 	UCameraComponent* CameraComponent;
 	float gCurrentPlayerSpeed;
+
+	UPROPERTY()
+	UEnemySubsystem* EnemySubsystem;
 	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;
