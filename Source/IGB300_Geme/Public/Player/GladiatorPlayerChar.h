@@ -12,6 +12,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Camera/GladiatorCameraBase.h"
 #include "Camera/GladiatorCameraPositionComponent.h"
+#include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
 
@@ -211,11 +212,16 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera")
 	UGladiatorCameraPositionComponent* KillCameraPosition;
-
+	
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Kill Camera")
 	void TransistionCameraTargetView(TSubclassOf<AGladiatorCameraBase> Target);
 
 	void TransitionBackToMainCamera();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;
 	
 private:
 	APlayerCameraManager* CameraManager;
