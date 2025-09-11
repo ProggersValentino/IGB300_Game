@@ -31,8 +31,6 @@ AGladiatorPlayerChar::AGladiatorPlayerChar()
 
 
 	KillCameraPosition = CreateDefaultSubobject<UGladiatorCameraPositionComponent>(TEXT("CameraPosition"));
-
-	
 	
 	
 	//KillCameraPosition->SetupAttachment(RootComponent);
@@ -144,7 +142,7 @@ void AGladiatorPlayerChar::BeginPlay()
 
 	EnemySubsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();	
 	
-	
+	Maestro = Cast<AMaestroBase>(UGameplayStatics::GetActorOfClass(GetWorld(), maestroClass));
 	
 }
 
@@ -426,7 +424,7 @@ void AGladiatorPlayerChar::PredictEnemyDeath(float searchRadius, EDrawDebugTrace
 	//grabbing cam to gets location
 	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
 	FVector StartLoco = cam->GetComponentLocation();
-	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 1000;
+	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 250;
 	
 	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), StartLoco, EndLoco, searchRadius, ObjectTypesAllowed, false, ActorsToIgnore, Debug, hitResult, true,
 		FLinearColor::Red, FLinearColor::Green, debugTraceTime);
@@ -445,9 +443,14 @@ void AGladiatorPlayerChar::PredictEnemyDeath(float searchRadius, EDrawDebugTrace
 
 	bool isGoingToDieNextHit = predictCalc <= 0;
 
-	bool lastEnemy = EnemySubsystem->GetEnemyCount() == 1;
+	bool lastEnemy = EnemySubsystem->GetEnemyCount() == 0;
+
+	int currentWave =  Maestro->GetCurrentWave();
+	int NumWaves = Maestro->GetNumWaves() - 1; //wave gets increased after last enemy gets defeated so we need to be a little early
 	
-	if (isGoingToDieNextHit && lastEnemy)
+	bool isLastWave = currentWave >= NumWaves;
+	
+	if (isGoingToDieNextHit && lastEnemy && isLastWave)
 	{
 		//activate camera shift
 		TransistionCameraTargetView(FinalKillCamera);
