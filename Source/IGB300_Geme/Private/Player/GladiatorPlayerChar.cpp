@@ -12,12 +12,15 @@
 #include "Engine/DecalActor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "IGB300_Geme/EnemyBase.h"
+#include "EnemySubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/GladiatorPlayerController.h"
 #include "Player/GladiatorPlayerState.h"
 #include "UI/GladiatorHUDBase.h"
 #include <cstddef>
+
+#include "MovieSceneTracksComponentTypes.h"
 
 // Sets default values
 AGladiatorPlayerChar::AGladiatorPlayerChar()
@@ -26,7 +29,15 @@ AGladiatorPlayerChar::AGladiatorPlayerChar()
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
+
+	KillCameraPosition = CreateDefaultSubobject<UGladiatorCameraPositionComponent>(TEXT("CameraPosition"));
+
 	
+	
+	
+	//KillCameraPosition->SetupAttachment(RootComponent);
+	/*KillCameraPosition->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);*/
+
 }
 
 void AGladiatorPlayerChar::PossessedBy(AController* NewController)
@@ -75,7 +86,7 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 
 	UpdateCameraShake(gCurrentPlayerSpeed);
 	
-	mouseInput = FVector2D::ZeroVector;
+	mouseInput = FVector2D::ZeroVector; 
 	
 }
 
@@ -131,7 +142,10 @@ void AGladiatorPlayerChar::BeginPlay()
 	CameraComponent = GetComponentByClass<UCameraComponent>();
 	CreateAndApplyDynamicMaterialToCamera();
 
-
+	EnemySubsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();	
+	
+	
+	
 }
 
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
@@ -392,6 +406,81 @@ void AGladiatorPlayerChar::EnemyDehighlight(AEnemyBase* Enemy)
 	Enemy->GetMesh()->SetCustomDepthStencilValue(0);
 }
 
+void AGladiatorPlayerChar::PredictEnemyDeath(float searchRadius, EDrawDebugTrace::Type Debug, float debugTraceTime)
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesAllowed;
+	ObjectTypesAllowed.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+	FHitResult hitResult;
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this); //adding the player to ensure it doesnt hit itself
+
+	/*GEngine->AddOnScreenDebugMessage(
+			-1,                         // Key (-1 = add new, or use ID to overwrite)
+			5.0f,                       // Duration (seconds)
+			FColor::Green,             // Text color
+			 FString::Printf(TEXT("Player Speed: %f"), currentPlayerSpeed)    // Message
+		);*/
+	
+	//grabbing cam to gets location
+	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
+	FVector StartLoco = cam->GetComponentLocation();
+	FVector EndLoco = cam->GetComponentLocation() + cam->GetForwardVector() * 1000;
+	
+	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), StartLoco, EndLoco, searchRadius, ObjectTypesAllowed, false, ActorsToIgnore, Debug, hitResult, true,
+		FLinearColor::Red, FLinearColor::Green, debugTraceTime);
+
+	if (!bHit)
+	{
+		return;
+	}
+
+	AGladiatorBaseChar* enemy = Cast<AGladiatorBaseChar>(hitResult.GetActor());
+
+	float enemyHealth = enemy->GetAttributeSet()->GetHealthAttribute().GetNumericValue(enemy->GetAttributeSet());
+	float playerDmg =  enemy->GetAttributeSet()->GetMitigatedDamage(AttributeSet->GetBaseDamage());
+	
+	float predictCalc = enemyHealth - playerDmg;
+
+	bool isGoingToDieNextHit = predictCalc <= 0;
+
+	bool lastEnemy = EnemySubsystem->GetEnemyCount() == 1;
+	
+	if (isGoingToDieNextHit && lastEnemy)
+	{
+		//activate camera shift
+		TransistionCameraTargetView(FinalKillCamera);
+	}
+}
+
+void AGladiatorPlayerChar::TransistionCameraTargetView(TSubclassOf<AGladiatorCameraBase> Target)
+{
+	AGladiatorPlayerController* playercon = Cast<AGladiatorPlayerController>(GetController());
+
+	AActor* spawnedCam = GetWorld()->SpawnActor(Target);
+
+	FVector locao = KillCameraPosition->GetComponentLocation();
+	
+	spawnedCam->SetActorLocation(locao);
+	
+	/*UChildActorComponent* camera = NewObject<UChildActorComponent>(spawnedCam);
+	camera->SetupAttachment(KillCameraPosition);
+	camera->SetChildActorClass(FinalKillCamera);*/
+	
+	playercon->SetViewTargetWithBlend(spawnedCam, .25f, VTBlend_Cubic);
+
+	SpawnedKillCamera = spawnedCam;
+}
+
+void AGladiatorPlayerChar::TransitionBackToMainCamera()
+{
+	AGladiatorPlayerController* playercon = Cast<AGladiatorPlayerController>(GetController());
+	playercon->SetViewTargetWithBlend(this, 1.f, VTBlend_Cubic);
+
+	SpawnedKillCamera = nullptr;
+}
+
 void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 {
 	
@@ -437,6 +526,8 @@ void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
 	
 
 }
+
+
 
 void AGladiatorPlayerChar::ApplyEffect(float timeToLerp)
 {
