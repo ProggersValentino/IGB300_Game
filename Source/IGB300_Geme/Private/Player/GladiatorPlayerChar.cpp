@@ -48,6 +48,7 @@ void AGladiatorPlayerChar::PossessedBy(AController* NewController)
 	if (!AbilitySystemComponent) return;
 
 	GiveDefaultAbilities();
+	GiveAndActivateIdleAbilities();
 	InitDefaultAttributes();
 	InitHUD();
 	

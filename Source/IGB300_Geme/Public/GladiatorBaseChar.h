@@ -123,6 +123,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Gladiator Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category="Gladiator Abilities", meta =(ToolTip="Abilities that are activated upon given to the player and remain idle behind the scenes waiting gameplay event calls"))
+	TArray<TSubclassOf<UGameplayAbility>> IdleAbilities;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gladiator Attributes")
 	TSubclassOf<UGameplayEffect> DefaultAttributeEffects;
@@ -143,6 +146,9 @@ public:
 
 	UFUNCTION()
 	void GiveDefaultAbilities();
+
+	UFUNCTION()
+	void GiveAndActivateIdleAbilities();
 
 	UFUNCTION()
 	void RemoveAbilities() const;
