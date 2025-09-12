@@ -35,3 +35,8 @@ int AMaestroBase::GetNumWaves()
 	return NumWaves;
 }
 
+void AMaestroBase::SetNumWaves(int amount)
+{
+	NumWaves = amount;
+}
+
