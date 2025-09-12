@@ -269,6 +269,23 @@ void AGladiatorBaseChar::GiveDefaultAbilities()
 	}
 }
 
+void AGladiatorBaseChar::GiveAndActivateIdleAbilities()
+{
+	check(AbilitySystemComponent);
+
+	if (!HasAuthority()) return;
+
+	for (TSubclassOf<UGameplayAbility> AbilityClass : IdleAbilities)
+	{
+		const FGameplayAbilitySpec AbilitySpec(AbilityClass, 1); //data surrounding for the ability class
+
+		FGameplayAbilitySpec IdleAbilitySpec(AbilityClass, 1);
+		
+		//give idle ability to player and activate it
+		AbilitySystemComponent->GiveAbilityAndActivateOnce(IdleAbilitySpec);
+	}
+}
+
 void AGladiatorBaseChar::RemoveAbilities() const
 {
 	if (!HasAuthority() || AbilitySystemComponent->IsValidLowLevel()) return;
