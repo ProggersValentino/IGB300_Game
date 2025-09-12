@@ -60,6 +60,9 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite, meta = (ToolTip="Used to set what socket will be used during the anim notify"))
 	FName SocketToAttachTo;
+
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintReadWrite, meta = (ToolTip="Used to set what socket will be used during the anim notify"))
+	TEnumAsByte<EDrawDebugTrace::Type> DebugDrawType;
 	
 private:
 	bool didHit;

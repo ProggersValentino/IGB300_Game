@@ -51,7 +51,6 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 	FGameplayEventData eventData;
 	eventData.Instigator = selectedCharacter->GetAvatarActor();
 	
-	
 	/*apply effects to all results*/
 	for (FHitResult hitActor : result)
 	{
