@@ -237,7 +237,7 @@ TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()
 		CurrentComboChainIndex++;
 		CurrentCombo->ClearStreak();
 	}
-	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1)
+	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1 && !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //TODO: establish a dedicated tag for determining when the player's ability is done
 	{
 		ResetCombo();
 		/*UE_LOG(LogTemp, Error, TEXT("current combo index: %d"), CurrentComboChainIndex)*/

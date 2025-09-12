@@ -8,7 +8,10 @@
 
 void UAnimNotifyState_HitDetection::Init(USkeletalMeshComponent* MeshComponent)
 {
-	if (!IsValid(MeshComponent)) return;
+	if (!IsValid(MeshComponent))
+	{
+		return;
+	}
 	
 	character = Cast<AGladiatorBaseChar>(MeshComponent->GetOwner()); //set the global character var here
 	
@@ -79,7 +82,11 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::FrameDependentDetection(USkele
 		ActorsHitToIgnore.AddUnique(hit.GetActor());	
 	}
 	
-
+	if (hits.Num() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The amount of hits was: %d"), hits.Num());
+	}
+	
 	return hits;
 }
 
@@ -97,7 +104,9 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::FrameIndependentDetection(USke
 	/*currentLoco += currentLoco.RightVector * 10;*/ 
 	
 	FCollisionShape CollisionShapeType = FCollisionShape::MakeSphere(radius);
-
+	
+	TArray<FHitResult> hitResultsT;
+	
 	TArray<FHitResult> hits;
 
 	FVector rotationDirection = currentLoco - prevLoco; 
@@ -123,13 +132,22 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::FrameIndependentDetection(USke
 
 		if (drawType != EDrawDebugTrace::None)
 		{
-			DrawDebugSphere(character->GetWorld(), currentLoco, radius, 20, (!bHit ? FColor::Red : FColor::Green), false, 5.f);
+			DrawDebugSphere(character->GetWorld(), currentLoco, radius, 20, (!bHit ? FColor::Red : FColor::Green), false, 2.f);
 		}
 
 		//if we hit something 
 		for (FHitResult hit : hits)
 		{
 			ActorsHitToIgnore.AddUnique(hit.GetActor());
+
+			/*bool bAlreadyExists = hitResultsT.ContainsByPredicate([&](const FHitResult& other)
+			{
+				return other.GetActor() == hit.GetActor();
+			});
+			if (!bAlreadyExists)
+			{
+				hitResultsT.Add(hit);
+			}*/
 		}
 		
 		
@@ -146,13 +164,6 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::FrameIndependentDetection(USke
 	{
 		return TArray<FHitResult>();
 	}
-
-	
-
-	
-	
-	
-
 	
 	
 	return hits;
