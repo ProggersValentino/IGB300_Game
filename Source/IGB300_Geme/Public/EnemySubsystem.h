@@ -39,6 +39,7 @@ struct FEnemyInfo
 {
 	AActor* Enemy;
 	FVector TargetPos;
+	bool isAggresive;
 };
 
 UCLASS()
@@ -91,7 +92,7 @@ private:
 
 	AActor* Player;
 
-	float ZoneRadius = 100.0f;
+	float ZoneRadius = 500.0f;
 
 	float ArenaRadius = 1500.0f;
 
@@ -102,7 +103,9 @@ private:
 private:
 	bool DoesLevelContainSpawns();
 
-	FVector TargetEnemyPositionCalculator(FVector EnemyPosition);
+	FVector TargetEnemyPositionCalculator(FVector EnemyPosition, float radius);
 
 	void RetargetEnemyPositionRepel(FEnemyInfo& Enemy);
+
+	void SetAggression();
 };
