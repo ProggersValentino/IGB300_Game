@@ -222,6 +222,8 @@ protected:
 	TSubclassOf<AMaestroBase> maestroClass;
 
 	AMaestroBase* Maestro;
+
+	
 	
 private:
 	APlayerCameraManager* CameraManager;
