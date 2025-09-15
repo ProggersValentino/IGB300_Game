@@ -3,12 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemySubsystem.h"
 #include "GladiatorBaseChar.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Engine/DecalActor.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraShakeBase.h"
+#include "Camera/GladiatorCameraBase.h"
+#include "Camera/GladiatorCameraPositionComponent.h"
+#include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
 
@@ -178,7 +182,7 @@ protected:
 
 	//when we deactivate the lock on we need to clear the currenttarget & destroy the decal
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
-	float InputActionValue; //store the Forward/Backward input action float value
+	FVector2D InputActionValue; //store the Forward/Backward input action float value
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving forward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float ForwardSTTMultiplier;
@@ -186,6 +190,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving backward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float BackwardSTTMultiplier;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When player attempts to attack we dont always want to STT if the player is in range to hit the enemy"))
+	float STTDeadzone = 60.f;
+	
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Suck To Target", meta=(ToolTip="Shoot a collision trace and return the first enemy hit"))
 	FHitResult DetectEnemyToSuckTo(float Radius, EDrawDebugTrace::Type Debug, float debugTraceTime);
 	
@@ -195,10 +202,34 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Gladiator Lock On")
 	void EnemyDehighlight(AEnemyBase* Enemy);
 
+	//to predict if the closest enemy (the assumed target) will die next
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Kill Camera")
+	void PredictEnemyDeath(float searchRadius, EDrawDebugTrace::Type Debug, float debugTraceTime);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Kill Camera")
+	TSubclassOf<AGladiatorCameraBase> FinalKillCamera;
+	AActor* SpawnedKillCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera")
+	UGladiatorCameraPositionComponent* KillCameraPosition;
+	
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Kill Camera")
+	void TransistionCameraTargetView(TSubclassOf<AGladiatorCameraBase> Target);
+
+	void TransitionBackToMainCamera();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;
+	
 private:
 	APlayerCameraManager* CameraManager;
 	UCameraComponent* CameraComponent;
 	float gCurrentPlayerSpeed;
+
+	UPROPERTY()
+	UEnemySubsystem* EnemySubsystem;
 	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;

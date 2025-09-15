@@ -118,6 +118,12 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 }
 
 #pragma region Replication Setters
+float UGladiatorAttributeSet::GetMitigatedDamage(float damageInput)
+{
+	float toughness = GetToughness();
+	return damageInput / (1 + toughness * 0.01);
+}
+
 void UGladiatorAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UGladiatorAttributeSet, Health, OldHealth);

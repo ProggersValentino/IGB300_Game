@@ -78,6 +78,9 @@ public:
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, Damage)
 
+	UFUNCTION()
+	float GetMitigatedDamage(float damageInput);
+	
 	//Replication Functions ------
 	UFUNCTION()
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth) const;

@@ -188,6 +188,8 @@ void AGladiatorBaseChar::ActivateCombo()
 {
 	//determine combo
 	CurrentCombo = DetermineCombo();
+
+	UE_LOG(LogTemp, Warning, TEXT("Combo is: %s"), *CurrentCombo->GetName());
 	
 	//activate combo
 	CurrentCombo->ExecuteCombo();
@@ -235,7 +237,7 @@ TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()
 		CurrentComboChainIndex++;
 		CurrentCombo->ClearStreak();
 	}
-	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1)
+	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1 && !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //TODO: establish a dedicated tag for determining when the player's ability is done
 	{
 		ResetCombo();
 		/*UE_LOG(LogTemp, Error, TEXT("current combo index: %d"), CurrentComboChainIndex)*/
@@ -264,6 +266,23 @@ void AGladiatorBaseChar::GiveDefaultAbilities()
 
 		//give ability to player
 		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+}
+
+void AGladiatorBaseChar::GiveAndActivateIdleAbilities()
+{
+	check(AbilitySystemComponent);
+
+	if (!HasAuthority()) return;
+
+	for (TSubclassOf<UGameplayAbility> AbilityClass : IdleAbilities)
+	{
+		const FGameplayAbilitySpec AbilitySpec(AbilityClass, 1); //data surrounding for the ability class
+
+		FGameplayAbilitySpec IdleAbilitySpec(AbilityClass, 1);
+		
+		//give idle ability to player and activate it
+		AbilitySystemComponent->GiveAbilityAndActivateOnce(IdleAbilitySpec);
 	}
 }
 
