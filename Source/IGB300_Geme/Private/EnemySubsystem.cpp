@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EnemySubsystem.h"
+#include "AI/Navigation/NavigationTypes.h"
 #include "CoreGlobals.h"
 #include "Difficulty.h"
 #include "Engine/Blueprint.h"
@@ -12,6 +13,7 @@
 #include "Logging/LogMacros.h"
 #include "Math/MathFwd.h"
 #include "Math/UnrealMathUtility.h"
+#include "UObject/ObjectVersion.h"
 #include <algorithm>
 #include <vcruntime_typeinfo.h>
 
@@ -86,7 +88,8 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnem
     FVector Position = GetRandomSpawnLocation(SpawnLocations);
     FRotator Rotation;
     AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyClass, Position, Rotation);
-    FEnemyInfo Info = {Enemy, Position};
+    float ZR = FMath::RandRange(ZoneRadiusMin, ZoneRadiusMax);
+    FEnemyInfo Info = {Enemy, Position, Position, false, ZR};
     EnemyList.Add(Info);
   }
   EnemyPool -= SpawnAmount;
@@ -139,10 +142,11 @@ void UEnemySubsystem::UpdateTargetPositions()
   {
   	if (e.Enemy)
   	{
+  	  e.OldTargetPos = e.TargetPos;
   	  if (e.isAggresive) {
-    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), ZoneRadius/5);
+    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), 100.0f);
   	  } else {
-    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), ZoneRadius);
+    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), e.ZoneRadius);
   	  }
   	}    
   }
@@ -274,6 +278,8 @@ void UEnemySubsystem::RetargetEnemyPositionRepel(FEnemyInfo& Enemy)
       Distance.Normalize();
       Enemy.TargetPos = (Distance * EnemyBoidRepelStrength) + Enemy.TargetPos;
     }
+
+    e.TargetPos = e.OldTargetPos + 1.0f * (e.TargetPos - e.OldTargetPos).Normalize();
   }  
 }
 
@@ -281,8 +287,6 @@ FVector UEnemySubsystem::RequestPlayerPosition()
 {
   return Player->GetActorLocation();
 }
-// Setup enemy behaviour                     | public update enemy targets
-// Check for spawns rename
 
 int UEnemySubsystem::GetEnemyCount()
 {
@@ -306,7 +310,7 @@ void UEnemySubsystem::SetAggression()
 {
   int numEnemies = EnemyList.Num();
   // Set all enemies aggressive
-  if (numEnemies < 3) {
+  if (numEnemies < EnemyAgressionCount + 1) {
     for (FEnemyInfo& e : EnemyList) {
       e.isAggresive = true;
     }
@@ -319,8 +323,18 @@ void UEnemySubsystem::SetAggression()
   }
   
   // Set First two as aggressive
-  EnemyList[0].isAggresive = true;
-  EnemyList[1].isAggresive = true;
+  for (int i = 0; i < EnemyAgressionCount; i++) {
+    EnemyList[i].isAggresive = true;
+  }
   return;
 }
 
+void UEnemySubsystem::SetAggressionAmountRandom() {
+  EnemyAgressionCount = FMath::RandRange(EnemyAggressionMin, EnemyAggressionMax);
+  SetAggression();
+}
+
+void UEnemySubsystem::SetAggressionAmount(int amount) {
+  EnemyAgressionCount = amount;
+  SetAggression();
+}
