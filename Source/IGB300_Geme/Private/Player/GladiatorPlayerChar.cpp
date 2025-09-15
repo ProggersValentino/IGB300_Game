@@ -32,6 +32,8 @@ AGladiatorPlayerChar::AGladiatorPlayerChar()
 
 	KillCameraPosition = CreateDefaultSubobject<UGladiatorCameraPositionComponent>(TEXT("CameraPosition"));
 	
+
+	inputBuffer.Reserve(3);
 	
 	//KillCameraPosition->SetupAttachment(RootComponent);
 	/*KillCameraPosition->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);*/
@@ -483,6 +485,62 @@ void AGladiatorPlayerChar::TransitionBackToMainCamera()
 	playercon->SetViewTargetWithBlend(this, 1.f, VTBlend_Cubic);
 
 	SpawnedKillCamera = nullptr;
+}
+
+void AGladiatorPlayerChar::DetermineAttackType(TArray<FInputBuffer>& buffer)
+{
+
+	if (!IsValid(buffer[0].BufferAction)) //if the first element is null then just return
+	{
+		return;
+	}
+	
+	//determine the attack type based off how long the button was held for
+	if (buffer[0].inputHeldTime <= lightAttackHeldTime) //light attack 
+	{
+		ActivateCombo(EAttackType::Light); 
+	}
+	else if (buffer[0].inputHeldTime >= lightAttackHeldTime && buffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+	{
+		ActivateCombo(EAttackType::Medium);
+	}
+	else //heavy attack
+	{
+		ActivateCombo(EAttackType::Heavy);
+	}
+
+	//pop the first array element by reshifting the entire array up one -> we have used an input 
+	for (int i = 0; i < buffer.Num() - 1 ; i++)
+	{
+		int nextBuff = i + 1;
+
+		if (nextBuff > buffer.Num() - 1)
+		{
+			buffer[i] = FInputBuffer();
+		}
+		else
+		{
+			buffer[i] = buffer[i + 1];
+		}
+		
+	}
+}
+
+void AGladiatorPlayerChar::AddToBuffer(FInputBuffer bufferToInsert)
+{
+	if (IsValid(inputBuffer[inputBuffer.Num() - 1].BufferAction)) //we will not accept this buffer as the main buffer list is full 
+	{
+		return;
+	}
+	
+	for (int i = 0; i < inputBuffer.Num(); i++)
+	{
+		if (!IsValid(inputBuffer[i].BufferAction))
+		{
+			inputBuffer[i] = bufferToInsert;
+			break;
+		}
+	}
 }
 
 void AGladiatorPlayerChar::UpdateCameraShake(float speed)

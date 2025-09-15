@@ -15,6 +15,24 @@
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
+USTRUCT(Blueprintable, BlueprintType)
+struct FInputBuffer
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	FInputBuffer() : BufferAction(nullptr), inputHeldTime(0.0f)
+	{
+	}
+	
+	UPROPERTY(BlueprintReadWrite)
+	UInputAction* BufferAction;
+
+	UPROPERTY(BlueprintReadWrite)	
+	float inputHeldTime;
+}; 
+
 
 class AEnemyBase;
 
@@ -223,7 +241,24 @@ protected:
 
 	AMaestroBase* Maestro;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FInputBuffer> inputBuffer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float lightAttackHeldTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float mediumAttackHeldTime;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float heavyAttackHeldTime;
+	
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void DetermineAttackType(TArray<FInputBuffer>& buffer);
+
+	//when we want to add to the buffer 
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void AddToBuffer(FInputBuffer bufferToInsert);
 	
 private:
 	APlayerCameraManager* CameraManager;
