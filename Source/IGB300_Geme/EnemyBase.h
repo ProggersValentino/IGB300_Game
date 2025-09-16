@@ -10,6 +10,7 @@
 #include "GameplayEffectTypes.h"
 #include "IFinishable.h"
 #include "GameFramework/Actor.h"
+#include "Sound/SoundBase.h"
 #include "EnemyBase.generated.h"
 
 class AEnemyManager;
@@ -47,7 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
 	bool canMove;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
+	USoundBase* ragdollSound;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
 

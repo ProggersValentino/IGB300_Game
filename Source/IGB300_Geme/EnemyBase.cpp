@@ -5,6 +5,7 @@
 #include "EnemyManager.h"
 #include "EnemyType.h"
 #include "Engine/EngineTypes.h"
+#include "GameplayEffect.h"
 #include "GameplayStats.h"
 #include "Engine/World.h"
 #include "EnemySubsystem.h"
@@ -12,6 +13,7 @@
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "IGB300_Geme/EnemyType.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ReferenceChainSearch.h"
 #include "GameplayStats.h"
 
@@ -175,6 +177,7 @@ void AEnemyBase::Ragdoll(bool b_shouldKnockback)
 		FGameplayEventData eventData = AbilitySystemComponent->MakeLastHitEventData();
 		AbilitySystemComponent->GiveAbilityAndActivateOnce(spec, &eventData);
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ragdollSound, GetActorLocation());
 }
 
 /// For when we have Montages and we want to execute code when a montage Notify State finishes 
