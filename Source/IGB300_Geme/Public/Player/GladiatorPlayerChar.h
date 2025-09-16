@@ -244,6 +244,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FInputBuffer> inputBuffer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanAcceptInputQueue = true;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
 	float lightAttackHeldTime;
 
@@ -254,11 +257,22 @@ protected:
 	float heavyAttackHeldTime;
 	
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
-	void DetermineAttackType(TArray<FInputBuffer>& buffer);
+	void TryActivateAttackType();
 
 	//when we want to add to the buffer 
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
 	void AddToBuffer(FInputBuffer bufferToInsert);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Input Buffer")
+	void ActivatePreAttackAdjustment();
+
+	//turns off bcanAcceptInputQueue
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void DisableInputQueuing();
+
+	//turns on bCanAcceptInputQueue
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void EngageInputQueuing();
 	
 private:
 	APlayerCameraManager* CameraManager;
@@ -285,6 +299,8 @@ private:
 	void ApplyEffect(float timeToLerp);
 	
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+	void InitInputBuffer();
 
 };
 

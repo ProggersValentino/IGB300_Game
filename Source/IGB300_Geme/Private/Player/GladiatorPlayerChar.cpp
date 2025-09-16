@@ -33,7 +33,7 @@ AGladiatorPlayerChar::AGladiatorPlayerChar()
 	KillCameraPosition = CreateDefaultSubobject<UGladiatorCameraPositionComponent>(TEXT("CameraPosition"));
 	
 
-	inputBuffer.Reserve(3);
+	
 	
 	//KillCameraPosition->SetupAttachment(RootComponent);
 	/*KillCameraPosition->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);*/
@@ -146,6 +146,8 @@ void AGladiatorPlayerChar::BeginPlay()
 	EnemySubsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();	
 	
 	Maestro = Cast<AMaestroBase>(UGameplayStatics::GetActorOfClass(GetWorld(), maestroClass));
+
+	InitInputBuffer();
 	
 }
 
@@ -460,6 +462,7 @@ void AGladiatorPlayerChar::PredictEnemyDeath(float searchRadius, EDrawDebugTrace
 	}
 }
 
+
 void AGladiatorPlayerChar::TransistionCameraTargetView(TSubclassOf<AGladiatorCameraBase> Target)
 {
 	AGladiatorPlayerController* playercon = Cast<AGladiatorPlayerController>(GetController());
@@ -487,20 +490,22 @@ void AGladiatorPlayerChar::TransitionBackToMainCamera()
 	SpawnedKillCamera = nullptr;
 }
 
-void AGladiatorPlayerChar::DetermineAttackType(TArray<FInputBuffer>& buffer)
+void AGladiatorPlayerChar::TryActivateAttackType()
 {
 
-	if (!IsValid(buffer[0].BufferAction)) //if the first element is null then just return
+	if (inputBuffer[0].BufferAction == nullptr || AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //if the first element is null or we dont want to accept anymore inputs then just return
 	{
 		return;
 	}
+
+	ActivatePreAttackAdjustment();
 	
 	//determine the attack type based off how long the button was held for
-	if (buffer[0].inputHeldTime <= lightAttackHeldTime) //light attack 
+	if (inputBuffer[0].inputHeldTime <= lightAttackHeldTime) //light attack 
 	{
 		ActivateCombo(EAttackType::Light); 
 	}
-	else if (buffer[0].inputHeldTime >= lightAttackHeldTime && buffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+	else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
 	{
 		ActivateCombo(EAttackType::Medium);
 	}
@@ -510,37 +515,53 @@ void AGladiatorPlayerChar::DetermineAttackType(TArray<FInputBuffer>& buffer)
 	}
 
 	//pop the first array element by reshifting the entire array up one -> we have used an input 
-	for (int i = 0; i < buffer.Num() - 1 ; i++)
+	for (int i = 0; i < inputBuffer.Num(); i++)
 	{
 		int nextBuff = i + 1;
 
-		if (nextBuff > buffer.Num() - 1)
+		if (nextBuff > inputBuffer.Num() - 1)
 		{
-			buffer[i] = FInputBuffer();
+			inputBuffer[i] = FInputBuffer();
 		}
 		else
 		{
-			buffer[i] = buffer[i + 1];
+			inputBuffer[i] = inputBuffer[i + 1];
 		}
 		
 	}
 }
 
+
+
 void AGladiatorPlayerChar::AddToBuffer(FInputBuffer bufferToInsert)
 {
-	if (IsValid(inputBuffer[inputBuffer.Num() - 1].BufferAction)) //we will not accept this buffer as the main buffer list is full 
+	if (inputBuffer[inputBuffer.Max() - 1].BufferAction || !bCanAcceptInputQueue) //we will not accept this buffer as the main buffer list is full 
 	{
 		return;
 	}
 	
 	for (int i = 0; i < inputBuffer.Num(); i++)
 	{
-		if (!IsValid(inputBuffer[i].BufferAction))
+		if (inputBuffer[i].BufferAction == nullptr)
 		{
 			inputBuffer[i] = bufferToInsert;
 			break;
 		}
 	}
+}
+
+void AGladiatorPlayerChar::DisableInputQueuing()
+{
+	bCanAcceptInputQueue = false;
+}
+
+void AGladiatorPlayerChar::EngageInputQueuing()
+{
+	bCanAcceptInputQueue = true;
+}
+
+void AGladiatorPlayerChar::ActivatePreAttackAdjustment_Implementation()
+{
 }
 
 void AGladiatorPlayerChar::UpdateCameraShake(float speed)
@@ -651,6 +672,16 @@ void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 	}
 	
 	
+}
+
+void AGladiatorPlayerChar::InitInputBuffer()
+{
+	inputBuffer.Reserve(3);
+	
+	for (int i = 0; i < inputBuffer.Max(); i++)
+	{
+		inputBuffer.Add(FInputBuffer());
+	}
 }
 
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
