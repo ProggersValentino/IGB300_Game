@@ -501,15 +501,16 @@ void AGladiatorPlayerChar::TryActivateAttackType()
 	ActivatePreAttackAdjustment();
 	
 	//determine the attack type based off how long the button was held for
-	if (inputBuffer[0].inputHeldTime <= lightAttackHeldTime) //light attack 
+	if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime) //light attack 
 	{
 		ActivateCombo(EAttackType::Light); 
 	}
-	else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+	//else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+	else if (inputBuffer[0].inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
 	{
 		ActivateCombo(EAttackType::Medium);
 	}
-	else //heavy attack
+	else if(inputBuffer[0].inputHeldTime >= heavyAttackHeldTime) //heavy attack
 	{
 		ActivateCombo(EAttackType::Heavy);
 	}

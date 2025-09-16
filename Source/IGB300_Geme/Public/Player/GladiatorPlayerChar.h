@@ -85,6 +85,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
 	bool bUseCameraLerpWithMouse = true;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="0.0", ClampMax="90.0"))
+	float CameraRotationPitchMaxClamp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="-90.0", ClampMax="0.0"))
+	float CameraRotationPitchMinClamp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is idle then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> IdleShake;
 
@@ -130,7 +136,7 @@ protected:
 	UInputAction* LookAction;
 	
 	void CameraInputCallback(const FInputActionInstance& instance);
-
+	
 	//sync the LerpInput() & LerpPlayerRotation() in one function
 	void LerpCameraSystem(const FVector2D values);
 
@@ -145,6 +151,8 @@ protected:
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 
+	
+	
 	UPROPERTY()
 	AEnemyBase* CurrentLockedTarget;
 
