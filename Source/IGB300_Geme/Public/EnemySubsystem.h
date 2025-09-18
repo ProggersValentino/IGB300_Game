@@ -38,7 +38,10 @@ struct FSpawnResult
 struct FEnemyInfo
 {
 	AActor* Enemy;
+	FVector OldTargetPos;
 	FVector TargetPos;
+	bool isAggresive;
+	float ZoneRadius;
 };
 
 UCLASS()
@@ -84,25 +87,40 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndFearing();
 	
-private:
+
+	UFUNCTION(BlueprintCallable)
+	void SetAggressionAmountRandom();
+
+	UFUNCTION(BlueprintCallable)
+	void SetAggressionAmount(int amount);
+
+	private:
 	TArray<ASpawnLocation*> SpawnLocations;
 
 	TArray<FEnemyInfo> EnemyList;
 
 	AActor* Player;
 
-	float ZoneRadius = 100.0f;
+	float ZoneRadius = 500.0f;
+	float ZoneRadiusMin = 300.0f;
+	float ZoneRadiusMax = 450.0f;
 
 	float ArenaRadius = 1500.0f;
 
 	float EnemyBoidRepelThreshold = 200.0f;
 
-	float EnemyBoidRepelStrength = 50.0f;
+	float EnemyBoidRepelStrength = 500.0f;
+
+	int EnemyAgressionCount = 2;
+	int EnemyAggressionMin = 1;	
+	int EnemyAggressionMax = 4;
 
 private:
 	bool DoesLevelContainSpawns();
 
-	FVector TargetEnemyPositionCalculator(FVector EnemyPosition);
+	FVector TargetEnemyPositionCalculator(FVector EnemyPosition, float radius);
 
 	void RetargetEnemyPositionRepel(FEnemyInfo& Enemy);
+
+	void SetAggression();
 };

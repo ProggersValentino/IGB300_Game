@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EnemySubsystem.h"
+#include "AI/Navigation/NavigationTypes.h"
 #include "CoreGlobals.h"
 #include "Difficulty.h"
 #include "Engine/Blueprint.h"
@@ -12,6 +13,7 @@
 #include "Logging/LogMacros.h"
 #include "Math/MathFwd.h"
 #include "Math/UnrealMathUtility.h"
+#include "UObject/ObjectVersion.h"
 #include <algorithm>
 #include <vcruntime_typeinfo.h>
 
@@ -86,10 +88,12 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnem
     FVector Position = GetRandomSpawnLocation(SpawnLocations);
     FRotator Rotation;
     AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyClass, Position, Rotation);
-    FEnemyInfo Info = {Enemy, Position};
+    float ZR = FMath::RandRange(ZoneRadiusMin, ZoneRadiusMax);
+    FEnemyInfo Info = {Enemy, Position, Position, false, ZR};
     EnemyList.Add(Info);
   }
   EnemyPool -= SpawnAmount;
+  SetAggression();
   return {true, SpawnAmount, EnemyPool};
 }
 
@@ -100,6 +104,7 @@ void UEnemySubsystem::DeregisterEnemy(AActor* Enemy)
     if (Enemy == EnemyList[i].Enemy)
     {
       EnemyList.RemoveAt(i);
+      SetAggression();
       return;
     }
   }
@@ -137,7 +142,12 @@ void UEnemySubsystem::UpdateTargetPositions()
   {
   	if (e.Enemy)
   	{
-  		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation());
+  	  e.OldTargetPos = e.TargetPos;
+  	  if (e.isAggresive) {
+    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), 100.0f);
+  	  } else {
+    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), e.ZoneRadius);
+  	  }
   	}    
   }
 
@@ -162,7 +172,7 @@ FVector UEnemySubsystem::RequestTargetPosition(AActor* Enemy)
   return {0, 0, 0}; // unreachable
 }
 
-FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos)
+FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos, float radius)
 {
   FVector PlayerPos = Player->GetActorLocation();
   FVector ArenaPos = FVector(0.0f, 0.0f, 0.0f);
@@ -172,7 +182,7 @@ FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos)
 	// Assume ideal point is inside the arena (edge case is dealt with later)
 	ret.X = PlayerPos.X
 	  + (EnemyPos.X-PlayerPos.X)
-	  * ZoneRadius
+	  * radius
 	  / UKML::Sqrt(
 		  UKML::Square(EnemyPos.X-PlayerPos.X) +
 		  UKML::Square(EnemyPos.Y-PlayerPos.Y)
@@ -181,7 +191,7 @@ FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos)
 	
 	ret.Y = PlayerPos.Y
 	  + (EnemyPos.Y-PlayerPos.Y)
-	  *	ZoneRadius
+	  *	radius
 	  /	UKML::Sqrt(
 	  	UKML::Square(EnemyPos.X-PlayerPos.X)+
 			UKML::Square(EnemyPos.Y-PlayerPos.Y)
@@ -202,27 +212,27 @@ FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos)
 	  * UKML::Sqrt(
 			( 2 * UKML::Square(ArenaRadius) * UKML::Square(PlayerPos.X) +
 		 		2 * UKML::Square(ArenaRadius) * UKML::Square(PlayerPos.Y) +
-		 		2 * UKML::Square(ArenaRadius) * UKML::Square(ZoneRadius) +
-		 		2 * UKML::Square(ZoneRadius) * UKML::Square(PlayerPos.X) +
-		 		2 * UKML::Square(ZoneRadius) * UKML::Square(PlayerPos.Y) 
+		 		2 * UKML::Square(ArenaRadius) * UKML::Square(radius) +
+		 		2 * UKML::Square(radius) * UKML::Square(PlayerPos.X) +
+		 		2 * UKML::Square(radius) * UKML::Square(PlayerPos.Y) 
 		  )
 		  -
   		( FMath::Pow(PlayerPos.X, 4)
   		+	2 * UKML::Square(PlayerPos.X) * UKML::Square(PlayerPos.Y)
   		+ FMath::Pow(PlayerPos.Y, 4)
-  		+ FMath::Pow(ZoneRadius, 4)
+  		+ FMath::Pow(radius, 4)
   		+	FMath::Pow(ArenaRadius, 4)
   		)
 	 )
   ;
 	
 	// Get a->x where the quad is positive
-	float a = (q + FMath::Pow(PlayerPos.X, 3) + PlayerPos.X * UKML::Square(ArenaRadius) + PlayerPos.X * UKML::Square(PlayerPos.Y) - PlayerPos.X * UKML::Square(ZoneRadius))
+	float a = (q + FMath::Pow(PlayerPos.X, 3) + PlayerPos.X * UKML::Square(ArenaRadius) + PlayerPos.X * UKML::Square(PlayerPos.Y) - PlayerPos.X * UKML::Square(radius))
 	  / (2 * (UKML::Square(PlayerPos.Y) + UKML::Square(PlayerPos.X)))
 	;
 
 	// Get b->x where quad is negative
-	float b = (-q + FMath::Pow(PlayerPos.X, 3) + PlayerPos.X * UKML::Square(ArenaRadius) + PlayerPos.X * UKML::Square(PlayerPos.Y) - PlayerPos.X * UKML::Square(ZoneRadius))
+	float b = (-q + FMath::Pow(PlayerPos.X, 3) + PlayerPos.X * UKML::Square(ArenaRadius) + PlayerPos.X * UKML::Square(PlayerPos.Y) - PlayerPos.X * UKML::Square(radius))
 	  / (2 * (UKML::Square(PlayerPos.Y) + UKML::Square(PlayerPos.X)))
 	;
 
@@ -268,6 +278,8 @@ void UEnemySubsystem::RetargetEnemyPositionRepel(FEnemyInfo& Enemy)
       Distance.Normalize();
       Enemy.TargetPos = (Distance * EnemyBoidRepelStrength) + Enemy.TargetPos;
     }
+
+    e.TargetPos = e.OldTargetPos + 1.0f * (e.TargetPos - e.OldTargetPos).Normalize();
   }  
 }
 
@@ -275,8 +287,6 @@ FVector UEnemySubsystem::RequestPlayerPosition()
 {
   return Player->GetActorLocation();
 }
-// Setup enemy behaviour                     | public update enemy targets
-// Check for spawns rename
 
 int UEnemySubsystem::GetEnemyCount()
 {
@@ -291,8 +301,40 @@ void UEnemySubsystem::StartFearing()
 }
 void UEnemySubsystem::EndFearing()
 {
-  ZoneRadius = 300.0f;
+  ZoneRadius = 500.0f;
   b_IsFearing = false;
   return;
 }
 
+void UEnemySubsystem::SetAggression()
+{
+  int numEnemies = EnemyList.Num();
+  // Set all enemies aggressive
+  if (numEnemies < EnemyAgressionCount + 1) {
+    for (FEnemyInfo& e : EnemyList) {
+      e.isAggresive = true;
+    }
+    return;
+  }
+
+  // Reset Aggression
+  for (FEnemyInfo& e : EnemyList) {
+    e.isAggresive = false;
+  }
+  
+  // Set First two as aggressive
+  for (int i = 0; i < EnemyAgressionCount; i++) {
+    EnemyList[i].isAggresive = true;
+  }
+  return;
+}
+
+void UEnemySubsystem::SetAggressionAmountRandom() {
+  EnemyAgressionCount = FMath::RandRange(EnemyAggressionMin, EnemyAggressionMax);
+  SetAggression();
+}
+
+void UEnemySubsystem::SetAggressionAmount(int amount) {
+  EnemyAgressionCount = amount;
+  SetAggression();
+}
