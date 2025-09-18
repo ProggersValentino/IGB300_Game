@@ -15,6 +15,24 @@
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
+USTRUCT(Blueprintable, BlueprintType)
+struct FInputBuffer
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	FInputBuffer() : BufferAction(nullptr), inputHeldTime(0.0f)
+	{
+	}
+	
+	UPROPERTY(BlueprintReadWrite)
+	UInputAction* BufferAction;
+
+	UPROPERTY(BlueprintReadWrite)	
+	float inputHeldTime;
+}; 
+
 
 class AEnemyBase;
 
@@ -67,6 +85,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
 	bool bUseCameraLerpWithMouse = true;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="0.0", ClampMax="90.0"))
+	float CameraRotationPitchMaxClamp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="-90.0", ClampMax="0.0"))
+	float CameraRotationPitchMinClamp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is idle then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> IdleShake;
 
@@ -112,7 +136,7 @@ protected:
 	UInputAction* LookAction;
 	
 	void CameraInputCallback(const FInputActionInstance& instance);
-
+	
 	//sync the LerpInput() & LerpPlayerRotation() in one function
 	void LerpCameraSystem(const FVector2D values);
 
@@ -127,6 +151,8 @@ protected:
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 
+	
+	
 	UPROPERTY()
 	AEnemyBase* CurrentLockedTarget;
 
@@ -222,6 +248,39 @@ protected:
 	TSubclassOf<AMaestroBase> maestroClass;
 
 	AMaestroBase* Maestro;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FInputBuffer> inputBuffer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanAcceptInputQueue = true;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float lightAttackHeldTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float mediumAttackHeldTime;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
+	float heavyAttackHeldTime;
+	
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void TryActivateAttackType();
+
+	//when we want to add to the buffer 
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void AddToBuffer(FInputBuffer bufferToInsert);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Input Buffer")
+	void ActivatePreAttackAdjustment();
+
+	//turns off bcanAcceptInputQueue
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void DisableInputQueuing();
+
+	//turns on bCanAcceptInputQueue
+	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
+	void EngageInputQueuing();
 	
 private:
 	APlayerCameraManager* CameraManager;
@@ -248,6 +307,8 @@ private:
 	void ApplyEffect(float timeToLerp);
 	
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+	void InitInputBuffer();
 
 };
 

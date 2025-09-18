@@ -16,6 +16,14 @@
  * It holds the foundational functions, variables and Utility functions that every new character created will need to function properly 
 */
 
+UENUM()
+enum class EAttackType : uint8
+{
+	Light = 0,
+	Medium = 1,
+	Heavy = 2
+};
+
 class UGameplayAbility;
 class UGladiatorAbilitySystemComponent;
 class UGladiatorAttributeSet;
@@ -107,7 +115,7 @@ public:
 	void ResetCombo();
 
 	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
-	void ActivateCombo();
+	void ActivateCombo(EAttackType attackTypeToRequest);
 	
 protected:
 	// Called when the game starts or when spawned

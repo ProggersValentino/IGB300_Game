@@ -184,10 +184,28 @@ void AGladiatorBaseChar::ResetCombo()
 	CurrentComboChainIndex = 0;
 }
 
-void AGladiatorBaseChar::ActivateCombo()
+void AGladiatorBaseChar::ActivateCombo(EAttackType attackTypeToRequest)
 {
-	//determine combo
-	CurrentCombo = DetermineCombo();
+	switch (attackTypeToRequest)
+	{
+	case EAttackType::Light:
+		CurrentCombo = MainComboChain[0];
+		break;
+
+	case EAttackType::Medium:
+		CurrentCombo = MainComboChain[1];
+		break;
+
+	case EAttackType::Heavy:
+		CurrentCombo = MainComboChain[2];
+		break;
+
+		default:
+			CurrentCombo = MainComboChain[0];
+			break;
+	}
+	/*//determine combo
+	CurrentCombo = DetermineCombo();*/
 
 	UE_LOG(LogTemp, Warning, TEXT("Combo is: %s"), *CurrentCombo->GetName());
 	
