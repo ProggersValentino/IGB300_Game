@@ -107,7 +107,7 @@ public:
 
 	float ArenaRadius = 1500.0f;
 
-	float EnemyBoidRepelThreshold = 200.0f;
+	float EnemyBoidRepelThreshold = 100.0f;
 
 	float EnemyBoidRepelStrength = 500.0f;
 
