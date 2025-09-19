@@ -500,20 +500,7 @@ void AGladiatorPlayerChar::TryActivateAttackType()
 
 	ActivatePreAttackAdjustment();
 	
-	//determine the attack type based off how long the button was held for
-	if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime) //light attack 
-	{
-		ActivateCombo(EAttackType::Light); 
-	}
-	//else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
-	else if (inputBuffer[0].inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
-	{
-		ActivateCombo(EAttackType::Medium);
-	}
-	else if(inputBuffer[0].inputHeldTime >= heavyAttackHeldTime) //heavy attack
-	{
-		ActivateCombo(EAttackType::Heavy);
-	}
+	SelectAttackToUse(inputBuffer[0]);
 
 	//pop the first array element by reshifting the entire array up one -> we have used an input 
 	for (int i = 0; i < inputBuffer.Num(); i++)
@@ -540,6 +527,8 @@ void AGladiatorPlayerChar::AddToBuffer(FInputBuffer bufferToInsert)
 	{
 		return;
 	}
+
+	bufferToInsert.currentOwnedTags = AbilitySystemComponent->GetOwnedGameplayTags();
 	
 	for (int i = 0; i < inputBuffer.Num(); i++)
 	{
@@ -683,6 +672,32 @@ void AGladiatorPlayerChar::InitInputBuffer()
 	{
 		inputBuffer.Add(FInputBuffer());
 	}
+}
+
+void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
+{
+	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")))
+	{
+		ActivateCombo(EAttackType::Utility);	
+	}
+	else
+	{
+		//determine the attack type based off how long the button was held for
+		if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime) //light attack 
+		{
+			ActivateCombo(EAttackType::Light); 
+		}
+		//else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+		else if (selectedBuffer.inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
+		{
+			ActivateCombo(EAttackType::Medium);
+		}
+		else if(selectedBuffer.inputHeldTime >= heavyAttackHeldTime) //heavy attack
+		{
+			ActivateCombo(EAttackType::Heavy);
+		}	
+	}
+
 }
 
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)

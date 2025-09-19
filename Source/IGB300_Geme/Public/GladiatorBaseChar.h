@@ -21,7 +21,8 @@ enum class EAttackType : uint8
 {
 	Light = 0,
 	Medium = 1,
-	Heavy = 2
+	Heavy = 2,
+	Utility = 3,
 };
 
 class UGameplayAbility;

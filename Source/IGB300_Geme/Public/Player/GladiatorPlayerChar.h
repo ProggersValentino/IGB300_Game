@@ -22,7 +22,7 @@ struct FInputBuffer
 
 public:
 
-	FInputBuffer() : BufferAction(nullptr), inputHeldTime(0.0f)
+	FInputBuffer() : BufferAction(nullptr), inputHeldTime(0.0f), currentOwnedTags()
 	{
 	}
 	
@@ -31,6 +31,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)	
 	float inputHeldTime;
+
+	FGameplayTagContainer currentOwnedTags;
 }; 
 
 
@@ -310,5 +312,7 @@ private:
 
 	void InitInputBuffer();
 
+	void SelectAttackToUse(FInputBuffer selectedBuffer);
+	
 };
 
