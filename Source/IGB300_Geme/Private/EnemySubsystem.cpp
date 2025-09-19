@@ -144,7 +144,7 @@ void UEnemySubsystem::UpdateTargetPositions()
   	{
   	  e.OldTargetPos = e.TargetPos;
   	  if (e.isAggresive) {
-    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), 100.0f);
+    		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), 150.0f);
   	  } else {
     		e.TargetPos = TargetEnemyPositionCalculator(e.Enemy->GetActorLocation(), e.ZoneRadius);
   	  }
