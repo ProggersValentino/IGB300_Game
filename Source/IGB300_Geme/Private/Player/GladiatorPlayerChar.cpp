@@ -676,7 +676,11 @@ void AGladiatorPlayerChar::InitInputBuffer()
 
 void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 {
-	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")))
+	float blockedRage = AttributeSet->GetBlockedRageAttribute().GetNumericValue(AttributeSet);
+	float maxBlockedRage = AttributeSet->GetMaxBlockedRageAttribute().GetNumericValue(AttributeSet);
+
+	//if we are blocking and our rage is at max then activate utility ability	
+	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")) && blockedRage >= maxBlockedRage)
 	{
 		ActivateCombo(EAttackType::Utility);	
 	}

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BlockedRageAttributeWidget.h"
 #include "GloryAttributeWidget.h"
 #include "GameFramework/HUD.h"
 #include "GladiatorHUDBase.generated.h"
@@ -39,6 +40,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGloryAttributeWidget> GloryAttributeWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UBlockedRageAttributeWidget> BlockedRageAttributeWidgetClass;
 	
 	/*UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UArenaEventWidget> LoadedArenaEventUIClass;*/
@@ -51,7 +55,8 @@ private:
 	UGladiatorAttributeWidget* AttributeWidget;
 	UPROPERTY()
 	UGloryAttributeWidget* GloryAttributeWidget;
-	
+	UPROPERTY()
+	UBlockedRageAttributeWidget* BlockedRageAttributeWidget;
 
 	/*UPROPERTY()
 	UArenaEventWidget* ArenaEventUI;*/
