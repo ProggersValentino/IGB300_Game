@@ -99,6 +99,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsCloseToPlayer();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsCloseToTarget();
+
 	FDelegateHandle HealthChangeDelegate;
 
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
