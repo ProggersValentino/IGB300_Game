@@ -64,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float IsCloseToTargetLimit = 200.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* WalkingAnimation;
+
 
 	AEnemyManager* enemyManager;
 
