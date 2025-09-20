@@ -11,6 +11,7 @@
 #include "IFinishable.h"
 #include "GameFramework/Actor.h"
 #include "Sound/SoundBase.h"
+#include "Templates/SubclassOf.h"
 #include "EnemyBase.generated.h"
 
 class AEnemyManager;
@@ -54,6 +55,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
 	FVector targetMovePos;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> CoinFountain;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> ScorePopUp;
+
+
 	AEnemyManager* enemyManager;
 
 	
@@ -73,6 +81,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostDeathAction() override;
 	virtual void Attack_Implementation();
 	virtual void Move_Implementation();
 	virtual void Damage_Implementation(float amount);
