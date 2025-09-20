@@ -5,6 +5,7 @@
 #include "EnemyManager.h"
 #include "EnemyType.h"
 #include "Engine/EngineTypes.h"
+#include "GameFramework/Actor.h"
 #include "GameplayEffect.h"
 #include "GameplayStats.h"
 #include "Engine/World.h"
@@ -199,4 +200,14 @@ void AEnemyBase::SetIsGameplay(bool value)
 bool AEnemyBase::IsGameplay()
 {
 	return isGameplay;
+}
+
+void AEnemyBase::PostDeathAction() {
+	UGameplayStats* gameplayStats = GetWorld()->GetSubsystem<UGameplayStats>();
+	gameplayStats->ChangeTotalKills(1);
+
+	FVector spawnLocation = GetActorLocation() - FVector(0, 0, 90);
+	FTransform spawnTransform = FTransform(spawnLocation);
+	GetWorld()->SpawnActor<AActor>(ScorePopUp, spawnTransform);
+	GetWorld()->SpawnActor<AActor>(CoinFountain, spawnTransform);
 }

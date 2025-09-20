@@ -169,7 +169,7 @@ void AGladiatorBaseChar::Die()
 	else DeathCleanup();*/
 }
 
-void AGladiatorBaseChar::PostDeathAction_Implementation()
+void AGladiatorBaseChar::PostDeathAction()
 {
 }
 
