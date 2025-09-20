@@ -45,8 +45,8 @@ public:
 	float lastTimeHitByplayer;
 	float timeAlive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Members")
-	bool canMove;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Members")
+	bool canMove = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	USoundBase* ragdollSound;

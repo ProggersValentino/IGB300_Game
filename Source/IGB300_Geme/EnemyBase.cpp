@@ -14,6 +14,8 @@
 #include "GAS/GladiatorAttributeSet.h"
 #include "IGB300_Geme/EnemyType.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Math/MathFwd.h"
 #include "UObject/ReferenceChainSearch.h"
 #include "GameplayStats.h"
 
@@ -41,8 +43,6 @@ void AEnemyBase::BeginPlay()
 	
 	if (AbilitySystemComponent)
 	{
-		
-		
 		//ability setup releated
 		AbilitySystemComponent->InitAbilityActorInfo(this, this); //assigning the enemy its ability actor info for server and local
 		GiveDefaultAbilities();
@@ -51,27 +51,23 @@ void AEnemyBase::BeginPlay()
 		//binding to the health attribute so when it changes the function gets called
 		HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
 	}
-
-	
-	
-	// Depreceated
-	// AActor* enemyManAct = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyManager::StaticClass());
-	// if (enemyManAct)
-	// 	enemyManager = Cast<AEnemyManager>(enemyManAct);
-	// UID = enemyManager->RegisterEnemy(this);
 }
 
 void AEnemyBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	
 }
 
 // Called every frame
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (canMove) {
+		UEnemySubsystem* subsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();
+		FVector playerPos = subsystem->RequestPlayerPosition();
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), playerPos));
+		targetMovePos = subsystem->RequestTargetPosition(this);
+	}
 	if (isGameplay)
 	{
 		Move_Implementation();
