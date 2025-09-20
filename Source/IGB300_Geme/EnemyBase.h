@@ -61,6 +61,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> ScorePopUp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float IsCloseToTargetLimit = 200.0f;
+
 
 	AEnemyManager* enemyManager;
 
@@ -89,8 +92,12 @@ public:
 	virtual bool CanDoFinisher();
 	virtual bool CanFinish_Implementation();
 	virtual void GetExecuted_Implementation(UAnimMontage* animation) override;
+
 	UFUNCTION(BlueprintCallable)
 	virtual EEnemyType IsOfType();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsCloseToPlayer();
 
 	FDelegateHandle HealthChangeDelegate;
 

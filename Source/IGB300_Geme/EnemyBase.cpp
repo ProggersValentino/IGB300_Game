@@ -211,3 +211,11 @@ void AEnemyBase::PostDeathAction() {
 	GetWorld()->SpawnActor<AActor>(ScorePopUp, spawnTransform);
 	GetWorld()->SpawnActor<AActor>(CoinFountain, spawnTransform);
 }
+
+bool AEnemyBase::IsCloseToPlayer() {
+	float distToPlayer = UKismetMathLibrary::Vector_Distance(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+	if (distToPlayer < IsCloseToTargetLimit) {
+		return true;
+	}
+	return false;  
+}
