@@ -16,6 +16,7 @@
 #include "UObject/ObjectVersion.h"
 #include <algorithm>
 #include <vcruntime_typeinfo.h>
+#include "Kismet/KismetArrayLibrary.h"
 
 void UEnemySubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
@@ -48,7 +49,7 @@ FVector GetRandomSpawnLocation(TArray<ASpawnLocation*>& SpawnLocations)
   return SpawnLocations[i]->GetActorLocation();
 }
 
-FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnemyBase> EnemyClass)
+FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TArray<TSubclassOf<AEnemyBase>> EnemyClass)
 {
   int SpawnAmount = 0;
   switch (Difficulty)
@@ -87,7 +88,8 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnem
   {
     FVector Position = GetRandomSpawnLocation(SpawnLocations);
     FRotator Rotation;
-    AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyClass, Position, Rotation);
+    int ClassIndex = FMath::RandRange(0, EnemyClass.Num()-1);
+    AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyClass[ClassIndex], Position, Rotation);
     float ZR = FMath::RandRange(ZoneRadiusMin, ZoneRadiusMax);
     FEnemyInfo Info = {Enemy, Position, Position, false, ZR};
     EnemyList.Add(Info);
