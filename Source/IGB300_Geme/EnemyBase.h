@@ -67,6 +67,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* WalkingAnimation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* BlockingAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* AttackAnimation1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool b_IsStunned;
 
