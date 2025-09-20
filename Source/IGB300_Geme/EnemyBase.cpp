@@ -219,3 +219,11 @@ bool AEnemyBase::IsCloseToPlayer() {
 	}
 	return false;  
 }
+
+bool AEnemyBase::IsCloseToTarget() {
+	float distToTarget = UKismetMathLibrary::Vector_Distance(GetActorLocation(), targetMovePos);
+	if (distToTarget < IsCloseToTargetLimit) {
+		return true;
+	}
+	return false;  
+}
