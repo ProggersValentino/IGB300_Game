@@ -64,11 +64,27 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float IsCloseToTargetLimit = 200.0f;
 
+	// Animations
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* WalkingAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* BlockingAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* AttackAnimation1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* IdleAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool b_IsStunned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool b_IsFearing;
 
 	AEnemyManager* enemyManager;
 
-	
-		
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

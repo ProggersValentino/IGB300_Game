@@ -61,7 +61,7 @@ public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	UFUNCTION(BlueprintCallable)
-	FSpawnResult TrySpawn(EDifficulty Difficulty, TSubclassOf<AEnemyBase> EnemyClass);
+	FSpawnResult TrySpawn(EDifficulty Difficulty, TArray<TSubclassOf<AEnemyBase>> EnemyClass);
 
 	UFUNCTION(BlueprintCallable)
 	void ChangePool(EDifficulty Difficulty);

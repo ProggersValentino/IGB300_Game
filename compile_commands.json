@@ -1,5 +1,53 @@
 [
 	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/AnimNotifyState_GameplayEffect.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_GameplayEffect.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_GameplayEffect.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/AnimNotifyState_HitDetection.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_HitDetection.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_HitDetection.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ArenaEventEffectBase.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventEffectBase.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventEffectBase.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ArenaEventPlayerEffect.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventPlayerEffect.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventPlayerEffect.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ArenaEventWidget.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventWidget.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventWidget.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ArenaEventsSettings.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSettings.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSettings.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ArenaEventsSubsystem.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSubsystem.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSubsystem.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/AudioDataAsset.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AudioDataAsset.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AudioDataAsset.gen.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/BasicMeleeEnemy.gen.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicMeleeEnemy.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
@@ -12,10 +60,22 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/BasicRangedEnemy.gen.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/ComboContainer.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ComboContainer.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ComboContainer.gen.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/Crowd.gen.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/Crowd.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/Crowd.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/CrowdWorldSubsystem.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/CrowdWorldSubsystem.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/CrowdWorldSubsystem.gen.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/CustomError.gen.cpp",
@@ -66,10 +126,22 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EnemyType.gen.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/EventArenaData.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EventArenaData.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EventArenaData.gen.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/FGladiatorGameplayEffectContext.gen.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/FGladiatorGameplayEffectContext.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/FGladiatorGameplayEffectContext.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GA_KnockBack.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GA_KnockBack.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GA_KnockBack.gen.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GC_UIDamageNumber.gen.cpp",
@@ -82,6 +154,12 @@
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GEC_MeleeDamage.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GEC_MeleeDamage.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GameplayStats.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GameplayStats.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GameplayStats.gen.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GladiatorAbilitySystemComponent.gen.cpp",
@@ -112,6 +190,24 @@
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorBaseChar.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorBaseChar.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GladiatorCameraBase.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraBase.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraBase.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GladiatorCameraPositionComponent.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraPositionComponent.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraPositionComponent.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GladiatorEffectContextLibrary.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorEffectContextLibrary.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorEffectContextLibrary.gen.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/GladiatorHUDBase.gen.cpp",
@@ -192,6 +288,18 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/LootDataAsset.gen.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/MaestroBase.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MaestroBase.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MaestroBase.gen.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/MestroSubsystem.gen.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MestroSubsystem.gen.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MestroSubsystem.gen.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/UnrealEditor/Inc/IGB300_Geme/UHT/SWeaponData.gen.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SWeaponData.gen.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
@@ -252,10 +360,70 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/IGB300_Geme.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/ArenaEvents/ArenaEventsSettings.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSettings.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSettings.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/ArenaEvents/ArenaEventsSubsystem.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSubsystem.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventsSubsystem.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/ArenaEvents/EventArenaData.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EventArenaData.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/EventArenaData.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/ArenaEvents/SubtypeDataAssets/ArenaEventEffectBase.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventEffectBase.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventEffectBase.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/ArenaEvents/SubtypeDataAssets/ArenaEventPlayerEffect.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventPlayerEffect.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventPlayerEffect.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/AudioDataAsset.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AudioDataAsset.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AudioDataAsset.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/BlueprintLibrary/GladiatorEffectContextLibrary.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorEffectContextLibrary.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorEffectContextLibrary.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Camera/GladiatorCameraBase.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraBase.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraBase.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Camera/GladiatorCameraPositionComponent.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraPositionComponent.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorCameraPositionComponent.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Crowd.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/Crowd.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/Crowd.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/CrowdWorldSubsystem.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/CrowdWorldSubsystem.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/CrowdWorldSubsystem.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/CustomError.cpp",
@@ -318,6 +486,24 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GloryAttributeSet.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/GameManagement/MaestroBase.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MaestroBase.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MaestroBase.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/GameManagement/MestroSubsystem.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MestroSubsystem.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/MestroSubsystem.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/GameplayStats.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GameplayStats.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GameplayStats.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/GladiatorBaseChar.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorBaseChar.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
@@ -354,6 +540,30 @@
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/LootDataAsset.cpp.obj"
 	},
 	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Player/Abilities/GA_KnockBack.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GA_KnockBack.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GA_KnockBack.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Player/AnimNotifyState_GameplayEffect.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_GameplayEffect.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_GameplayEffect.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Player/AnimNotifyState_HitDetection.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_HitDetection.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/AnimNotifyState_HitDetection.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Player/ComboContainer.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ComboContainer.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ComboContainer.cpp.obj"
+	},
+	{
 		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/Player/GladiatorPlayerChar.cpp",
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/GladiatorPlayerChar.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
@@ -376,6 +586,12 @@
 		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SWeaponData.cpp.obj.rsp\"",
 		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
 		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/SWeaponData.cpp.obj"
+	},
+	{
+		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/UI/ArenaEventWidget.cpp",
+		"command": "\"C:/Program Files/LLVM/bin/clang-cl.exe\" @\"C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventWidget.cpp.obj.rsp\"",
+		"directory": "C:/apps/unreal/UE_5.4/Engine/Source",
+		"output": "C:/dev/IGB300_Geme/Intermediate/Build/Win64/x64/UnrealEditor/Development/IGB300_Geme/ArenaEventWidget.cpp.obj"
 	},
 	{
 		"file": "C:/dev/IGB300_Geme/Source/IGB300_Geme/Private/UI/DamageNumberWidget_Base.cpp",
