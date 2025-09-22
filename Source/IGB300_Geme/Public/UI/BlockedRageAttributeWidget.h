@@ -4,24 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GloryAttributeWidget.generated.h"
+#include "BlockedRageAttributeWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class IGB300_GEME_API UGloryAttributeWidget : public UUserWidget
+class IGB300_GEME_API UBlockedRageAttributeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	void BindAttributes();
-
+	
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	float GloryPercent;
-
-	UPROPERTY(BlueprintReadOnly)
-	FString GloryText;
+	float BuiltBlockedRagePercent;
 	
 };

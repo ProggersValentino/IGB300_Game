@@ -55,6 +55,10 @@ void UGladiatorAttributeSet::PreAttributeChange(const FGameplayAttribute& Attrib
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxGold());
 	}
+	else if (Attribute == GetBlockedRageAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxBlockedRage());
+	}
 	
 	
 }
@@ -93,7 +97,12 @@ void UGladiatorAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModC
 	{
 		SetGold(FMath::Clamp(GetGold(), 0.0f, GetMaxGold()));
 	}
+	else if (Data.EvaluatedData.Attribute == GetBlockedRageAttribute())
+	{
+		SetBlockedRage(FMath::Clamp(GetBlockedRage(), 0.0f, GetMaxBlockedRage()));
+	}
 
+	
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{	
 		float newHealth = GetHealth() - GetDamage();
@@ -173,4 +182,16 @@ void UGladiatorAttributeSet::OnRep_MaxGold(const FGameplayAttributeData& OldMaxG
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UGladiatorAttributeSet, MaxGold, OldMaxGold);
 }
+
+void UGladiatorAttributeSet::OnRep_BlockedRage(const FGameplayAttributeData& OldBlockedRage) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGladiatorAttributeSet, BlockedRage, OldBlockedRage);
+}
+
+void UGladiatorAttributeSet::OnRep_MaxBlockedRage(const FGameplayAttributeData& OldMaxBlockedRage) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGladiatorAttributeSet, MaxBlockedRage, OldMaxBlockedRage);
+}
+
+
 #pragma endregion

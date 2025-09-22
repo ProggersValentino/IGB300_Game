@@ -15,6 +15,10 @@ void AGladiatorHUDBase::Init()
 	GloryAttributeWidget->BindAttributes();
 	GloryAttributeWidget->AddToViewport();
 
+	BlockedRageAttributeWidget = CreateWidget<UBlockedRageAttributeWidget>(GetOwningPlayerController(), BlockedRageAttributeWidgetClass);
+	BlockedRageAttributeWidget->BindAttributes();
+	BlockedRageAttributeWidget->AddToViewport();
+
 	CoinWidget = CreateWidget<UUserWidget>(GetOwningPlayerController(), CoinUIClass);
 	CoinWidget->AddToViewport();
 }

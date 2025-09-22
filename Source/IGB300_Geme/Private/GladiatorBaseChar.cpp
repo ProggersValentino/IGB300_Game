@@ -199,7 +199,10 @@ void AGladiatorBaseChar::ActivateCombo(EAttackType attackTypeToRequest)
 	case EAttackType::Heavy:
 		CurrentCombo = MainComboChain[2];
 		break;
-
+	case EAttackType::Utility:
+		CurrentCombo = MainComboChain[3];
+		break;
+		
 		default:
 			CurrentCombo = MainComboChain[0];
 			break;

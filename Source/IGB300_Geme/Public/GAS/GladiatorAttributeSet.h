@@ -78,6 +78,14 @@ public:
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, Damage)
 
+	UPROPERTY(BlueprintReadOnly, Category = "GladiatorStats", ReplicatedUsing = OnRep_BlockedRage)
+	FGameplayAttributeData BlockedRage;
+	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, BlockedRage)
+
+	UPROPERTY(BlueprintReadOnly, Category = "GladiatorStats", ReplicatedUsing = OnRep_MaxBlockedRage)
+	FGameplayAttributeData MaxBlockedRage;
+	ATTRIBUTE_ACCESSORS(UGladiatorAttributeSet, MaxBlockedRage)
+
 	UFUNCTION()
 	float GetMitigatedDamage(float damageInput);
 	
@@ -111,6 +119,12 @@ public:
 
 	UFUNCTION()
 	virtual void OnRep_MaxGold(const FGameplayAttributeData& OldMaxGold) const;
+
+	UFUNCTION()
+	virtual void OnRep_BlockedRage(const FGameplayAttributeData& OldBlockedRage) const;
+
+	UFUNCTION()
+	virtual void OnRep_MaxBlockedRage(const FGameplayAttributeData& OldMaxBlockedRage) const;
 
 	
 };

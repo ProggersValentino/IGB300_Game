@@ -19,9 +19,11 @@
 UENUM()
 enum class EAttackType : uint8
 {
-	Light = 0,
-	Medium = 1,
-	Heavy = 2
+	None = 0,
+	Light = 1,
+	Medium = 2,
+	Heavy = 3,
+	Utility = 4,
 };
 
 class UGameplayAbility;
