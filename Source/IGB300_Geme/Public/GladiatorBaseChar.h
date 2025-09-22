@@ -105,7 +105,7 @@ public:
 	UPROPERTY()
 	FGameplayTag DeathTag;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gladiator Abilities")
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -123,7 +123,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Gladiator Abilities")
+	TSubclassOf<UGameplayAbility> KnockOutAbility;
 
 	UPROPERTY()
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
