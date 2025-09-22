@@ -90,7 +90,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="0.0", ClampMax="90.0"))
 	float CameraRotationPitchMaxClamp;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="-90.0", ClampMax="0.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="0.0", ClampMax="90.0"))
 	float CameraRotationPitchMinClamp;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is idle then the camera will shake under these settings"))
@@ -265,6 +265,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
 	float heavyAttackHeldTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer", meta=(ToolTip="how long between each attack will be allowed before any prev attacks stored in memory get wiped"))
+	float timeTillAttackMemoryWiped;
 	
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
 	void TryActivateAttackType();
@@ -304,6 +307,11 @@ private:
 
 	UMaterialInstanceDynamic* PPDamagedMat;
 
+	FTimerHandle combatTimerHandle;
+	TArray<EAttackType> prevExecutedAttacks;
+
+	void AddAttackToMemory(EAttackType type);
+	
 	void CreateAndApplyDynamicMaterialToCamera();
 	
 	void ApplyEffect(float timeToLerp);
@@ -311,6 +319,8 @@ private:
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
 
 	void InitInputBuffer();
+
+	void ClearAttacksMemory();
 
 	void SelectAttackToUse(FInputBuffer selectedBuffer);
 	

@@ -21,6 +21,7 @@
 #include <cstddef>
 
 #include "MovieSceneTracksComponentTypes.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 AGladiatorPlayerChar::AGladiatorPlayerChar()
@@ -79,6 +80,10 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	gCurrentPlayerSpeed = GetCharacterMovement()->Velocity.Size();
+
+	//FRotator cameraRot = CameraManager->GetCameraRotation();
+	
+	
 	
 	if (bUseCameraLerpWithMouse)
 	{
@@ -214,11 +219,31 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 		smoothYawInput = FMath::Lerp(smoothYawInput, values.X, dragCalculation * sensivity);
 		smoothPitchInput = FMath::Lerp(smoothPitchInput, values.Y, dragCalculation * sensivity);
 
-		//once lerp is calculated we are able to apply that to the camera to follow the player if it set to unlocked in ECameraLockSettings
-		if (CameraYawAxisSettings == ECameraLockSettings::Unlocked) AddControllerYawInput(smoothYawInput);
-		if (CameraPitchAxisSettings == ECameraLockSettings::Unlocked) AddControllerPitchInput(smoothPitchInput);
+		AGladiatorPlayerController* cons = Cast<AGladiatorPlayerController>(GetController());
+		FRotator cameraRot = cons->GetControlRotation();
+
 		
-	
+
+		
+		
+		//once lerp is calculated we are able to apply that to the camera to follow the player if it set to unlocked in ECameraLockSettings
+		if (CameraYawAxisSettings == ECameraLockSettings::Unlocked)
+		{
+			AddControllerYawInput(smoothYawInput);
+			float desiredPitch = cons->GetControlRotation().Pitch;
+
+			float minPitch = 0.f - CameraRotationPitchMinClamp;
+			float maxPitch = 0.f + CameraRotationPitchMaxClamp;
+
+			UE_LOG(LogTemp, Warning, TEXT("camera rotation: %f"), desiredPitch);
+
+			if (desiredPitch < 330.f && desiredPitch > 180.f) cons->SetControlRotation(FRotator(minPitch, cameraRot.Yaw, cameraRot.Roll));
+			else if (desiredPitch > maxPitch && desiredPitch < 180.f) cons->SetControlRotation(FRotator(maxPitch, cameraRot.Yaw, cameraRot.Roll));
+
+		}
+		if (CameraPitchAxisSettings == ECameraLockSettings::Unlocked) AddControllerPitchInput(smoothPitchInput);
+
+		
 	}
 	else
 	{
@@ -580,6 +605,22 @@ void AGladiatorPlayerChar::UpdateCameraShake(float speed)
 }
 
 
+void AGladiatorPlayerChar::AddAttackToMemory(EAttackType type)
+{
+	//shift the attacks down 1 leaving the top free
+	for (int i = prevExecutedAttacks.Num() - 1; i > 0; i--)
+	{
+		if (i - 1 < 0)
+		{
+			break;
+		}
+		
+		prevExecutedAttacks[i] = prevExecutedAttacks[i - 1];
+	}
+
+	prevExecutedAttacks[0] = type; //add in the type
+}
+
 void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
 {
 	FWeightedBlendables blendies = CameraComponent->PostProcessSettings.WeightedBlendables;
@@ -667,40 +708,69 @@ void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 void AGladiatorPlayerChar::InitInputBuffer()
 {
 	inputBuffer.Reserve(3);
+	prevExecutedAttacks.Reserve(3);
 	
 	for (int i = 0; i < inputBuffer.Max(); i++)
 	{
 		inputBuffer.Add(FInputBuffer());
 	}
+
+	for (int i = 0; i < prevExecutedAttacks.Max(); i++)
+	{
+		prevExecutedAttacks.Add(EAttackType::None);
+	}
+}
+
+void AGladiatorPlayerChar::ClearAttacksMemory()
+{
+	for (int i = 0; i < prevExecutedAttacks.Num(); i++)
+	{
+		prevExecutedAttacks[i] = EAttackType::None;
+	}
 }
 
 void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 {
+	GetWorld()->GetTimerManager().ClearTimer(combatTimerHandle);
+	
 	float blockedRage = AttributeSet->GetBlockedRageAttribute().GetNumericValue(AttributeSet);
 	float maxBlockedRage = AttributeSet->GetMaxBlockedRageAttribute().GetNumericValue(AttributeSet);
 
+	bool canMediumAttackTap = prevExecutedAttacks[0] == EAttackType::Medium && prevExecutedAttacks[1] != EAttackType::Medium; //only allow if the prev attack was medium and not twice in row
+	
 	//if we are blocking and our rage is at max then activate utility ability	
 	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")) && blockedRage >= maxBlockedRage)
 	{
-		ActivateCombo(EAttackType::Utility);	
+		ActivateCombo(EAttackType::Utility);
+		AddAttackToMemory(EAttackType::Utility);
 	}
 	else
 	{
 		//determine the attack type based off how long the button was held for
-		if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime) //light attack 
+		if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && !canMediumAttackTap) //light attack 
 		{
-			ActivateCombo(EAttackType::Light); 
+			ActivateCombo(EAttackType::Light);
+			AddAttackToMemory(EAttackType::Light);
 		}
-		//else if (inputBuffer[0].inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime <= mediumAttackHeldTime) //medium attack
+		else if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && canMediumAttackTap) //medium
+		{
+			ActivateCombo(EAttackType::Medium);
+			AddAttackToMemory(EAttackType::Medium);
+		}
 		else if (selectedBuffer.inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
 		{
 			ActivateCombo(EAttackType::Medium);
+			AddAttackToMemory(EAttackType::Medium);
 		}
 		else if(selectedBuffer.inputHeldTime >= heavyAttackHeldTime) //heavy attack
 		{
 			ActivateCombo(EAttackType::Heavy);
+			AddAttackToMemory(EAttackType::Heavy);
 		}	
 	}
+
+	//activate timer to wipe the stored attacks in prevExecuteAttack array to prevent players from stocking a medium attack tap for later 
+	GetWorld()->GetTimerManager().SetTimer(combatTimerHandle, this, &AGladiatorPlayerChar::ClearAttacksMemory, timeTillAttackMemoryWiped, false);
 
 }
 
