@@ -151,6 +151,13 @@ bool AGladiatorBaseChar::IsAlive()
 //Kill character, if its the player then it will be called on the player state (server) otherwise will be called directly on the actor
 void AGladiatorBaseChar::Die()
 {
+	float delay = 0f;
+	if (DeathMontage) {
+
+		delay = PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
+
+	}
+	
 	RemoveAbilities();
 
 	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);*/
@@ -164,9 +171,8 @@ void AGladiatorBaseChar::Die()
 		
 		AbilitySystemComponent->AddLooseGameplayTag(DeathTag); //applies to actor while still active and is not permantely registered on the ASC
 	}
-
-	/*if (DeathMontage) PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
-	else DeathCleanup();*/
+	
+	//else DeathCleanup();
 }
 
 void AGladiatorBaseChar::PostDeathAction()

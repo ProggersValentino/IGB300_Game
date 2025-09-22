@@ -103,7 +103,7 @@ public:
 	UPROPERTY()
 	FGameplayTag DeathTag;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Gladiator Abilities")
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly)
