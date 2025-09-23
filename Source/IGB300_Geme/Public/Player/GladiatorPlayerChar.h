@@ -12,6 +12,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Camera/GladiatorCameraBase.h"
 #include "Camera/GladiatorCameraPositionComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
@@ -101,6 +102,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Post Process")
 	UMaterialInterface* DamagePostProcessMat;
+
+	
 	
 	
 public:
@@ -286,6 +289,15 @@ protected:
 	//turns on bCanAcceptInputQueue
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
 	void EngageInputQueuing();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	TSubclassOf<UGameplayAbility> IFramesAbiltiy;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	int amountOfTimesHitTolerance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun", meta=(ToolTip="How long till we reset how many times the player was hit consecutively from enemies"))
+	float timeTillHitBufferExpires;
 	
 private:
 	APlayerCameraManager* CameraManager;
@@ -323,6 +335,17 @@ private:
 	void ClearAttacksMemory();
 
 	void SelectAttackToUse(FInputBuffer selectedBuffer);
+
+	void TryActivateIframess();
+
+	void ClearHitBuffer();
+
+	USpringArmComponent* playerSpringArmComponent;
+
+	FTimerHandle HitBufferHandle;
+	int HitBuffer;
+
+	
 	
 };
 
