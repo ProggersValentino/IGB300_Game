@@ -232,12 +232,13 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 			AddControllerYawInput(smoothYawInput);
 			float desiredPitch = cons->GetControlRotation().Pitch;
 
-			float minPitch = 0.f - CameraRotationPitchMinClamp;
+			//calculation for the max and min pitch allowed
+			float minPitch = 0.f - CameraRotationPitchMinClamp < 0.f ? 360.f - CameraRotationPitchMinClamp : 0.f - CameraRotationPitchMinClamp;
 			float maxPitch = 0.f + CameraRotationPitchMaxClamp;
 
 			UE_LOG(LogTemp, Warning, TEXT("camera rotation: %f"), desiredPitch);
 
-			if (desiredPitch < 330.f && desiredPitch > 180.f) cons->SetControlRotation(FRotator(minPitch, cameraRot.Yaw, cameraRot.Roll));
+			if (desiredPitch < minPitch && desiredPitch > 180.f) cons->SetControlRotation(FRotator(minPitch, cameraRot.Yaw, cameraRot.Roll));
 			else if (desiredPitch > maxPitch && desiredPitch < 180.f) cons->SetControlRotation(FRotator(maxPitch, cameraRot.Yaw, cameraRot.Roll));
 
 		}
@@ -681,7 +682,14 @@ void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 		PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1.5f);
 	
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, timerDelegate, 0.01f, true);	
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, timerDelegate, 0.01f, true);
+
+		//to prevent the hit buffer from storing data for a long period of time
+		GetWorld()->GetTimerManager().ClearTimer(HitBufferHandle);
+		GetWorld()->GetTimerManager().SetTimer(HitBufferHandle, this, &AGladiatorPlayerChar::ClearHitBuffer, timeTillHitBufferExpires);
+
+		TryActivateIframess();
+		
 	}
 
 	if (HealthStateTag.IsValid())
@@ -772,6 +780,25 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	//activate timer to wipe the stored attacks in prevExecuteAttack array to prevent players from stocking a medium attack tap for later 
 	GetWorld()->GetTimerManager().SetTimer(combatTimerHandle, this, &AGladiatorPlayerChar::ClearAttacksMemory, timeTillAttackMemoryWiped, false);
 
+}
+
+void AGladiatorPlayerChar::TryActivateIframess()
+{
+	if (HitBuffer < amountOfTimesHitTolerance)
+	{
+		return;
+	}
+	
+	FGameplayAbilitySpec AbilitySpec(IFramesAbiltiy, 1); //data surrounding for the ability class
+
+	AbilitySystemComponent->GiveAbilityAndActivateOnce(AbilitySpec);
+
+	ClearHitBuffer();
+}
+
+void AGladiatorPlayerChar::ClearHitBuffer()
+{
+	HitBuffer = 0;
 }
 
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
