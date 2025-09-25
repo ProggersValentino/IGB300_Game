@@ -153,6 +153,11 @@ void AGladiatorPlayerChar::BeginPlay()
 	Maestro = Cast<AMaestroBase>(UGameplayStatics::GetActorOfClass(GetWorld(), maestroClass));
 
 	InitInputBuffer();
+
+
+	playerSpringArmComponent = GetComponentByClass<USpringArmComponent>();
+
+	CameraDefaultPos = CameraComponent->GetRelativeLocation();
 	
 }
 
@@ -626,6 +631,50 @@ void AGladiatorPlayerChar::ActivateHoldStage(EAttackHoldStage stage)
 void AGladiatorPlayerChar::CompleteHoldStage()
 {
 	ClearCameraShake(currentActiveAttackHoldCameraShake);
+}
+
+void AGladiatorPlayerChar::AdjustCameraZoom(float zoomValue, float time)
+{
+	cameraChangeAlpha = 0.f;
+
+	FVector goal = CameraComponent->GetRelativeLocation().ForwardVector * zoomValue;
+	FVector start = CameraComponent->GetRelativeLocation();
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AGladiatorPlayerChar::ApplyZoom, start, goal, time);
+
+	GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(CameraZoomTimerHandle, timerDelegate, 0.005f, true);
+}
+
+void AGladiatorPlayerChar::ResetToDefaultZoom(float time)
+{
+	cameraChangeAlpha = 0.f;
+	FVector target = CameraDefaultPos;
+	FVector start = CameraComponent->GetRelativeLocation();
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AGladiatorPlayerChar::ApplyZoom, start, target, time);
+
+	GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(CameraZoomTimerHandle, timerDelegate, 0.01f, true);
+}
+
+void AGladiatorPlayerChar::ApplyZoom(FVector startingLoco, FVector zoomValue, float time)
+{
+	cameraChangeAlpha += GetWorld()->GetDeltaSeconds();
+	float rawAlpha = FMath::Clamp( cameraChangeAlpha / time, 0.f, 1.f);
+	float alpha = FMath::InterpEaseOut(0.f, 1.f, rawAlpha, 2.f);
+	
+	FVector percentZoom = FMath::Lerp(startingLoco, zoomValue, alpha);
+
+	/*FVector newLoco = percentZoom + currentLoco;*/
+	
+	CameraComponent->SetRelativeLocation(percentZoom);
+
+	if (cameraChangeAlpha > 0.95f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	}
+	
+	//cameraChangeAlpha += GetWorld()->GetDeltaSeconds();
+	
 }
 
 void AGladiatorPlayerChar::ActivatePreAttackAdjustment_Implementation()
