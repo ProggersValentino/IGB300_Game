@@ -329,7 +329,14 @@ protected:
 	//how fast the wind up animation plays for to match the stages 
 	UPROPERTY(BlueprintReadOnly)
 	float windUpTimeSpeed;
+
+	UFUNCTION(BlueprintCallable)
+	void AdjustCameraZoom(float zoomValue, float time);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetToDefaultZoom(float time);
 	
+	void ApplyZoom(FVector startingLoco,FVector zoomValue, float time);
 private:
 	APlayerCameraManager* CameraManager;
 	UCameraComponent* CameraComponent;
@@ -383,6 +390,10 @@ private:
 	FTimerHandle HitBufferHandle;
 	int HitBuffer;
 
+	FTimerHandle CameraZoomTimerHandle;
+	FVector CameraDefaultPos;
+	float cameraChangeAlpha = 0.f;
+	
 	
 	
 };
