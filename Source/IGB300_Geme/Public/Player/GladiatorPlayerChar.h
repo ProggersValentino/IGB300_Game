@@ -36,6 +36,14 @@ public:
 	FGameplayTagContainer currentOwnedTags;
 }; 
 
+UENUM(BlueprintType)
+enum class EAttackHoldStage : uint8
+{
+	Tap = 0,
+	MediumHold = 1,
+	LongHold = 2,
+};
+
 
 class AEnemyBase;
 
@@ -100,6 +108,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> RunShake;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> mediumHoldStageBuildUp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> longHoldStageBuildUp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Post Process")
 	UMaterialInterface* DamagePostProcessMat;
 
@@ -298,6 +312,23 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Hit stun", meta=(ToolTip="How long till we reset how many times the player was hit consecutively from enemies"))
 	float timeTillHitBufferExpires;
+
+	UPROPERTY()
+	EAttackHoldStage previousStage;
+	
+	//returns a stage that the attack is getting held at 
+	UFUNCTION(BlueprintCallable, Category = "Attack Buildup")
+	EAttackHoldStage DetermineCurrentHoldStage(float timeHeld);
+
+	UFUNCTION(BlueprintCallable)
+	void ActivateHoldStage(EAttackHoldStage stage);
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteHoldStage();
+
+	//how fast the wind up animation plays for to match the stages 
+	UPROPERTY(BlueprintReadOnly)
+	float windUpTimeSpeed;
 	
 private:
 	APlayerCameraManager* CameraManager;
@@ -309,9 +340,16 @@ private:
 	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;
-	
-	void UpdateCameraShake(float speed);
 
+	UPROPERTY()
+	UCameraShakeBase* currentActiveAttackHoldCameraShake;
+	
+	void UpdateMovementCameraShake(float speed);
+
+	void UpdateCameraShake(TSubclassOf<UCameraShakeBase> shakeToActivate, UCameraShakeBase*& shakeValue);
+
+	void ClearCameraShake(UCameraShakeBase*& shakeValue);
+	
 	FTimerHandle TimerHandle;
 	float timerAlpha = 0.f;
 	
