@@ -24,6 +24,7 @@ enum class EAttackType : uint8
 	Medium = 2,
 	Heavy = 3,
 	Utility = 4,
+	FollowUp = 5,
 };
 
 class UGameplayAbility;

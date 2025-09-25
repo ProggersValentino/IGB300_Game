@@ -762,8 +762,8 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 		}
 		else if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && canMediumAttackTap) //medium
 		{
-			ActivateCombo(EAttackType::Medium);
-			AddAttackToMemory(EAttackType::Medium);
+			ActivateCombo(EAttackType::FollowUp);
+			AddAttackToMemory(EAttackType::FollowUp);
 		}
 		else if (selectedBuffer.inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
 		{
