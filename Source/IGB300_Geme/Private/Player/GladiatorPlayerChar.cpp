@@ -90,7 +90,7 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 		LerpCameraSystem(mouseInput);
 	}
 
-	UpdateCameraShake(gCurrentPlayerSpeed);
+	UpdateMovementCameraShake(gCurrentPlayerSpeed);
 	
 	mouseInput = FVector2D::ZeroVector; 
 	
@@ -576,32 +576,92 @@ void AGladiatorPlayerChar::EngageInputQueuing()
 	bCanAcceptInputQueue = true;
 }
 
+EAttackHoldStage AGladiatorPlayerChar::DetermineCurrentHoldStage(float timeHeld)
+{
+	if (timeHeld  >= lightAttackHeldTime && timeHeld < mediumAttackHeldTime)
+	{
+		return EAttackHoldStage::Tap;
+	}
+	else if (timeHeld >= mediumAttackHeldTime && timeHeld < heavyAttackHeldTime)
+	{
+		return EAttackHoldStage::MediumHold;
+	}
+	else
+	{
+		return EAttackHoldStage::LongHold;
+	}
+}
+
+void AGladiatorPlayerChar::ActivateHoldStage(EAttackHoldStage stage)
+{
+
+	if (previousStage == stage)
+	{
+		return;
+	}
+	
+	switch (stage)
+	{
+		case EAttackHoldStage::Tap:
+			//windUpTimeSpeed = 0.09f / mediumAttackHeldTime; //the 0.09 is a hard coded value for how long the animation takes so using this value we can extend how long it will taake to complete by giving the length 
+			return;
+
+		case EAttackHoldStage::MediumHold:
+			//activate camera shake
+			UpdateCameraShake(mediumHoldStageBuildUp, currentActiveAttackHoldCameraShake);
+			break;
+		case EAttackHoldStage::LongHold:
+			UpdateCameraShake(longHoldStageBuildUp, currentActiveAttackHoldCameraShake);
+			//windUpTimeSpeed = 0.5f;
+			break;
+		
+		default:
+			UE_LOG(LogTemp, Error, TEXT("Failed to read attack hold stage in ActivateHoldStage()"))
+			break;
+	}
+
+	previousStage = stage;
+}
+
+void AGladiatorPlayerChar::CompleteHoldStage()
+{
+	ClearCameraShake(currentActiveAttackHoldCameraShake);
+}
+
 void AGladiatorPlayerChar::ActivatePreAttackAdjustment_Implementation()
 {
 }
 
-void AGladiatorPlayerChar::UpdateCameraShake(float speed)
+void AGladiatorPlayerChar::UpdateMovementCameraShake(float speed)
 {
 	
 	if (speed > 2.0f && !isRunning)
 	{
 		isRunning = true;
-		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
-		{
-			CameraManager->StopCameraShake(currentActiveCameraShake);
-		}
-
-		currentActiveCameraShake = CameraManager->StartCameraShake(RunShake);
+		UpdateCameraShake(RunShake, currentActiveCameraShake);
 	}
 	else if (speed < 2.0f && isRunning)
 	{
 		isRunning = false;
-		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
-		{
-			CameraManager->StopCameraShake(currentActiveCameraShake);
-		}
+		UpdateCameraShake(IdleShake, currentActiveCameraShake);
+	}
+}
 
-		currentActiveCameraShake = CameraManager->StartCameraShake(IdleShake);
+void AGladiatorPlayerChar::UpdateCameraShake(TSubclassOf<UCameraShakeBase> shakeToActivate, UCameraShakeBase*& shakeValue)
+{
+	if (shakeValue && shakeValue->IsActive())
+	{
+		CameraManager->StopCameraShake(shakeValue);
+	}
+
+	shakeValue = CameraManager->StartCameraShake(shakeToActivate);
+}
+
+void AGladiatorPlayerChar::ClearCameraShake(UCameraShakeBase*& shakeValue)
+{
+	if (shakeValue && shakeValue->IsActive())
+	{
+		CameraManager->StopCameraShake(shakeValue);	
 	}
 }
 
