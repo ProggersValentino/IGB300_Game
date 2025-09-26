@@ -84,6 +84,7 @@ FSpawnResult UEnemySubsystem::TrySpawn(EDifficulty Difficulty, TArray<TSubclassO
     SpawnAmount = EnemyPool;
   }
 
+  
   for (int i = 0; i < SpawnAmount; i++)
   {
     FVector Position = GetRandomSpawnLocation(SpawnLocations);
@@ -210,24 +211,29 @@ FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos, float r
 	}
 
 	// Get the quadratic sqrt
-	float q = PlayerPos.Y
-	  * UKML::Sqrt(
+	float first_part = 
 			( 2 * UKML::Square(ArenaRadius) * UKML::Square(PlayerPos.X) +
 		 		2 * UKML::Square(ArenaRadius) * UKML::Square(PlayerPos.Y) +
 		 		2 * UKML::Square(ArenaRadius) * UKML::Square(radius) +
 		 		2 * UKML::Square(radius) * UKML::Square(PlayerPos.X) +
 		 		2 * UKML::Square(radius) * UKML::Square(PlayerPos.Y) 
-		  )
-		  -
+		  );
+
+	float second_part = 
   		( FMath::Pow(PlayerPos.X, 4)
   		+	2 * UKML::Square(PlayerPos.X) * UKML::Square(PlayerPos.Y)
   		+ FMath::Pow(PlayerPos.Y, 4)
   		+ FMath::Pow(radius, 4)
   		+	FMath::Pow(ArenaRadius, 4)
-  		)
-	 )
-  ;
-	
+  		);
+
+	float q;
+	if (first_part > second_part) {
+	  q = PlayerPos.Y * UKML::Sqrt(first_part - second_part);
+	} else {
+	  q = 0;
+	}
+
 	// Get a->x where the quad is positive
 	float a = (q + FMath::Pow(PlayerPos.X, 3) + PlayerPos.X * UKML::Square(ArenaRadius) + PlayerPos.X * UKML::Square(PlayerPos.Y) - PlayerPos.X * UKML::Square(radius))
 	  / (2 * (UKML::Square(PlayerPos.Y) + UKML::Square(PlayerPos.X)))
