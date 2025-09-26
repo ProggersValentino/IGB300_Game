@@ -12,6 +12,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Camera/GladiatorCameraBase.h"
 #include "Camera/GladiatorCameraPositionComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
@@ -34,6 +35,14 @@ public:
 
 	FGameplayTagContainer currentOwnedTags;
 }; 
+
+UENUM(BlueprintType)
+enum class EAttackHoldStage : uint8
+{
+	Tap = 0,
+	MediumHold = 1,
+	LongHold = 2,
+};
 
 
 class AEnemyBase;
@@ -99,8 +108,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> RunShake;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> mediumHoldStageBuildUp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> longHoldStageBuildUp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Post Process")
 	UMaterialInterface* DamagePostProcessMat;
+
+	
 	
 	
 public:
@@ -286,7 +303,40 @@ protected:
 	//turns on bCanAcceptInputQueue
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
 	void EngageInputQueuing();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	TSubclassOf<UGameplayAbility> IFramesAbiltiy;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	int amountOfTimesHitTolerance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun", meta=(ToolTip="How long till we reset how many times the player was hit consecutively from enemies"))
+	float timeTillHitBufferExpires;
+
+	UPROPERTY()
+	EAttackHoldStage previousStage;
 	
+	//returns a stage that the attack is getting held at 
+	UFUNCTION(BlueprintCallable, Category = "Attack Buildup")
+	EAttackHoldStage DetermineCurrentHoldStage(float timeHeld);
+
+	UFUNCTION(BlueprintCallable)
+	void ActivateHoldStage(EAttackHoldStage stage);
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteHoldStage();
+
+	//how fast the wind up animation plays for to match the stages 
+	UPROPERTY(BlueprintReadOnly)
+	float windUpTimeSpeed;
+
+	UFUNCTION(BlueprintCallable)
+	void AdjustCameraZoom(float zoomValue, float time);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetToDefaultZoom(float time);
+	
+	void ApplyZoom(FVector startingLoco,FVector zoomValue, float time);
 private:
 	APlayerCameraManager* CameraManager;
 	UCameraComponent* CameraComponent;
@@ -297,9 +347,16 @@ private:
 	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;
-	
-	void UpdateCameraShake(float speed);
 
+	UPROPERTY()
+	UCameraShakeBase* currentActiveAttackHoldCameraShake;
+	
+	void UpdateMovementCameraShake(float speed);
+
+	void UpdateCameraShake(TSubclassOf<UCameraShakeBase> shakeToActivate, UCameraShakeBase*& shakeValue);
+
+	void ClearCameraShake(UCameraShakeBase*& shakeValue);
+	
 	FTimerHandle TimerHandle;
 	float timerAlpha = 0.f;
 	
@@ -323,6 +380,21 @@ private:
 	void ClearAttacksMemory();
 
 	void SelectAttackToUse(FInputBuffer selectedBuffer);
+
+	void TryActivateIframess();
+
+	void ClearHitBuffer();
+
+	USpringArmComponent* playerSpringArmComponent;
+
+	FTimerHandle HitBufferHandle;
+	int HitBuffer;
+
+	FTimerHandle CameraZoomTimerHandle;
+	FVector CameraDefaultPos;
+	float cameraChangeAlpha = 0.f;
+	
+	
 	
 };
 

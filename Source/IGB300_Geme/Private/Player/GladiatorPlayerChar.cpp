@@ -90,7 +90,7 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 		LerpCameraSystem(mouseInput);
 	}
 
-	UpdateCameraShake(gCurrentPlayerSpeed);
+	UpdateMovementCameraShake(gCurrentPlayerSpeed);
 	
 	mouseInput = FVector2D::ZeroVector; 
 	
@@ -153,6 +153,11 @@ void AGladiatorPlayerChar::BeginPlay()
 	Maestro = Cast<AMaestroBase>(UGameplayStatics::GetActorOfClass(GetWorld(), maestroClass));
 
 	InitInputBuffer();
+
+
+	playerSpringArmComponent = GetComponentByClass<USpringArmComponent>();
+
+	CameraDefaultPos = CameraComponent->GetRelativeLocation();
 	
 }
 
@@ -232,12 +237,13 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 			AddControllerYawInput(smoothYawInput);
 			float desiredPitch = cons->GetControlRotation().Pitch;
 
-			float minPitch = 0.f - CameraRotationPitchMinClamp;
+			//calculation for the max and min pitch allowed
+			float minPitch = 0.f - CameraRotationPitchMinClamp < 0.f ? 360.f - CameraRotationPitchMinClamp : 0.f - CameraRotationPitchMinClamp;
 			float maxPitch = 0.f + CameraRotationPitchMaxClamp;
 
 			UE_LOG(LogTemp, Warning, TEXT("camera rotation: %f"), desiredPitch);
 
-			if (desiredPitch < 330.f && desiredPitch > 180.f) cons->SetControlRotation(FRotator(minPitch, cameraRot.Yaw, cameraRot.Roll));
+			if (desiredPitch < minPitch && desiredPitch > 180.f) cons->SetControlRotation(FRotator(minPitch, cameraRot.Yaw, cameraRot.Roll));
 			else if (desiredPitch > maxPitch && desiredPitch < 180.f) cons->SetControlRotation(FRotator(maxPitch, cameraRot.Yaw, cameraRot.Roll));
 
 		}
@@ -575,32 +581,136 @@ void AGladiatorPlayerChar::EngageInputQueuing()
 	bCanAcceptInputQueue = true;
 }
 
+EAttackHoldStage AGladiatorPlayerChar::DetermineCurrentHoldStage(float timeHeld)
+{
+	if (timeHeld  >= lightAttackHeldTime && timeHeld < mediumAttackHeldTime)
+	{
+		return EAttackHoldStage::Tap;
+	}
+	else if (timeHeld >= mediumAttackHeldTime && timeHeld < heavyAttackHeldTime)
+	{
+		return EAttackHoldStage::MediumHold;
+	}
+	else
+	{
+		return EAttackHoldStage::LongHold;
+	}
+}
+
+void AGladiatorPlayerChar::ActivateHoldStage(EAttackHoldStage stage)
+{
+
+	if (previousStage == stage)
+	{
+		return;
+	}
+	
+	switch (stage)
+	{
+		case EAttackHoldStage::Tap:
+			//windUpTimeSpeed = 0.09f / mediumAttackHeldTime; //the 0.09 is a hard coded value for how long the animation takes so using this value we can extend how long it will taake to complete by giving the length 
+			return;
+
+		case EAttackHoldStage::MediumHold:
+			//activate camera shake
+			UpdateCameraShake(mediumHoldStageBuildUp, currentActiveAttackHoldCameraShake);
+			break;
+		case EAttackHoldStage::LongHold:
+			UpdateCameraShake(longHoldStageBuildUp, currentActiveAttackHoldCameraShake);
+			//windUpTimeSpeed = 0.5f;
+			break;
+		
+		default:
+			UE_LOG(LogTemp, Error, TEXT("Failed to read attack hold stage in ActivateHoldStage()"))
+			break;
+	}
+
+	previousStage = stage;
+}
+
+void AGladiatorPlayerChar::CompleteHoldStage()
+{
+	ClearCameraShake(currentActiveAttackHoldCameraShake);
+}
+
+void AGladiatorPlayerChar::AdjustCameraZoom(float zoomValue, float time)
+{
+	cameraChangeAlpha = 0.f;
+
+	FVector goal = CameraComponent->GetRelativeLocation().ForwardVector * zoomValue;
+	FVector start = CameraComponent->GetRelativeLocation();
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AGladiatorPlayerChar::ApplyZoom, start, goal, time);
+
+	GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(CameraZoomTimerHandle, timerDelegate, 0.005f, true);
+}
+
+void AGladiatorPlayerChar::ResetToDefaultZoom(float time)
+{
+	cameraChangeAlpha = 0.f;
+	FVector target = CameraDefaultPos;
+	FVector start = CameraComponent->GetRelativeLocation();
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AGladiatorPlayerChar::ApplyZoom, start, target, time);
+
+	GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(CameraZoomTimerHandle, timerDelegate, 0.01f, true);
+}
+
+void AGladiatorPlayerChar::ApplyZoom(FVector startingLoco, FVector zoomValue, float time)
+{
+	cameraChangeAlpha += GetWorld()->GetDeltaSeconds();
+	float rawAlpha = FMath::Clamp( cameraChangeAlpha / time, 0.f, 1.f);
+	float alpha = FMath::InterpEaseOut(0.f, 1.f, rawAlpha, 2.f);
+	
+	FVector percentZoom = FMath::Lerp(startingLoco, zoomValue, alpha);
+
+	/*FVector newLoco = percentZoom + currentLoco;*/
+	
+	CameraComponent->SetRelativeLocation(percentZoom);
+
+	if (cameraChangeAlpha > 0.95f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CameraZoomTimerHandle);
+	}
+	
+	//cameraChangeAlpha += GetWorld()->GetDeltaSeconds();
+	
+}
+
 void AGladiatorPlayerChar::ActivatePreAttackAdjustment_Implementation()
 {
 }
 
-void AGladiatorPlayerChar::UpdateCameraShake(float speed)
+void AGladiatorPlayerChar::UpdateMovementCameraShake(float speed)
 {
 	
 	if (speed > 2.0f && !isRunning)
 	{
 		isRunning = true;
-		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
-		{
-			CameraManager->StopCameraShake(currentActiveCameraShake);
-		}
-
-		currentActiveCameraShake = CameraManager->StartCameraShake(RunShake);
+		UpdateCameraShake(RunShake, currentActiveCameraShake);
 	}
 	else if (speed < 2.0f && isRunning)
 	{
 		isRunning = false;
-		if (currentActiveCameraShake && currentActiveCameraShake->IsActive())
-		{
-			CameraManager->StopCameraShake(currentActiveCameraShake);
-		}
+		UpdateCameraShake(IdleShake, currentActiveCameraShake);
+	}
+}
 
-		currentActiveCameraShake = CameraManager->StartCameraShake(IdleShake);
+void AGladiatorPlayerChar::UpdateCameraShake(TSubclassOf<UCameraShakeBase> shakeToActivate, UCameraShakeBase*& shakeValue)
+{
+	if (shakeValue && shakeValue->IsActive())
+	{
+		CameraManager->StopCameraShake(shakeValue);
+	}
+
+	shakeValue = CameraManager->StartCameraShake(shakeToActivate);
+}
+
+void AGladiatorPlayerChar::ClearCameraShake(UCameraShakeBase*& shakeValue)
+{
+	if (shakeValue && shakeValue->IsActive())
+	{
+		CameraManager->StopCameraShake(shakeValue);	
 	}
 }
 
@@ -681,7 +791,14 @@ void AGladiatorPlayerChar::OnHealthChanged(const FOnAttributeChangeData& Data)
 		PPDamagedMat->SetScalarParameterValue("DesaturationStrength", 1.5f);
 	
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, timerDelegate, 0.01f, true);	
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, timerDelegate, 0.01f, true);
+
+		//to prevent the hit buffer from storing data for a long period of time
+		GetWorld()->GetTimerManager().ClearTimer(HitBufferHandle);
+		GetWorld()->GetTimerManager().SetTimer(HitBufferHandle, this, &AGladiatorPlayerChar::ClearHitBuffer, timeTillHitBufferExpires);
+
+		TryActivateIframess();
+		
 	}
 
 	if (HealthStateTag.IsValid())
@@ -754,8 +871,8 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 		}
 		else if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && canMediumAttackTap) //medium
 		{
-			ActivateCombo(EAttackType::Medium);
-			AddAttackToMemory(EAttackType::Medium);
+			ActivateCombo(EAttackType::FollowUp);
+			AddAttackToMemory(EAttackType::FollowUp);
 		}
 		else if (selectedBuffer.inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
 		{
@@ -772,6 +889,25 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	//activate timer to wipe the stored attacks in prevExecuteAttack array to prevent players from stocking a medium attack tap for later 
 	GetWorld()->GetTimerManager().SetTimer(combatTimerHandle, this, &AGladiatorPlayerChar::ClearAttacksMemory, timeTillAttackMemoryWiped, false);
 
+}
+
+void AGladiatorPlayerChar::TryActivateIframess()
+{
+	if (HitBuffer < amountOfTimesHitTolerance)
+	{
+		return;
+	}
+	
+	FGameplayAbilitySpec AbilitySpec(IFramesAbiltiy, 1); //data surrounding for the ability class
+
+	AbilitySystemComponent->GiveAbilityAndActivateOnce(AbilitySpec);
+
+	ClearHitBuffer();
+}
+
+void AGladiatorPlayerChar::ClearHitBuffer()
+{
+	HitBuffer = 0;
 }
 
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)
