@@ -62,7 +62,10 @@ public:
 	TSubclassOf<AActor> ScorePopUp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IsCloseToTargetLimit = 200.0f;
+	float IsCloseToTargetLimit = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float IsCloseToPlayerLimit = 200.0f;
 
 	// Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
@@ -73,6 +76,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackAnimation1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* AttackAnimation2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* IdleAnimation;

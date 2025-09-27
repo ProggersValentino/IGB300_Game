@@ -106,24 +106,7 @@ void AEnemyBase::GetExecuted_Implementation(UAnimMontage* animation)
 }
 
 void AEnemyBase::Move_Implementation(){
-
-	if (!canMove) return; //if the enemy cant move then dont execute below
-	
-	// Distance between target move position and position after moving max speed to desired location
-	FVector n = targetMovePos - GetActorLocation();
-	UKismetMathLibrary::Vector_Normalize(n);
-	FVector bestPossiblePos = n * FVector(speed, speed, 0.0f) + GetActorLocation();
-	float a = UKismetMathLibrary::Vector_Distance(bestPossiblePos, targetMovePos);
-
-	// Distance between current location and target position
-	float b = UKismetMathLibrary::Vector_Distance(targetMovePos, GetActorLocation());
-
-	if (a > b) {
-		SetActorLocation(targetMovePos);
-	}
-	else {
-		SetActorLocation(bestPossiblePos);
-	}
+	return;
 }
 void AEnemyBase::Attack_Implementation(){
 	
@@ -214,7 +197,7 @@ void AEnemyBase::PostDeathAction() {
 
 bool AEnemyBase::IsCloseToPlayer() {
 	float distToPlayer = UKismetMathLibrary::Vector_Distance(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-	if (distToPlayer < IsCloseToTargetLimit) {
+	if (distToPlayer < IsCloseToPlayerLimit) {
 		return true;
 	}
 	return false;  
