@@ -589,11 +589,11 @@ void AGladiatorPlayerChar::EngageInputQueuing()
 
 EAttackHoldStage AGladiatorPlayerChar::DetermineCurrentHoldStage(float timeHeld)
 {
-	if (timeHeld  >= lightAttackHeldTime && timeHeld < mediumAttackHeldTime)
+	if (timeHeld  >= tapAttackTime && timeHeld < longHoldAttackTime)
 	{
 		return EAttackHoldStage::Tap;
 	}
-	else if (timeHeld >= mediumAttackHeldTime && timeHeld < heavyAttackHeldTime)
+	else if (timeHeld >= longHoldAttackTime && timeHeld < longHoldAttackTime)
 	{
 		return EAttackHoldStage::MediumHold;
 	}
@@ -859,7 +859,8 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	float blockedRage = AttributeSet->GetBlockedRageAttribute().GetNumericValue(AttributeSet);
 	float maxBlockedRage = AttributeSet->GetMaxBlockedRageAttribute().GetNumericValue(AttributeSet);
 
-	bool canMediumAttackTap = prevExecutedAttacks[0] == EAttackType::Medium && prevExecutedAttacks[1] != EAttackType::Medium; //only allow if the prev attack was medium and not twice in row
+	bool bLastAttackWasMedium = prevExecutedAttacks[0] == EAttackType::Medium && prevExecutedAttacks[1] != EAttackType::Medium; //only allow if the prev attack was medium and not twice in row
+	bool bLastAttackWasFollowup = prevExecutedAttacks[0] == EAttackType::FollowUp;
 	
 	//if we are blocking and our rage is at max then activate utility ability	
 	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")) && blockedRage >= maxBlockedRage)
@@ -870,22 +871,22 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	else
 	{
 		//determine the attack type based off how long the button was held for
-		if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && !canMediumAttackTap) //light attack 
+		if (selectedBuffer.inputHeldTime >= tapAttackTime && inputBuffer[0].inputHeldTime < longHoldAttackTime && !bLastAttackWasMedium) //light attack 
 		{
 			ActivateCombo(EAttackType::Light);
 			AddAttackToMemory(EAttackType::Light);
 		}
-		else if (selectedBuffer.inputHeldTime >= lightAttackHeldTime && inputBuffer[0].inputHeldTime < mediumAttackHeldTime && canMediumAttackTap) //medium
+		else if (selectedBuffer.inputHeldTime >= tapAttackTime && inputBuffer[0].inputHeldTime < longHoldAttackTime && bLastAttackWasMedium) //medium follow up
 		{
 			ActivateCombo(EAttackType::FollowUp);
 			AddAttackToMemory(EAttackType::FollowUp);
 		}
-		else if (selectedBuffer.inputHeldTime >= mediumAttackHeldTime && inputBuffer[0].inputHeldTime < heavyAttackHeldTime) //medium attack
+		else if (selectedBuffer.inputHeldTime >= longHoldAttackTime && !bLastAttackWasMedium && !bLastAttackWasFollowup) //medium attack
 		{
 			ActivateCombo(EAttackType::Medium);
 			AddAttackToMemory(EAttackType::Medium);
 		}
-		else if(selectedBuffer.inputHeldTime >= heavyAttackHeldTime) //heavy attack
+		else if(selectedBuffer.inputHeldTime >= longHoldAttackTime && (bLastAttackWasMedium || bLastAttackWasFollowup)) //heavy attack
 		{
 			ActivateCombo(EAttackType::Heavy);
 			AddAttackToMemory(EAttackType::Heavy);

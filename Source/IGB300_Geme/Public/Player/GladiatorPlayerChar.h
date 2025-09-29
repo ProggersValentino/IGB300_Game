@@ -278,13 +278,10 @@ protected:
 	bool bCanAcceptInputQueue = true;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float lightAttackHeldTime;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float mediumAttackHeldTime;
+	float tapAttackTime;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float heavyAttackHeldTime;
+	float longHoldAttackTime;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer", meta=(ToolTip="how long between each attack will be allowed before any prev attacks stored in memory get wiped"))
 	float timeTillAttackMemoryWiped;
