@@ -35,4 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Wave Configuation")
 	void SetNumWaves(int amount);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AchieveRageBaiter();
 };

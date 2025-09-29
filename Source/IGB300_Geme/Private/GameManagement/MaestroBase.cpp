@@ -40,3 +40,4 @@ void AMaestroBase::SetNumWaves(int amount)
 	NumWaves = amount;
 }
 
+
