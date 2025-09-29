@@ -18,7 +18,8 @@ void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 	CrowdSubsystem = GetWorld()->GetSubsystem<UCrowdWorldSubsystem>(); //get access to crowd subsystem
 	
 	RefreshActivationGoal();
-	
+
+	statAdjustmentObject = NewObject<UStatAdjustment>();
 	
 	/*if we have a subchain abiltiy then we init that*/
 	if (!IsValid(SubChainAbilityClass)) return;
@@ -50,6 +51,11 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 {
 	FGameplayEventData eventData;
 	eventData.Instigator = selectedCharacter->GetAvatarActor();
+
+	if (IsValid(statAdjustmentObject))
+	{
+		eventData.OptionalObject = statAdjustmentObject;
+	}
 	
 	/*apply effects to all results*/
 	for (FHitResult hitActor : result)

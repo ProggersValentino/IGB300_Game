@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CrowdWorldSubsystem.h"
 #include "GameplayTagContainer.h"
+#include "StatAdjustment.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "ComboContainer.generated.h"
 
@@ -100,6 +101,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Impact Freeze", meta = (EditCondition = "bImpactFreezeOnHit", ClampMin="0.0", ClampMax="1.0"))
 	float ImpactFreezeTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stat Adjustments", meta=(ToolTip="Added on top of the base damage of the player when attacking an enemy"))
+	float AdditionalDamage;
 	
 private:
 	/*allows control of who can access it where its an enemy or player granted its stemmed from the GladiatorBaseCharacter class*/
@@ -117,6 +121,8 @@ private:
 	void RefreshActivationGoal();
 	
 	FGameplayAbilityTargetDataHandle CreateTargetDataFromHit(const FHitResult& hit);
+
+	UStatAdjustment* statAdjustmentObject;
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override
