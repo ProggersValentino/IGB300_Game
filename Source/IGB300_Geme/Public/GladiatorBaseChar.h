@@ -7,6 +7,7 @@
 #include "GAS/GladiatorAttributeSet.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
+#include "GameManagement/MaestroBase.h"
 #include "Player/ComboContainer.h"
 #include "GladiatorBaseChar.generated.h"
 
@@ -127,6 +128,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Gladiator Abilities")
 	TSubclassOf<UGameplayAbility> KnockOutAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<AActor> ClassToFind;
 
 	UPROPERTY()
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp

@@ -161,6 +161,12 @@ void AGladiatorPlayerChar::BeginPlay()
 	
 }
 
+void AGladiatorPlayerChar::Die()
+{
+	Super::Die();
+	Maestro->AchieveRageBaiter();
+}
+
 void AGladiatorPlayerChar::CameraInputCallback(const FInputActionInstance& instance)
 {
 	FVector2D input = instance.GetValue().Get<FVector2D>();

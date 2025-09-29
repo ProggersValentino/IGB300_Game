@@ -69,6 +69,9 @@ class IGB300_GEME_API AGladiatorPlayerChar : public AGladiatorBaseChar
 {
 	GENERATED_BODY()
 
+public:
+	void Die() override;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "Different drag behaviours", DisplayPriority = 0))
 	EDragSettings CameraDragSettings; //different drag settings for camera
@@ -189,6 +192,11 @@ protected:
 	UMaterialInterface* LockOnDecal;
 
 	UDecalComponent* currentDecal;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;
 	
 	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
 	FVector LockOnDecalSize;
@@ -263,11 +271,6 @@ protected:
 
 	void TransitionBackToMainCamera();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
-	TSubclassOf<AMaestroBase> maestroClass;
-
-	AMaestroBase* Maestro;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FInputBuffer> inputBuffer;
 
@@ -329,6 +332,11 @@ protected:
 	//how fast the wind up animation plays for to match the stages 
 	UPROPERTY(BlueprintReadOnly)
 	float windUpTimeSpeed;
+
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;*/
 
 	UFUNCTION(BlueprintCallable)
 	void AdjustCameraZoom(float zoomValue, float time);
