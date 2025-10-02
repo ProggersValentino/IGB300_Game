@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/FGladiatorGameplayEffectContext.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Player/StatAdjustment.h"
 #include "GladiatorEffectContextLibrary.generated.h"
 
 /**
@@ -27,6 +28,17 @@ public:
 
 		return FGladiatorGameplayEffectContext();
 		
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Gladiator Effect Context")
+	static UStatAdjustment* GetStatAdjustment(UObject* optionalObject)
+	{
+		if (UStatAdjustment* statAdjustment = static_cast<UStatAdjustment*>(optionalObject))
+		{
+			return statAdjustment;
+		}
+
+		return nullptr;
 	}
 	
 };
