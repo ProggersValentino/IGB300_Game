@@ -96,6 +96,16 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 	
 }
 
+float AGladiatorPlayerChar::GetYawSensivity()
+{
+	return yawSensivity;
+}
+
+float AGladiatorPlayerChar::GetPitchSensivity()
+{
+	return pitchSensivity;
+}
+
 
 /// Initializing the Ability system comp on the player character through extracting from the player state
 void AGladiatorPlayerChar::InitAbilitySystemComp()

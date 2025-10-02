@@ -139,6 +139,11 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* playerInput) override;
 
 	void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	float GetYawSensivity();
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	float GetPitchSensivity();
 	
 private:
 	void InitAbilitySystemComp();
