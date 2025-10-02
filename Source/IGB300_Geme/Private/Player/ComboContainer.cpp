@@ -54,7 +54,8 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 
 	if (IsValid(statAdjustmentObject))
 	{
-		eventData.OptionalObject = statAdjustmentObject;
+		statAdjustmentObject->damageAdjustment = AdditionalDamage;
+		eventData.OptionalObject = statAdjustmentObject; //adding the stat adjustments to payload
 	}
 	
 	/*apply effects to all results*/
