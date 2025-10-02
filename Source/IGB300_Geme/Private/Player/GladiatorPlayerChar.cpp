@@ -227,8 +227,8 @@ void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
 
 		//lerping betweeen the current camera rot to the new rotation that the player wants to look at. this happens overtime in the tick() method
-		smoothYawInput = FMath::Lerp(smoothYawInput, values.X, dragCalculation * sensivity);
-		smoothPitchInput = FMath::Lerp(smoothPitchInput, values.Y, dragCalculation * sensivity);
+		smoothYawInput = FMath::Lerp(smoothYawInput, values.X, dragCalculation * yawSensivity);
+		smoothPitchInput = FMath::Lerp(smoothPitchInput, values.Y, dragCalculation * pitchSensivity);
 
 		AGladiatorPlayerController* cons = Cast<AGladiatorPlayerController>(GetController());
 		FRotator cameraRot = cons->GetControlRotation();
@@ -272,7 +272,7 @@ void AGladiatorPlayerChar::LerpToTarget(const AActor* target, float time)
 	{
 		TargetOverTime += GetWorld()->GetDeltaSeconds();
 		
-		float alpha = FMath::Clamp(TargetOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
+		float alpha = FMath::Clamp((TargetOverTime / time) * AlphaSharpness, 0.f, 1.f); //ensures the value will be between 0 & 1
 		float dragCalculation = DetermineDragCalculation(LockOnDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
 
 		FVector difference = target->GetActorLocation() - GetActorLocation();
