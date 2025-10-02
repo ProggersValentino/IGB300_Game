@@ -96,6 +96,16 @@ void AGladiatorPlayerChar::Tick(float DeltaTime)
 	
 }
 
+void AGladiatorPlayerChar::SetYawSensivity(float sensValue)
+{
+	yawSensivity = sensValue;
+}
+
+void AGladiatorPlayerChar::SetPitchSensivity(float sensValue)
+{
+	pitchSensivity = sensValue;
+}
+
 float AGladiatorPlayerChar::GetYawSensivity()
 {
 	return yawSensivity;

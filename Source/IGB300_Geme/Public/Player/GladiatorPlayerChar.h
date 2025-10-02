@@ -141,6 +141,11 @@ public:
 	void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	void SetYawSensivity(float sensValue);
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	void SetPitchSensivity(float sensValue);
+	
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
 	float GetYawSensivity();
 	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
 	float GetPitchSensivity();
