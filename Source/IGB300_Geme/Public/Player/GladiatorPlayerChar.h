@@ -92,10 +92,17 @@ protected:
 		ClampMin = "0.1", ClampMax = "1.", UIMin = "0.1", UIMax = "2.", DisplayPriority = 0))
 	float PlayerLerpTime = 2.f; //affects the speed of the player character's rotation
 
-	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.5",
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.1",
 		ClampMax = "2.", UIMin = "0.5", UIMax = "2."))
-	float sensivity = 1.f;
+	float yawSensivity = 1.f;
 
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.1",
+		ClampMax = "2.", UIMin = "0.5", UIMax = "2."))
+	float pitchSensivity = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "how sharp do we want the aplha to be"))
+	float AlphaSharpness = 1.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
 	bool bUseCameraLerpWithMouse = true;
 
