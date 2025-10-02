@@ -217,13 +217,15 @@ void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 
 void AGladiatorPlayerChar::LerpInput(const FVector2D values, float time)
 {
-	if (!bIsLerping) return; //if we arent lerping just return
-	
+	if (!bIsLerping)
+	{
+		return; //if we arent lerping just return}
+	}
 	if (CameraOverTime < time)
 	{
 		CameraOverTime += GetWorld()->GetDeltaSeconds();
 		
-		float alpha = FMath::Clamp(CameraOverTime / time, 0.f, 1.f); //ensures the value will be between 0 & 1
+		float alpha = FMath::Clamp((CameraOverTime / time) * AlphaSharpness, 0.f, 1.f); //ensures the value will be between 0 & 1
 		float dragCalculation = DetermineDragCalculation(CameraDragSettings, alpha); //determines what calculation of drag we will apply to the lerp which is set in the CameraDragSettings
 
 		//lerping betweeen the current camera rot to the new rotation that the player wants to look at. this happens overtime in the tick() method
