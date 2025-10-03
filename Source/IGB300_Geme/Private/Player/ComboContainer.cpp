@@ -20,6 +20,7 @@ void UComboContainer::Init(UGladiatorAbilitySystemComponent* abilityComp)
 	RefreshActivationGoal();
 
 	statAdjustmentObject = NewObject<UStatAdjustment>();
+	statAdjustmentObject->damageAdjustment = AdditionalDamage;
 	
 	/*if we have a subchain abiltiy then we init that*/
 	if (!IsValid(SubChainAbilityClass)) return;
@@ -54,7 +55,6 @@ void UComboContainer::InjectExecuteGameplayEvents(TArray<FHitResult> result)
 
 	if (IsValid(statAdjustmentObject))
 	{
-		statAdjustmentObject->damageAdjustment = AdditionalDamage;
 		eventData.OptionalObject = statAdjustmentObject; //adding the stat adjustments to payload
 	}
 	

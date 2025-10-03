@@ -122,6 +122,7 @@ private:
 	
 	FGameplayAbilityTargetDataHandle CreateTargetDataFromHit(const FHitResult& hit);
 
+	UPROPERTY() //prevents from getting cleaned up
 	UStatAdjustment* statAdjustmentObject;
 	
 #if WITH_EDITOR
