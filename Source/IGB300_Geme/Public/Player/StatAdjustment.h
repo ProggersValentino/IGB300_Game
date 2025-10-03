@@ -15,6 +15,7 @@ class IGB300_GEME_API UStatAdjustment : public UObject
 {
 	GENERATED_BODY()
 public:
-	
+
+	UPROPERTY(BlueprintReadOnly, Category = "Stat Adjustment")
 	float damageAdjustment = 0.f;
 };

@@ -91,10 +91,11 @@ void UGEC_MeleeDamage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		
 		UE_LOG(LogTemp, Warning, TEXT("Base Damage Retrieved: %f"), baseDamage);
 	}
-	
+
+	float AdditionalDmg = Spec.GetSetByCallerMagnitude("AddDmg");
 
 	//Damage calculation
-	float UnMitigatedDamage = baseDamage;
+	float UnMitigatedDamage = baseDamage + AdditionalDmg;
 
 	float MitigatedDamage = (UnMitigatedDamage) / (1 + toughness * 0.01); 
 
