@@ -66,6 +66,7 @@ void AEnemyBase::Tick(float DeltaTime)
 	if (canMove) {
 		UEnemySubsystem* subsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();
 		FVector playerPos = subsystem->RequestPlayerPosition();
+		playerPos.Z = GetActorLocation().Z;
 		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), playerPos));
 		targetMovePos = subsystem->RequestTargetPosition(this);
 	}
