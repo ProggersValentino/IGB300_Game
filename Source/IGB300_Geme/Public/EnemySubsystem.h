@@ -52,7 +52,7 @@ class IGB300_GEME_API UEnemySubsystem : public UWorldSubsystem
 		
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 EnemyPool = 100;
+	int32 EnemyPool = 1000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool b_IsFearing = false;
