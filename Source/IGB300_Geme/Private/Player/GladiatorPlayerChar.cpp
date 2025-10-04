@@ -972,6 +972,11 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	float STTDirectionMultiplier = InputActionValue.Y > 0 ?
 			(currentSpeed * InputActionValue.Y) * ForwardSTTMultiplier:
 			(currentSpeed * InputActionValue.Y) * BackwardSTTMultiplier;
+
+	if (currentSpeed < 0.2f)
+	{
+		STTDirectionMultiplier = NeutralSTTMultiplier;
+	}
 	
 	//grabbing cam to gets location
 	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();

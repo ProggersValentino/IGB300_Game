@@ -254,12 +254,15 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
 	FVector2D InputActionValue; //store the Forward/Backward input action float value
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When the player is standing still, how much do we want to scale the range of the collision trace for Suck to Target"))
+	float NeutralSTTMultiplier;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving forward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float ForwardSTTMultiplier;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving backward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float BackwardSTTMultiplier;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When player attempts to attack we dont always want to STT if the player is in range to hit the enemy"))
 	float STTDeadzone = 60.f;
 	
