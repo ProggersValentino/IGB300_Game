@@ -136,7 +136,7 @@ protected:
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
 
 	UPROPERTY()
-	class UGladiatorAttributeSet* AttributeSet;
+	UGladiatorAttributeSet* AttributeSet;
 
 	
 	UPROPERTY(EditDefaultsOnly, Category="Gladiator Abilities")
