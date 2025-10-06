@@ -5,6 +5,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameManagement/MaestroBase.h"
 #include "GAS/GladiatorAbilitySystemComponent.h"
 #include "GAS/GladiatorAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
@@ -152,15 +153,16 @@ bool AGladiatorBaseChar::IsAlive()
 void AGladiatorBaseChar::Die()
 {
 	//Dying
-	//if (DeathMontage)  PlayAnimMontage(DeathMontage); //plays a montage of death which then that calls DeathCleanup on AnimNotify
 	RemoveAbilities();
-
-	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);*/
 
 	const FGameplayAbilitySpec AbilitySpec(KnockOutAbility, 1); //data surrounding for the ability class
 
 	FGameplayAbilitySpec KnowckOutAbilitySpec(KnockOutAbility, 1);
 	AbilitySystemComponent->GiveAbilityAndActivateOnce(KnowckOutAbilitySpec);
+
+	//MaestroClass call event
+	//Maestro->AchieveRageBaiter();
+	
 
 	if (AbilitySystemComponent->IsValidLowLevel())
 	{
@@ -209,6 +211,10 @@ void AGladiatorBaseChar::ActivateCombo(EAttackType attackTypeToRequest)
 		break;
 	case EAttackType::Utility:
 		CurrentCombo = MainComboChain[3];
+		break;
+
+	case EAttackType::FollowUp:
+		CurrentCombo = MainComboChain[4];
 		break;
 		
 		default:
@@ -281,6 +287,7 @@ TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()
 void AGladiatorBaseChar::BeginPlay()
 {
 	Super::BeginPlay();
+	//Maestro = Cast<AMaestroBase>(UGameplayStatics::GetActorOfClass(GetWorld(), maestroClass));
 }
 
 void AGladiatorBaseChar::GiveDefaultAbilities()

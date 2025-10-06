@@ -12,6 +12,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Camera/GladiatorCameraBase.h"
 #include "Camera/GladiatorCameraPositionComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
 
@@ -34,6 +35,14 @@ public:
 
 	FGameplayTagContainer currentOwnedTags;
 }; 
+
+UENUM(BlueprintType)
+enum class EAttackHoldStage : uint8
+{
+	Tap = 0,
+	MediumHold = 1,
+	LongHold = 2,
+};
 
 
 class AEnemyBase;
@@ -60,6 +69,9 @@ class IGB300_GEME_API AGladiatorPlayerChar : public AGladiatorBaseChar
 {
 	GENERATED_BODY()
 
+public:
+	void Die() override;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "Different drag behaviours", DisplayPriority = 0))
 	EDragSettings CameraDragSettings; //different drag settings for camera
@@ -80,10 +92,17 @@ protected:
 		ClampMin = "0.1", ClampMax = "1.", UIMin = "0.1", UIMax = "2.", DisplayPriority = 0))
 	float PlayerLerpTime = 2.f; //affects the speed of the player character's rotation
 
-	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.5",
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.1",
 		ClampMax = "2.", UIMin = "0.5", UIMax = "2."))
-	float sensivity = 1.f;
+	float yawSensivity = 1.f;
 
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "mutliplier for the CameraLerpTime", DisplayPriority = 0, ClampMin = "0.1",
+		ClampMax = "2.", UIMin = "0.5", UIMax = "2."))
+	float pitchSensivity = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Gladiator Camera System", meta = (ToolTip = "how sharp do we want the aplha to be"))
+	float AlphaSharpness = 1.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gladiator Camera System", meta = (ToolTip = "If true, lerping with mouse input is enabled."))
 	bool bUseCameraLerpWithMouse = true;
 
@@ -99,8 +118,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> RunShake;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> mediumHoldStageBuildUp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is moving then the camera will shake under these settings"))
+	TSubclassOf<UCameraShakeBase> longHoldStageBuildUp;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Post Process")
 	UMaterialInterface* DamagePostProcessMat;
+
+	
 	
 	
 public:
@@ -112,6 +139,16 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* playerInput) override;
 
 	void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	void SetYawSensivity(float sensValue);
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	void SetPitchSensivity(float sensValue);
+	
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	float GetYawSensivity();
+	UFUNCTION(BlueprintCallable, category = "Gladiator Camera System")
+	float GetPitchSensivity();
 	
 private:
 	void InitAbilitySystemComp();
@@ -172,6 +209,11 @@ protected:
 	UMaterialInterface* LockOnDecal;
 
 	UDecalComponent* currentDecal;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;
 	
 	UPROPERTY(EditAnywhere, Category = "Gladiator Lock On")
 	FVector LockOnDecalSize;
@@ -212,12 +254,15 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Gladiator Suck To Target")
 	FVector2D InputActionValue; //store the Forward/Backward input action float value
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When the player is standing still, how much do we want to scale the range of the collision trace for Suck to Target"))
+	float NeutralSTTMultiplier;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving forward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float ForwardSTTMultiplier;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ClampMin=0.1, ClampMax=2, ToolTip="When the player is moving backward and attacks, how much do we want to scale the range of the collision trace for Suck to Target"))
 	float BackwardSTTMultiplier;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gladiator Suck To Target", meta=(ToolTip="When player attempts to attack we dont always want to STT if the player is in range to hit the enemy"))
 	float STTDeadzone = 60.f;
 	
@@ -246,11 +291,6 @@ protected:
 
 	void TransitionBackToMainCamera();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
-	TSubclassOf<AMaestroBase> maestroClass;
-
-	AMaestroBase* Maestro;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FInputBuffer> inputBuffer;
 
@@ -258,13 +298,10 @@ protected:
 	bool bCanAcceptInputQueue = true;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float lightAttackHeldTime;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float mediumAttackHeldTime;
+	float tapAttackTime;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer")
-	float heavyAttackHeldTime;
+	float longHoldAttackTime;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input Buffer", meta=(ToolTip="how long between each attack will be allowed before any prev attacks stored in memory get wiped"))
 	float timeTillAttackMemoryWiped;
@@ -286,7 +323,45 @@ protected:
 	//turns on bCanAcceptInputQueue
 	UFUNCTION(BlueprintCallable, Category = "Input Buffer")
 	void EngageInputQueuing();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	TSubclassOf<UGameplayAbility> IFramesAbiltiy;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun")
+	int amountOfTimesHitTolerance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stun", meta=(ToolTip="How long till we reset how many times the player was hit consecutively from enemies"))
+	float timeTillHitBufferExpires;
+
+	UPROPERTY()
+	EAttackHoldStage previousStage;
 	
+	//returns a stage that the attack is getting held at 
+	UFUNCTION(BlueprintCallable, Category = "Attack Buildup")
+	EAttackHoldStage DetermineCurrentHoldStage(float timeHeld);
+
+	UFUNCTION(BlueprintCallable)
+	void ActivateHoldStage(EAttackHoldStage stage);
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteHoldStage();
+
+	//how fast the wind up animation plays for to match the stages 
+	UPROPERTY(BlueprintReadOnly)
+	float windUpTimeSpeed;
+
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maestro")
+	TSubclassOf<AMaestroBase> maestroClass;
+
+	AMaestroBase* Maestro;*/
+
+	UFUNCTION(BlueprintCallable)
+	void AdjustCameraZoom(float zoomValue, float time);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetToDefaultZoom(float time);
+	
+	void ApplyZoom(FVector startingLoco,FVector zoomValue, float time);
 private:
 	APlayerCameraManager* CameraManager;
 	UCameraComponent* CameraComponent;
@@ -297,9 +372,16 @@ private:
 	
 	UPROPERTY()
 	UCameraShakeBase* currentActiveCameraShake;
-	
-	void UpdateCameraShake(float speed);
 
+	UPROPERTY()
+	UCameraShakeBase* currentActiveAttackHoldCameraShake;
+	
+	void UpdateMovementCameraShake(float speed);
+
+	void UpdateCameraShake(TSubclassOf<UCameraShakeBase> shakeToActivate, UCameraShakeBase*& shakeValue);
+
+	void ClearCameraShake(UCameraShakeBase*& shakeValue);
+	
 	FTimerHandle TimerHandle;
 	float timerAlpha = 0.f;
 	
@@ -323,6 +405,21 @@ private:
 	void ClearAttacksMemory();
 
 	void SelectAttackToUse(FInputBuffer selectedBuffer);
+
+	void TryActivateIframess();
+
+	void ClearHitBuffer();
+
+	USpringArmComponent* playerSpringArmComponent;
+
+	FTimerHandle HitBufferHandle;
+	int HitBuffer;
+
+	FTimerHandle CameraZoomTimerHandle;
+	FVector CameraDefaultPos;
+	float cameraChangeAlpha = 0.f;
+	
+	
 	
 };
 

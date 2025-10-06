@@ -7,6 +7,7 @@
 #include "GAS/GladiatorAttributeSet.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
+#include "GameManagement/MaestroBase.h"
 #include "Player/ComboContainer.h"
 #include "GladiatorBaseChar.generated.h"
 
@@ -24,6 +25,7 @@ enum class EAttackType : uint8
 	Medium = 2,
 	Heavy = 3,
 	Utility = 4,
+	FollowUp = 5,
 };
 
 class UGameplayAbility;
@@ -127,11 +129,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Gladiator Abilities")
 	TSubclassOf<UGameplayAbility> KnockOutAbility;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<AActor> ClassToFind;
+
 	UPROPERTY()
 	UGladiatorAbilitySystemComponent* AbilitySystemComponent; //creating an AS Comp
 
 	UPROPERTY()
-	class UGladiatorAttributeSet* AttributeSet;
+	UGladiatorAttributeSet* AttributeSet;
 
 	
 	UPROPERTY(EditDefaultsOnly, Category="Gladiator Abilities")
