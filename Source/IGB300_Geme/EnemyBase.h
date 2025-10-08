@@ -91,6 +91,10 @@ public:
 
 	AEnemyManager* enemyManager;
 
+	// Random skin textures
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UMaterialInstance*> DifferentSkins;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -138,5 +142,6 @@ public:
 
 	FTimerHandle timerHandle;
 	float timeTillRemoved = 2.f;
-	
+
+	void ChangeSkinRandom();
 };
