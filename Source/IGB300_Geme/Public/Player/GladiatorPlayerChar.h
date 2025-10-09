@@ -190,7 +190,8 @@ protected:
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 
-	
+	UPROPERTY(BlueprintReadWrite)
+	bool isAttacking = false;
 	
 	UPROPERTY()
 	AEnemyBase* CurrentLockedTarget;

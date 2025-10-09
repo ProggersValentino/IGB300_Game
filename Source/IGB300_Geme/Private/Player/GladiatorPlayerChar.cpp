@@ -209,7 +209,7 @@ void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 
 	/*we only want the player model to follow the direction of the camera if the player is moving
 	 */
-	if (gCurrentPlayerSpeed > 2.0f)
+	if (gCurrentPlayerSpeed > 2.0f || isAttacking)
 	{
 		LerpPlayerRotation(PlayerLerpTime);		
 	}
