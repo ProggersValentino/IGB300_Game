@@ -12,6 +12,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Camera/GladiatorCameraBase.h"
 #include "Camera/GladiatorCameraPositionComponent.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameManagement/MaestroBase.h"
 #include "GladiatorPlayerChar.generated.h"
@@ -111,6 +112,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Gladiator Camera System", meta =(ClampMin="0.0", ClampMax="90.0"))
 	float CameraRotationPitchMinClamp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera System")
+	UCurveFloat*  cameraMovementFloat;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Camera Shake", meta = (ToolTip = "When the player is idle then the camera will shake under these settings"))
 	TSubclassOf<UCameraShakeBase> IdleShake;
@@ -420,6 +424,7 @@ private:
 	FVector CameraDefaultPos;
 	float cameraChangeAlpha = 0.f;
 	
+	//timeline stuff
 	
 	
 };
