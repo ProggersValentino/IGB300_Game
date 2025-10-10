@@ -52,7 +52,10 @@ void AEnemyBase::BeginPlay()
 		//binding to the health attribute so when it changes the function gets called
 		HealthChangeDelegate = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::HealthChanged);
 	}
+
+	ChangeSkinRandom();
 }
+
 
 void AEnemyBase::PostInitializeComponents()
 {
@@ -210,4 +213,15 @@ bool AEnemyBase::IsCloseToTarget() {
 		return true;
 	}
 	return false;  
+}
+
+void AEnemyBase::ChangeSkinRandom() {
+	if (DifferentSkins.Num() == 0) {
+		return;
+	}
+	int index = FMath::RandRange(0, DifferentSkins.Num() - 1);
+	check(index != DifferentSkins.Num());
+
+	GetMesh()->SetMaterial(0, DifferentSkins[index]);
+	return;
 }
