@@ -209,7 +209,7 @@ void AGladiatorPlayerChar::LerpCameraSystem(const FVector2D values)
 
 	/*we only want the player model to follow the direction of the camera if the player is moving
 	 */
-	if (gCurrentPlayerSpeed > 2.0f)
+	if (gCurrentPlayerSpeed > 2.0f || isAttacking)
 	{
 		LerpPlayerRotation(PlayerLerpTime);		
 	}
@@ -341,6 +341,11 @@ void AGladiatorPlayerChar::LerpPlayerRotation(float time)
 		bCanBeLocked = true;
 		PlayerOverTime = 0;
 	}
+}
+
+bool AGladiatorPlayerChar::IsFocusedOnTarget(FHitResult& hitResult, FRotator& rotatorOUT)
+{
+	return false;
 }
 
 float AGladiatorPlayerChar::DetermineDragCalculation(EDragSettings DragType, const float alpha)
@@ -961,27 +966,67 @@ FHitResult AGladiatorPlayerChar::DetectEnemyToSuckTo(float Radius, EDrawDebugTra
 	
 	float currentSpeed = GetCharacterMovement()->Velocity.Size();
 
-	/*GEngine->AddOnScreenDebugMessage(
+	FVector StartLoco = FVector::ZeroVector;
+	FVector EndLoco = FVector::ZeroVector;
+	
+	
+	//are we going forward or backward? apply the necessary math to suit each case
+	FVector2d STTDirectionMultiplier = FVector2d::ZeroVector;
+
+
+	if (InputActionValue.X > 0.02 || InputActionValue.X < -0.02)
+	{
+		STTDirectionMultiplier.X = InputActionValue.X * currentSpeed;
+	}
+
+	if (InputActionValue.Y > 0.02 || InputActionValue.Y < -0.02)
+	{
+		STTDirectionMultiplier.Y = InputActionValue.Y > 0 ?
+			(currentSpeed * InputActionValue.Y) * ForwardSTTMultiplier:
+			(currentSpeed * InputActionValue.Y) * BackwardSTTMultiplier;
+	}
+
+	GEngine->AddOnScreenDebugMessage(
 			-1,                         // Key (-1 = add new, or use ID to overwrite)
 			5.0f,                       // Duration (seconds)
 			FColor::Green,             // Text color
-			 FString::Printf(TEXT("Player Speed: %f"), currentPlayerSpeed)    // Message
-		);*/
-	
-	//are we going forward or backward? apply the necessary math to suit each case
-	float STTDirectionMultiplier = InputActionValue.Y > 0 ?
-			(currentSpeed * InputActionValue.Y) * ForwardSTTMultiplier:
-			(currentSpeed * InputActionValue.Y) * BackwardSTTMultiplier;
+			 FString::Printf(TEXT("Player Directional: %f, %f "), STTDirectionMultiplier.X, STTDirectionMultiplier.Y)    // Message
+		);
 
-	if (currentSpeed < 0.2f)
+	
+	if (currentSpeed > 0.2f)
 	{
-		STTDirectionMultiplier = NeutralSTTMultiplier;
+		FVector newPosVec = FVector(1.f, 1.f, 0.f);
+
+		UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
+		
+		//rotation calculation where the player actor should be looking at (which where the camera is looking) 
+		FVector camDirFor = cam->GetForwardVector();
+		camDirFor.Z = 0.f;
+		camDirFor.Normalize();
+		FVector camDirRig = cam->GetRightVector();
+		camDirRig.Z = 0.f;
+		camDirRig.Normalize();
+		
+		StartLoco = GetActorLocation();
+
+		float forwardValue = STTDirectionMultiplier.Y;
+		float rightValue = STTDirectionMultiplier.X;
+		
+		FVector desiredDirection = (camDirFor * STTDirectionMultiplier.Y) + (rightValue * camDirRig);
+		
+		EndLoco = (StartLoco + desiredDirection); 
+	}
+	else
+	{
+		STTDirectionMultiplier.Y = NeutralSTTMultiplier;
+		
+		//grabbing cam to gets location
+		UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
+		StartLoco = GetActorLocation();
+		EndLoco = StartLoco + cam->GetForwardVector() * STTDirectionMultiplier.Y;
 	}
 	
-	//grabbing cam to gets location
-	UCameraComponent* cam = FindComponentByClass<UCameraComponent>();
-	FVector StartLoco = GetActorLocation();
-	FVector EndLoco = StartLoco + cam->GetForwardVector() * STTDirectionMultiplier;
 	
 	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), StartLoco, EndLoco, Radius, ObjectTypesAllowed, false, ActorsToIgnore, Debug, hitResult, true,
 		FLinearColor::Red, FLinearColor::Green, debugTraceTime);
