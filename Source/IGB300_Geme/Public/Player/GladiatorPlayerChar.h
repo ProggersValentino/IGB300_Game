@@ -191,6 +191,8 @@ protected:
 	//slerps the player character to where the camera is looking 
 	void LerpPlayerRotation(float time);
 
+	bool IsFocusedOnTarget(FHitResult& hitResult, FRotator& rotatorOUT);
+
 	//returns the calculated drag value based on the drag setting
 	static float DetermineDragCalculation(EDragSettings DragType, const float alpha);
 

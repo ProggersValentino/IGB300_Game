@@ -343,6 +343,11 @@ void AGladiatorPlayerChar::LerpPlayerRotation(float time)
 	}
 }
 
+bool AGladiatorPlayerChar::IsFocusedOnTarget(FHitResult& hitResult, FRotator& rotatorOUT)
+{
+	return false;
+}
+
 float AGladiatorPlayerChar::DetermineDragCalculation(EDragSettings DragType, const float alpha)
 {
 	switch (DragType)
