@@ -79,6 +79,10 @@ TArray<FHitResult> UAnimNotifyState_HitDetection::FrameDependentDetection(USkele
 
 	for (FHitResult hit : hits)
 	{
+		if (hit.GetActor() == character)
+		{
+			continue;
+		}
 		ActorsHitToIgnore.AddUnique(hit.GetActor());	
 	}
 	
