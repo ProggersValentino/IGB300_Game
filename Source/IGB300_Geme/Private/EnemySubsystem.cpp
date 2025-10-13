@@ -17,11 +17,12 @@
 #include <algorithm>
 #include <vcruntime_typeinfo.h>
 #include "Kismet/KismetArrayLibrary.h"
+#include "Player/GladiatorPlayerChar.h"
 
 void UEnemySubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
   bool b_shouldCreate = DoesLevelContainSpawns();
-	Player = UGameplayStatics::GetActorOfClass(GetWorld(), ACharacter::StaticClass());
+	Player = UGameplayStatics::GetActorOfClass(GetWorld(), AGladiatorPlayerChar::StaticClass());
   if (!b_shouldCreate)
   {
     return;
