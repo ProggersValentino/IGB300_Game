@@ -557,7 +557,7 @@ void AGladiatorPlayerChar::TransitionBackToMainCamera()
 void AGladiatorPlayerChar::TryActivateAttackType()
 {
 
-	if (inputBuffer[0].BufferAction == nullptr || AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //if the first element is null or we dont want to accept anymore inputs then just return
+	if (inputBuffer[0].BufferAction == nullptr || !bCanAcceptInputQueue) //if the first element is null or we dont want to accept anymore inputs then just return
 	{
 		return;
 	}
