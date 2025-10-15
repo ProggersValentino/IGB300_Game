@@ -111,7 +111,16 @@ public:
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<UComboContainer>> MainComboChainClasses;
+	TArray<TSubclassOf<UComboContainer>> LightComboChainClasses;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UComboContainer>> HeavyComboChainClasses;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UComboContainer>> SpecialComboChainClasses;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UComboContainer>> UtilityComboChainClasses;
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UComboContainer> CurrentCombo;
@@ -120,7 +129,7 @@ public:
 	void ResetCombo();
 
 	UFUNCTION(BlueprintCallable, Category="Gladiator Combo")
-	void ActivateCombo(EAttackType attackTypeToRequest);
+	void ActivateCombo(EAttackType attackTypeToRequest, int attackStage);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -182,11 +191,19 @@ protected:
 	
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UComboContainer>> MainComboChain;
+	TArray<TObjectPtr<class UComboContainer>> LightComboChain;
 
+	UPROPERTY()
+	TArray<TObjectPtr<class UComboContainer>> HeavyComboChain;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UComboContainer>> SpecialComboChain;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UComboContainer>> UtilityComboChain;
 	int CurrentComboChainIndex;
 
-	
+	void InitSelectedComboChain(TArray<TSubclassOf<UComboContainer>> comboToInit, TArray<TObjectPtr<class UComboContainer>>& initComboOUT);
 	
 	/// 
 	/// @return returns the current combo based of the CurrentComboChainIn

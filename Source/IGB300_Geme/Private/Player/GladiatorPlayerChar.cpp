@@ -587,7 +587,7 @@ void AGladiatorPlayerChar::TryActivateAttackType()
 
 void AGladiatorPlayerChar::AddToBuffer(FInputBuffer bufferToInsert)
 {
-	if (inputBuffer[inputBuffer.Max() - 1].BufferAction || !bCanAcceptInputQueue) //we will not accept this buffer as the main buffer list is full 
+	if (inputBuffer[inputBuffer.Num() - 1].BufferAction || !bCanAcceptInputQueue) //we will not accept this buffer as the main buffer list is full 
 	{
 		return;
 	}
@@ -748,7 +748,7 @@ void AGladiatorPlayerChar::ClearCameraShake(UCameraShakeBase*& shakeValue)
 }
 
 
-void AGladiatorPlayerChar::AddAttackToMemory(EAttackType type)
+void AGladiatorPlayerChar::AddAttackToMemory(EAttackType type, int attackStage)
 {
 	//shift the attacks down 1 leaving the top free
 	for (int i = prevExecutedAttacks.Num() - 1; i > 0; i--)
@@ -761,7 +761,8 @@ void AGladiatorPlayerChar::AddAttackToMemory(EAttackType type)
 		prevExecutedAttacks[i] = prevExecutedAttacks[i - 1];
 	}
 
-	prevExecutedAttacks[0] = type; //add in the type
+	prevExecutedAttacks[0].attackType = type; //add in the type
+	prevExecutedAttacks[0].attackStage = attackStage; //add in the type
 }
 
 void AGladiatorPlayerChar::CreateAndApplyDynamicMaterialToCamera()
@@ -867,7 +868,7 @@ void AGladiatorPlayerChar::InitInputBuffer()
 
 	for (int i = 0; i < prevExecutedAttacks.Max(); i++)
 	{
-		prevExecutedAttacks.Add(EAttackType::None);
+		prevExecutedAttacks.Add(FAttackMemoryElement());
 	}
 }
 
@@ -875,7 +876,7 @@ void AGladiatorPlayerChar::ClearAttacksMemory()
 {
 	for (int i = 0; i < prevExecutedAttacks.Num(); i++)
 	{
-		prevExecutedAttacks[i] = EAttackType::None;
+		prevExecutedAttacks[i] = FAttackMemoryElement();
 	}
 }
 
@@ -886,14 +887,14 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	float blockedRage = AttributeSet->GetBlockedRageAttribute().GetNumericValue(AttributeSet);
 	float maxBlockedRage = AttributeSet->GetMaxBlockedRageAttribute().GetNumericValue(AttributeSet);
 
-	bool bLastAttackWasMedium = prevExecutedAttacks[0] == EAttackType::Medium && prevExecutedAttacks[1] != EAttackType::Medium; //only allow if the prev attack was medium and not twice in row
-	bool bLastAttackWasFollowup = prevExecutedAttacks[0] == EAttackType::FollowUp;
+	bool bLastAttackWasMedium = prevExecutedAttacks[0].attackType == EAttackType::Medium && prevExecutedAttacks[0] != prevExecutedAttacks[1]; //only allow if the prev attack was medium and not twice in row
+	bool bLastAttackWasFollowup = prevExecutedAttacks[0].attackType == EAttackType::FollowUp;
 	
-	//if we are blocking and our rage is at max then activate utility ability	
+	/*//if we are blocking and our rage is at max then activate utility ability	
 	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")) && blockedRage >= maxBlockedRage)
 	{
-		ActivateCombo(EAttackType::Utility);
-		AddAttackToMemory(EAttackType::Utility);
+		ActivateCombo(EAttackType::Utility, 0);
+		AddAttackToMemory(EAttackType::Utility, 0);
 	}
 	else
 	{
@@ -902,11 +903,6 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 		{
 			ActivateCombo(EAttackType::Light);
 			AddAttackToMemory(EAttackType::Light);
-		}
-		else if (selectedBuffer.inputHeldTime >= tapAttackTime && inputBuffer[0].inputHeldTime < longHoldAttackTime && bLastAttackWasMedium) //medium follow up
-		{
-			ActivateCombo(EAttackType::FollowUp);
-			AddAttackToMemory(EAttackType::FollowUp);
 		}
 		else if (selectedBuffer.inputHeldTime >= longHoldAttackTime && !bLastAttackWasMedium && !bLastAttackWasFollowup) //medium attack
 		{
@@ -918,7 +914,41 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 			ActivateCombo(EAttackType::Heavy);
 			AddAttackToMemory(EAttackType::Heavy);
 		}	
+	}*/
+
+	if (LightAttackAction == selectedBuffer.BufferAction)
+	{
+		int attackStage = DetermineAttackStage(EAttackType::Light); //if we have attack previously with the smae type then we flow into the second one
+		ActivateCombo(EAttackType::Light, attackStage);
+		AddAttackToMemory(EAttackType::Light, attackStage);
 	}
+	else if (HeavyAttackAction == selectedBuffer.BufferAction)
+	{
+		
+		int attackStage = 0; //if we have attack previously with the smae type then we flow into the second one
+
+		if (selectedBuffer.inputHeldTime >= tapAttackTime && inputBuffer[0].inputHeldTime < longHoldAttackTime)
+		{
+			attackStage =  DetermineAttackStage(EAttackType::Medium);
+			ActivateCombo(EAttackType::Medium, attackStage);
+			AddAttackToMemory(EAttackType::Medium, attackStage);
+		}
+		else if (selectedBuffer.inputHeldTime >= longHoldAttackTime)
+		{
+			attackStage =  DetermineAttackStage(EAttackType::Heavy);
+			ActivateCombo(EAttackType::Heavy, attackStage);
+			AddAttackToMemory(EAttackType::Heavy, attackStage);
+		}
+		
+	}
+	
+	
+	/*GEngine->AddOnScreenDebugMessage(
+				-1,                         // Key (-1 = add new, or use ID to overwrite)
+				5.0f,                       // Duration (seconds)
+				FColor::Green,             // Text color
+				 FString::Printf(TEXT("Attack Input: %s"), *selectedBuffer.BufferAction->GetName())    // Message
+			);	*/
 
 	//activate timer to wipe the stored attacks in prevExecuteAttack array to prevent players from stocking a medium attack tap for later 
 	GetWorld()->GetTimerManager().SetTimer(combatTimerHandle, this, &AGladiatorPlayerChar::ClearAttacksMemory, timeTillAttackMemoryWiped, false);
@@ -942,6 +972,60 @@ void AGladiatorPlayerChar::TryActivateIframess()
 void AGladiatorPlayerChar::ClearHitBuffer()
 {
 	HitBuffer = 0;
+}
+
+int AGladiatorPlayerChar::DetermineAttackStage(EAttackType attackType)
+{
+	FAttackMemoryElement prevAtt = prevExecutedAttacks[0];
+
+	int stage = 0;
+	
+	switch (attackType)
+	{
+	case EAttackType::Light:
+
+		if (prevAtt.attackType != attackType)
+		{
+			stage = 0;
+			return stage;
+		}
+
+		stage = prevAtt.attackStage == LightComboChainClasses.Num() - 1 ? 0 : prevAtt.attackStage + 1; //is the previous attack stage at the limit of attack stages available? if so reset to 0 otherwise increment from previous
+		return stage;
+		
+	case EAttackType::Medium:
+		if (prevAtt.attackType != attackType)
+		{
+			stage = 0;
+			return stage;
+		}
+
+		stage = prevAtt.attackStage == HeavyComboChainClasses.Num() - 1 ? 0 : prevAtt.attackStage + 1; //is the previous attack stage at the limit of attack stages available? if so reset to 0 otherwise increment from previous
+		return stage;
+		
+	case EAttackType::Heavy:
+		if (prevAtt.attackType != attackType)
+		{
+			stage = 0;
+			return stage;
+		}
+
+		stage = prevAtt.attackStage == SpecialComboChainClasses.Num() - 1 ? 0 : prevAtt.attackStage + 1; //is the previous attack stage at the limit of attack stages available? if so reset to 0 otherwise increment from previous
+		return stage;
+		
+	case EAttackType::Utility:
+		if (prevAtt.attackType != attackType)
+		{
+			stage = 0;
+			return stage;
+		}
+
+		stage = prevAtt.attackStage == UtilityComboChainClasses.Num() - 1 ? 0 : prevAtt.attackStage + 1; //is the previous attack stage at the limit of attack stages available? if so reset to 0 otherwise increment from previous
+		return stage;
+
+	default:
+		return -1; //could not find attack type
+	}
 }
 
 void AGladiatorPlayerChar::EnemyHighlight(AEnemyBase* Enemy)

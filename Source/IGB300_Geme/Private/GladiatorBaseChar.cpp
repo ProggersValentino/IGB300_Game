@@ -33,18 +33,13 @@ AGladiatorBaseChar::AGladiatorBaseChar(const FObjectInitializer& ObjectInitializ
 
 void AGladiatorBaseChar::Init()
 {
-	MainComboChain.Reserve(MainComboChainClasses.Num());
+	LightComboChain.Reserve(LightComboChainClasses.Num());
+
+	InitSelectedComboChain(LightComboChainClasses, LightComboChain);
+	InitSelectedComboChain(HeavyComboChainClasses, HeavyComboChain);
+	InitSelectedComboChain(SpecialComboChainClasses, SpecialComboChain);
+	InitSelectedComboChain(UtilityComboChainClasses, UtilityComboChain);
 	
-	for (int i = 0; i < MainComboChainClasses.Num(); ++i)
-	{
-		if (!IsValid(MainComboChainClasses[i])) continue;
-	
-		//initialize combo with refs
-		TObjectPtr<UComboContainer> combo = NewObject<UComboContainer>(this, MainComboChainClasses[i]);
-		
-		MainComboChain.AddUnique(combo); 
-		combo->Init(AbilitySystemComponent);
-	}
 	
 }
 
@@ -194,31 +189,33 @@ void AGladiatorBaseChar::ResetCombo()
 	CurrentComboChainIndex = 0;
 }
 
-void AGladiatorBaseChar::ActivateCombo(EAttackType attackTypeToRequest)
+void AGladiatorBaseChar::ActivateCombo(EAttackType attackTypeToRequest, int attackStage)
 {
+
+	
 	switch (attackTypeToRequest)
 	{
 	case EAttackType::Light:
-		CurrentCombo = MainComboChain[0];
+		CurrentCombo = LightComboChain[attackStage];
 		break;
 
 	case EAttackType::Medium:
-		CurrentCombo = MainComboChain[1];
+		CurrentCombo = HeavyComboChain[attackStage];
 		break;
 
 	case EAttackType::Heavy:
-		CurrentCombo = MainComboChain[2];
+		CurrentCombo = SpecialComboChain[attackStage];
 		break;
 	case EAttackType::Utility:
-		CurrentCombo = MainComboChain[3];
+		CurrentCombo = UtilityComboChain[attackStage];
 		break;
 
 	case EAttackType::FollowUp:
-		CurrentCombo = MainComboChain[4];
+		CurrentCombo = LightComboChain[4];
 		break;
 		
 		default:
-			CurrentCombo = MainComboChain[0];
+			CurrentCombo = LightComboChain[0];
 			break;
 	}
 	/*//determine combo
@@ -259,27 +256,42 @@ void AGladiatorBaseChar::OnChageHealthState(const FOnAttributeChangeData& Data)
 	AbilitySystemComponent->AddLooseGameplayTag(HealthStateTag); //apply new one
 }
 
+void AGladiatorBaseChar::InitSelectedComboChain(TArray<TSubclassOf<UComboContainer>> comboToInit, TArray<TObjectPtr<class UComboContainer>>& initComboOUT)
+{
+	for (int i = 0; i < comboToInit.Num(); ++i)
+	{
+		if (!IsValid(comboToInit[i])) continue;
+	
+		//initialize combo with refs
+		TObjectPtr<UComboContainer> combo = NewObject<UComboContainer>(this, comboToInit[i]);
+		
+		initComboOUT.AddUnique(combo); 
+		combo->Init(AbilitySystemComponent);
+	}
+}
+
+
 TObjectPtr<UComboContainer> AGladiatorBaseChar::DetermineCombo()
 {
 	if (!IsValid(CurrentCombo))
 	{
-		return MainComboChain[CurrentComboChainIndex];	
+		return LightComboChain[CurrentComboChainIndex];	
 	}
 	
 	if (CurrentCombo->currentHitStreak >= CurrentCombo->NOOfHitsToNextComboCriteria
-		&& CurrentComboChainIndex < MainComboChain.Num() - 1) // true 
+		&& CurrentComboChainIndex < LightComboChain.Num() - 1) // true 
 	{
 		CurrentComboChainIndex++;
 		CurrentCombo->ClearStreak();
 	}
-	else if (CurrentComboChainIndex >= MainComboChain.Num() - 1 && !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //TODO: establish a dedicated tag for determining when the player's ability is done
+	else if (CurrentComboChainIndex >= LightComboChain.Num() - 1 && !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.State.IsPunching"))) //TODO: establish a dedicated tag for determining when the player's ability is done
 	{
 		ResetCombo();
 		/*UE_LOG(LogTemp, Error, TEXT("current combo index: %d"), CurrentComboChainIndex)*/
 	}
 
 	//return selected combo
-	return MainComboChain[CurrentComboChainIndex];
+	return LightComboChain[CurrentComboChainIndex];
 }
 
 

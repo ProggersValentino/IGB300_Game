@@ -35,7 +35,30 @@ public:
 	float inputHeldTime;
 
 	FGameplayTagContainer currentOwnedTags;
-}; 
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FAttackMemoryElement
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	FAttackMemoryElement(): attackStage(0), attackType(EAttackType::None) {}
+
+	UPROPERTY(BlueprintReadWrite)
+	EAttackType attackType;
+	
+	UPROPERTY(BlueprintReadWrite)
+	int attackStage;
+
+	//to ensure we can compare another attackmemory element 
+	bool operator==(const FAttackMemoryElement& other) const
+	{
+		return attackType == other.attackType && attackStage == other.attackStage;
+		
+	}
+};
 
 UENUM(BlueprintType)
 enum class EAttackHoldStage : uint8
@@ -397,9 +420,9 @@ private:
 	UMaterialInstanceDynamic* PPDamagedMat;
 
 	FTimerHandle combatTimerHandle;
-	TArray<EAttackType> prevExecutedAttacks;
+	TArray<FAttackMemoryElement> prevExecutedAttacks;
 
-	void AddAttackToMemory(EAttackType type);
+	void AddAttackToMemory(EAttackType type, int attackStage);
 	
 	void CreateAndApplyDynamicMaterialToCamera();
 	
@@ -427,7 +450,18 @@ private:
 	float cameraChangeAlpha = 0.f;
 	
 	//timeline stuff
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Combat")
+	TObjectPtr<UInputAction> LightAttackAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Combat")
+	TObjectPtr<UInputAction> HeavyAttackAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gladiator Combat")
+	TObjectPtr<UInputAction> BlockAttackAction;
+
+	//look through the memory to see what attack stage should be next
+	int DetermineAttackStage(EAttackType attackType);
 	
 };
 
