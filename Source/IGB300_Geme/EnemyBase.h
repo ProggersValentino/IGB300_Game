@@ -95,6 +95,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UMaterialInstance*> DifferentSkins;
 
+	// Facing Rotations
+	FRotator LookAtPlayerRotation;
+	FRotator LookAtTargetRotation;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -144,4 +148,11 @@ public:
 	float timeTillRemoved = 2.f;
 
 	void ChangeSkinRandom();
+
+	// Look at functionality
+	UFUNCTION(BlueprintCallable)
+	void LookAtPlayer();
+	UFUNCTION(BlueprintCallable)
+	void LookAtTarget();
+
 };

@@ -69,10 +69,18 @@ void AEnemyBase::Tick(float DeltaTime)
 	if (canMove) {
 		UEnemySubsystem* subsystem = GetWorld()->GetSubsystem<UEnemySubsystem>();
 		FVector playerPos = subsystem->RequestPlayerPosition();
-		playerPos.Z = GetActorLocation().Z;
-		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), playerPos));
+		FVector actorLocation = GetActorLocation();
+		playerPos.Z = actorLocation.Z;
+		LookAtPlayerRotation = UKismetMathLibrary::FindLookAtRotation(actorLocation, playerPos);
+		// SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), playerPos));
 		targetMovePos = subsystem->RequestTargetPosition(this);
+
+		// Find Look at target rotation
+		FVector lookAtPosition = targetMovePos;
+		lookAtPosition.Z = actorLocation.Z;
+		LookAtTargetRotation = UKismetMathLibrary::FindLookAtRotation(actorLocation, lookAtPosition);
 	}
+
 	if (isGameplay)
 	{
 		Move_Implementation();
@@ -224,4 +232,12 @@ void AEnemyBase::ChangeSkinRandom() {
 
 	GetMesh()->SetMaterial(0, DifferentSkins[index]);
 	return;
+}
+
+void AEnemyBase::LookAtPlayer() {
+	SetActorRotation(LookAtPlayerRotation);
+}
+
+void AEnemyBase::LookAtTarget() {
+	SetActorRotation(LookAtTargetRotation);
 }
