@@ -183,6 +183,11 @@ FVector UEnemySubsystem::TargetEnemyPositionCalculator(FVector EnemyPos, float r
   typedef UKismetMathLibrary UKML;
 	FVector ret = FVector(0.0f, 0.0f, 0.0f);
 
+	// Approach player directly if far away
+	if (UKML::Vector_Distance(EnemyPos, PlayerPos) > radius + 100) {
+	  return PlayerPos;
+	}
+
 	// Assume ideal point is inside the arena (edge case is dealt with later)
 	ret.X = PlayerPos.X
 	  + (EnemyPos.X-PlayerPos.X)
