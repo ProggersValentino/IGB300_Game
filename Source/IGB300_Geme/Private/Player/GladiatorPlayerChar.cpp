@@ -890,33 +890,13 @@ void AGladiatorPlayerChar::SelectAttackToUse(FInputBuffer selectedBuffer)
 	bool bLastAttackWasMedium = prevExecutedAttacks[0].attackType == EAttackType::Medium && prevExecutedAttacks[0] != prevExecutedAttacks[1]; //only allow if the prev attack was medium and not twice in row
 	bool bLastAttackWasFollowup = prevExecutedAttacks[0].attackType == EAttackType::FollowUp;
 	
-	/*//if we are blocking and our rage is at max then activate utility ability	
 	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.Ability.Block")) && blockedRage >= maxBlockedRage)
 	{
-		ActivateCombo(EAttackType::Utility, 0);
-		AddAttackToMemory(EAttackType::Utility, 0);
+		int attackStage = DetermineAttackStage(EAttackType::Utility); //if we have attack previously with the smae type then we flow into the second one
+		ActivateCombo(EAttackType::Utility, attackStage);
+		AddAttackToMemory(EAttackType::Utility, attackStage);
 	}
-	else
-	{
-		//determine the attack type based off how long the button was held for
-		if (selectedBuffer.inputHeldTime >= tapAttackTime && inputBuffer[0].inputHeldTime < longHoldAttackTime && !bLastAttackWasMedium) //light attack 
-		{
-			ActivateCombo(EAttackType::Light);
-			AddAttackToMemory(EAttackType::Light);
-		}
-		else if (selectedBuffer.inputHeldTime >= longHoldAttackTime && !bLastAttackWasMedium && !bLastAttackWasFollowup) //medium attack
-		{
-			ActivateCombo(EAttackType::Medium);
-			AddAttackToMemory(EAttackType::Medium);
-		}
-		else if(selectedBuffer.inputHeldTime >= longHoldAttackTime && (bLastAttackWasMedium || bLastAttackWasFollowup)) //heavy attack
-		{
-			ActivateCombo(EAttackType::Heavy);
-			AddAttackToMemory(EAttackType::Heavy);
-		}	
-	}*/
-
-	if (LightAttackAction == selectedBuffer.BufferAction)
+	else if (LightAttackAction == selectedBuffer.BufferAction)
 	{
 		int attackStage = DetermineAttackStage(EAttackType::Light); //if we have attack previously with the smae type then we flow into the second one
 		ActivateCombo(EAttackType::Light, attackStage);
